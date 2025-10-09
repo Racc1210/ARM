@@ -1,9 +1,35 @@
         .section .data
 
+        // Mensajes globales y sus longitudes
+        .global Bienvenida, BienvenidaFinal, LargoBienvenida
+        .global MensajeSalir, MensajeSalirFinal, LargoMensajeSalir
+
+        .global Menu, MenuFinal, LargoMenu
+        .global MensajeErrorSeleccion, MensajeErrorSeleccionFinal, LargoMensajeErrorSeleccion
+
+        .global MensajeFilas, MensajeFilasFinal, LargoMensajeFilas
+        .global MensajeColumnas, MensajeColumnasFinal, LargoMensajeColumnas
+        .global MensajeMinas, MensajeMinasFinal, LargoMensajeMinas
+        .global MensajeErrorCantidadFilas, MensajeErrorCantidadFilasFinal, LargoMensajeErrorCantidadFilas
+        .global MensajeErrorCantidadColumnas, MensajeErrorCantidadColumnasFinal, LargoMensajeErrorCantidadColumnas
+        .global MensajeErrorCantidadMinas, MensajeErrorCantidadMinasFinal, LargoMensajeErrorCantidadMinas
+
+        .global MenuAccion, MenuAccionFinal, LargoMenuAccion
+        .global MensajeFila, MensajeFilaFinal, LargoMensajeFila
+        .global MensajeColumna, MensajeColumnaFinal, LargoMensajeColumna
+
+        .global MensajeDerrota, MensajeDerrotaFinal, LargoMensajeDerrota
+        .global MensajeVictoria, MensajeVictoriaFinal, LargoMensajeVictoria
+
+        .global SimboloVacio, SimboloVacioFinal, LargoSimboloVacio
+        .global SimboloMina, SimboloMinaFinal, LargoSimboloMina
+        .global SimboloBandera, SimboloBanderaFinal, LargoSimboloBandera
+        .global NuevaLinea, NuevaLineaFinal, LargoNuevaLinea
+
 Bienvenida:
-        .asciz "\n==============================\n" \
-               "  BIENVENIDO A BUSCAMINAS ARM\n" \
-               "==============================\n\n"
+        .asciz "\n==============================\n \
+                BIENVENIDO A BUSCAMINAS ARM64\n \
+                ==============================\n\n"
 BienvenidaFinal:
 LargoBienvenida = BienvenidaFinal - Bienvenida
 
@@ -12,21 +38,21 @@ MensajeSalir:
 MensajeSalirFinal:
 LargoMensajeSalir = MensajeSalirFinal - MensajeSalir
 
-; ============================
-; Menú principal
-; ============================
+// ============================
+// Menú principal
+// ============================
 
 Menu:
-        .asciz "==============================\n" \
-               "   SELECCIONE DIFICULTAD\n" \
-               "==============================\n" \
-               "1. Principiante (8x8, 10 minas)\n" \
-               "2. Intermedio   (16x16, 40 minas)\n" \
-               "3. Experto      (30x16, 99 minas)\n" \
-               "4. Personalizada\n" \
-               "5. Salir\n" \
-               "==============================\n" \
-               "Opción: "
+        .asciz "==============================\n \
+                SELECCIONE DIFICULTAD\n \
+                ==============================\n \
+                1. Principiante (8x8, 10 minas)\n \
+                2. Intermedio   (16x16, 40 minas)\n \
+                3. Experto      (30x16, 99 minas)\n \
+                4. Personalizada\n \
+                5. Salir\n \
+                ==============================\n \
+                Opción: "
 MenuFinal:
 LargoMenu = MenuFinal - Menu
 
@@ -35,19 +61,22 @@ MensajeErrorSeleccion:
 MensajeErrorSeleccionFinal:
 LargoMensajeErrorSeleccion = MensajeErrorSeleccionFinal - MensajeErrorSeleccion
 
-; ============================
-; Configuración personalizada
-; ============================
+// ============================
+// Configuración personalizada
+// ============================
 
-MensajeFilas:     .asciz "Ingrese filas (8-30): "
+MensajeFilas:
+        .asciz "Ingrese filas (8-30): "
 MensajeFilasFinal:
 LargoMensajeFilas = MensajeFilasFinal - MensajeFilas
 
-MensajeColumnas:  .asciz "Ingrese columnas (8-24): "
+MensajeColumnas:
+        .asciz "Ingrese columnas (8-24): "
 MensajeColumnasFinal:
 LargoMensajeColumnas = MensajeColumnasFinal - MensajeColumnas
 
-MensajeMinas:     .asciz "Ingrese cantidad de minas: "
+MensajeMinas:
+        .asciz "Ingrese cantidad de minas: "
 MensajeMinasFinal:
 LargoMensajeMinas = MensajeMinasFinal - MensajeMinas
 
@@ -66,29 +95,31 @@ MensajeErrorCantidadMinas:
 MensajeErrorCantidadMinasFinal:
 LargoMensajeErrorCantidadMinas = MensajeErrorCantidadMinasFinal - MensajeErrorCantidadMinas
 
-; ============================
-; Menú de acciones en partida
-; ============================
+// ============================
+// Menú de acciones en partida
+// ============================
 
 MenuAccion:
-        .asciz "\n1. Descubrir celda\n" \
-               "2. Colocar/Quitar bandera\n" \
-               "3. Volver al menú\n" \
-               "Opción: "
+        .asciz "\n1. Descubrir celda\n \
+                2. Colocar/Quitar bandera\n \
+                3. Volver al menú\n \
+                Opción: "
 MenuAccionFinal:
 LargoMenuAccion = MenuAccionFinal - MenuAccion
 
-MensajeFila: .asciz "Fila: "
+MensajeFila:
+        .asciz "Fila: "
 MensajeFilaFinal:
 LargoMensajeFila = MensajeFilaFinal - MensajeFila
 
-MensajeColumna: .asciz "Columna: "
+MensajeColumna:
+        .asciz "Columna: "
 MensajeColumnaFinal:
 LargoMensajeColumna = MensajeColumnaFinal - MensajeColumna
 
-; ============================
-; Mensajes de fin de juego
-; ============================
+// ============================
+// Mensajes de fin de juego
+// ============================
 
 MensajeDerrota:
         .asciz "\nBOOM! Has pisado una mina. Juego terminado.\n"
@@ -100,22 +131,26 @@ MensajeVictoria:
 MensajeVictoriaFinal:
 LargoMensajeVictoria = MensajeVictoriaFinal - MensajeVictoria
 
-; ============================
-; Símbolos del tablero
-; ============================
+// ============================
+// Símbolos del tablero
+// ============================
 
-SimboloVacio:     .asciz "#"
+SimboloVacio:
+        .asciz "#"
 SimboloVacioFinal:
 LargoSimboloVacio = SimboloVacioFinal - SimboloVacio
 
-SimboloMina:      .asciz "@"
+SimboloMina:
+        .asciz "@"
 SimboloMinaFinal:
 LargoSimboloMina = SimboloMinaFinal - SimboloMina
 
-SimboloBandera:   .asciz "!"
+SimboloBandera:
+        .asciz "!"
 SimboloBanderaFinal:
 LargoSimboloBandera = SimboloBanderaFinal - SimboloBandera
 
-NuevaLinea:       .asciz "\n"
+NuevaLinea:
+        .asciz "\n"
 NuevaLineaFinal:
 LargoNuevaLinea = NuevaLineaFinal - NuevaLinea

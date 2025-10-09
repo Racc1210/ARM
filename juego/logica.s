@@ -60,7 +60,6 @@ f02BucleJuego:
 
 
 f03AccionDescubrir:
-        ; Leer fila
         LDR x1, =MensajeFila
         MOV x2, #LargoMensajeFila
         BL f01ImprimirCadena
@@ -120,7 +119,6 @@ f04AccionBandera:
         CMP x0, #0
         BEQ f04AccionBandera
 
-        ; Leer columna
         LDR x1, =MensajeColumna
         MOV x2, #LargoMensajeColumna
         BL f01ImprimirCadena
