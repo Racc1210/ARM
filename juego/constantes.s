@@ -119,7 +119,7 @@ LargoSimboloMinaVal: .quad 0
 
 SimboloBandera:
     .asciz "!"
-LargoSimboloBanderaVal: .quad 
+LargoSimboloBanderaVal: .quad 0
 
 NuevaLinea:
     .asciz "\n"
