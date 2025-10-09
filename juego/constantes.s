@@ -9,8 +9,8 @@
 
 Bienvenida:
         .asciz "
-==============================
-BIENVENIDO A BUSCAMINAS ARM64
+============================== \
+BIENVENIDO A BUSCAMINAS ARM64 \
 =============================="
 BienvenidaFinal:
 LargoBienvenida = BienvenidaFinal - Bienvenida
