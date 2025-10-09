@@ -6,11 +6,13 @@ Semilla: .quad 123456789
         .global f02NumeroAleatorio
         .global f03LeerNumero
         .global f04ValidarRango
+        .global f05LongitudCadena
 
         .extern f01ImprimirCadena
         .extern f02LeerCadena
         .extern OpcionSel
 
+        
 
 f01AsciiANumero:
         MOV     x3, x2        
@@ -65,4 +67,16 @@ f04ValidarRango:
 
 f04ValidarRango_invalido:
         MOV x0, #0
+        RET
+
+
+f05LongitudCadena:
+        MOV x0, #0
+f05LongitudCadena_loop:
+        LDRB w2, [x1, x0]
+        CMP w2, #0
+        BEQ f05LongitudCadena_fin
+        ADD x0, x0, #1
+        B f05LongitudCadena_loop
+f05LongitudCadena_fin:
         RET

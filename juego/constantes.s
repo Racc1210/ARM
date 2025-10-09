@@ -8,19 +8,12 @@
         .global MensajeSalir, LargoMensajeSalirVal
 
 Bienvenida:
-        .asciz "==============================\n
-BIENVENIDO A BUSCAMINAS ARM64\n
-==============================\n
-"
-BienvenidaFinal:
-LargoBienvenida = BienvenidaFinal - Bienvenida
-LargoBienvenidaVal: .quad LargoBienvenida
+    .asciz "==============================\nBIENVENIDO A BUSCAMINAS ARM64\n==============================\n"
+LargoBienvenidaVal: .quad 81
 
 MensajeSalir:
-        .asciz "\nSaliendo del juego...\n"
-MensajeSalirFinal:
-LargoMensajeSalir = MensajeSalirFinal - MensajeSalir
-LargoMensajeSalirVal: .quad LargoMensajeSalir
+    .asciz "\nSaliendo del juego...\n"
+LargoMensajeSalirVal: .quad 24
 
 // ============================
 // Menú principal
@@ -30,16 +23,12 @@ LargoMensajeSalirVal: .quad LargoMensajeSalir
         .global MensajeErrorSeleccion, LargoMensajeErrorSeleccionVal
 
 Menu:
-        .asciz "==============================\nSELECCIONE DIFICULTAD\n==============================\n1. Principiante (8x8, 10 minas)\n2. Intermedio   (16x16, 40 minas)\n3. Experto      (30x16, 99 minas)\n4. Personalizada\n5. Salir\n==============================\nOpción: "
-MenuFinal:
-LargoMenu = MenuFinal - Menu
-LargoMenuVal: .quad LargoMenu
+    .asciz "==============================\nSELECCIONE DIFICULTAD\n==============================\n1. Principiante (8x8, 10 minas)\n2. Intermedio   (16x16, 40 minas)\n3. Experto      (30x16, 99 minas)\n4. Personalizada\n5. Salir\n==============================\nOpción: "
+LargoMenuVal: .quad 202
 
 MensajeErrorSeleccion:
-        .asciz "\nOpción inválida. Intente de nuevo.\n"
-MensajeErrorSeleccionFinal:
-LargoMensajeErrorSeleccion = MensajeErrorSeleccionFinal - MensajeErrorSeleccion
-LargoMensajeErrorSeleccionVal: .quad LargoMensajeErrorSeleccion
+    .asciz "\nOpción inválida. Intente de nuevo.\n"
+LargoMensajeErrorSeleccionVal: .quad 36
 
 // ============================
 // Configuración personalizada
@@ -53,40 +42,28 @@ LargoMensajeErrorSeleccionVal: .quad LargoMensajeErrorSeleccion
         .global MensajeErrorCantidadMinas, LargoMensajeErrorCantidadMinasVal
 
 MensajeFilas:
-        .asciz "Ingrese filas (8-30): "
-MensajeFilasFinal:
-LargoMensajeFilas = MensajeFilasFinal - MensajeFilas
-LargoMensajeFilasVal: .quad LargoMensajeFilas
+    .asciz "Ingrese filas (8-30): "
+LargoMensajeFilasVal: .quad 22
 
 MensajeColumnas:
-        .asciz "Ingrese columnas (8-24): "
-MensajeColumnasFinal:
-LargoMensajeColumnas = MensajeColumnasFinal - MensajeColumnas
-LargoMensajeColumnasVal: .quad LargoMensajeColumnas
+    .asciz "Ingrese columnas (8-24): "
+LargoMensajeColumnasVal: .quad 25
 
 MensajeMinas:
-        .asciz "Ingrese cantidad de minas: "
-MensajeMinasFinal:
-LargoMensajeMinas = MensajeMinasFinal - MensajeMinas
-LargoMensajeMinasVal: .quad LargoMensajeMinas
+    .asciz "Ingrese cantidad de minas: "
+LargoMensajeMinasVal: .quad 26
 
 MensajeErrorCantidadFilas:
-        .asciz "\nLa cantidad de filas no está en el rango (8-30).\n"
-MensajeErrorCantidadFilasFinal:
-LargoMensajeErrorCantidadFilas = MensajeErrorCantidadFilasFinal - MensajeErrorCantidadFilas
-LargoMensajeErrorCantidadFilasVal: .quad LargoMensajeErrorCantidadFilas
+    .asciz "\nLa cantidad de filas no está en el rango (8-30).\n"
+LargoMensajeErrorCantidadFilasVal: .quad 48
 
 MensajeErrorCantidadColumnas:
-        .asciz "\nLa cantidad de columnas no está en el rango (8-24).\n"
-MensajeErrorCantidadColumnasFinal:
-LargoMensajeErrorCantidadColumnas = MensajeErrorCantidadColumnasFinal - MensajeErrorCantidadColumnas
-LargoMensajeErrorCantidadColumnasVal: .quad LargoMensajeErrorCantidadColumnas
+    .asciz "\nLa cantidad de columnas no está en el rango (8-24).\n"
+LargoMensajeErrorCantidadColumnasVal: .quad 52
 
 MensajeErrorCantidadMinas:
-        .asciz "\nLa cantidad de minas no debe ser mayor a (filas-1 * columnas-1).\n"
-MensajeErrorCantidadMinasFinal:
-LargoMensajeErrorCantidadMinas = MensajeErrorCantidadMinasFinal - MensajeErrorCantidadMinas
-LargoMensajeErrorCantidadMinasVal: .quad LargoMensajeErrorCantidadMinas
+    .asciz "\nLa cantidad de minas no debe ser mayor a (filas-1 * columnas-1).\n"
+LargoMensajeErrorCantidadMinasVal: .quad 68
 
 // ============================
 // Menú de acciones en partida
@@ -97,25 +74,16 @@ LargoMensajeErrorCantidadMinasVal: .quad LargoMensajeErrorCantidadMinas
         .global MensajeColumna, LargoMensajeColumnaVal
 
 MenuAccion:
-        .asciz "\n1. Descubrir celda\n \
-                2. Colocar/Quitar bandera\n \
-                3. Volver al menú\n \
-                Opción: "
-MenuAccionFinal:
-LargoMenuAccion = MenuAccionFinal - MenuAccion
-LargoMenuAccionVal: .quad LargoMenuAccion
+    .asciz "\n1. Descubrir celda\n2. Colocar/Quitar bandera\n3. Volver al menú\nOpción: "
+LargoMenuAccionVal: .quad 81
 
 MensajeFila:
-        .asciz "Fila: "
-MensajeFilaFinal:
-LargoMensajeFila = MensajeFilaFinal - MensajeFila
-LargoMensajeFilaVal: .quad LargoMensajeFila
+    .asciz "Fila: "
+LargoMensajeFilaVal: .quad 6
 
 MensajeColumna:
-        .asciz "Columna: "
-MensajeColumnaFinal:
-LargoMensajeColumna = MensajeColumnaFinal - MensajeColumna
-LargoMensajeColumnaVal: .quad LargoMensajeColumna
+    .asciz "Columna: "
+LargoMensajeColumnaVal: .quad 9
 
 // ============================
 // Mensajes de fin de juego
@@ -125,16 +93,12 @@ LargoMensajeColumnaVal: .quad LargoMensajeColumna
         .global MensajeVictoria, LargoMensajeVictoriaVal
 
 MensajeDerrota:
-        .asciz "\nBOOM! Has pisado una mina. Juego terminado.\n"
-MensajeDerrotaFinal:
-LargoMensajeDerrota = MensajeDerrotaFinal - MensajeDerrota
-LargoMensajeDerrotaVal: .quad LargoMensajeDerrota
+    .asciz "\nBOOM! Has pisado una mina. Juego terminado.\n"
+LargoMensajeDerrotaVal: .quad 48
 
 MensajeVictoria:
-        .asciz "\nFelicidades, has despejado todo el tablero. ¡Victoria!\n"
-MensajeVictoriaFinal:
-LargoMensajeVictoria = MensajeVictoriaFinal - MensajeVictoria
-LargoMensajeVictoriaVal: .quad LargoMensajeVictoria
+    .asciz "\nFelicidades, has despejado todo el tablero. ¡Victoria!\n"
+LargoMensajeVictoriaVal: .quad 62
 
 // ============================
 // Símbolos del tablero
@@ -146,25 +110,17 @@ LargoMensajeVictoriaVal: .quad LargoMensajeVictoria
         .global NuevaLinea, LargoNuevaLineaVal
 
 SimboloVacio:
-        .asciz "#"
-SimboloVacioFinal:
-LargoSimboloVacio = SimboloVacioFinal - SimboloVacio
-LargoSimboloVacioVal: .quad LargoSimboloVacio
+    .asciz "#"
+LargoSimboloVacioVal: .quad 1
 
 SimboloMina:
-        .asciz "@"
-SimboloMinaFinal:
-LargoSimboloMina = SimboloMinaFinal - SimboloMina
-LargoSimboloMinaVal: .quad LargoSimboloMina
+    .asciz "@"
+LargoSimboloMinaVal: .quad 1
 
 SimboloBandera:
-        .asciz "!"
-SimboloBanderaFinal:
-LargoSimboloBandera = SimboloBanderaFinal - SimboloBandera
-LargoSimboloBanderaVal: .quad LargoSimboloBandera
+    .asciz "!"
+LargoSimboloBanderaVal: .quad 1
 
 NuevaLinea:
-        .asciz "\n"
-NuevaLineaFinal:
-LargoNuevaLinea = NuevaLineaFinal - NuevaLinea
-LargoNuevaLineaVal: .quad LargoNuevaLinea
+    .asciz "\n"
+LargoNuevaLineaVal: .quad 1
