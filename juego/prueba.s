@@ -245,17 +245,18 @@ print_long_reverse:
     SUB x4, x4, #1
     B print_long_reverse
 print_long_print:
-    // Validar que la longitud no sea cero ni negativa
-    CMP x2, #0
-    BLE print_long_exit
-    // Llamar a f01ImprimirCadena con puntero y longitud correctos
-    MOV x0, x1          // puntero al buffer
-    MOV x1, x2          // longitud
-    BL f01ImprimirCadena
+    // Imprimir el buffer usando SVC 64 (write)
+    MOV x8, #64         // syscall: write
+    MOV x0, #1          // fd: stdout
+    MOV x1, sp          // buffer
+    MOV x2, x2          // longitud
+    SVC #0
     ADD sp, sp, #16     // liberar buffer
     // imprimir salto de línea
-    LDR x0, =NuevaLinea
-    MOV x1, #1
-    BL f01ImprimirCadena
-print_long_exit:
+    LDR x1, =NuevaLinea
+    MOV x2, #1
+    MOV x8, #64         // syscall: write
+    MOV x0, #1          // fd: stdout
+    SVC #0
     RET
+
