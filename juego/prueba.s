@@ -31,7 +31,9 @@ _start:
     // Bienvenida
     LDR x1, =msgBienvenida
     MOV x2, #11
-    BL f01ImprimirCadena
+    MOV x8, #64      // syscall: write
+    MOV x0, #1       // fd: stdout
+    SVC #0
     LDR x1, =Bienvenida
     BL f05LongitudCadena
     MOV x0, x0
@@ -39,7 +41,9 @@ _start:
     // MensajeSalir
     LDR x1, =msgSalir
     MOV x2, #12
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =MensajeSalir
     BL f05LongitudCadena
     MOV x0, x0
@@ -47,7 +51,9 @@ _start:
     // Menu
     LDR x1, =msgMenu
     MOV x2, #5
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =Menu
     BL f05LongitudCadena
     MOV x0, x0
@@ -55,7 +61,9 @@ _start:
     // MensajeErrorSeleccion
     LDR x1, =msgErrorSeleccion
     MOV x2, #21
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =MensajeErrorSeleccion
     BL f05LongitudCadena
     MOV x0, x0
@@ -63,7 +71,9 @@ _start:
     // MensajeFilas
     LDR x1, =msgFilas
     MOV x2, #13
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =MensajeFilas
     BL f05LongitudCadena
     MOV x0, x0
@@ -71,7 +81,9 @@ _start:
     // MensajeColumnas
     LDR x1, =msgColumnas
     MOV x2, #16
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =MensajeColumnas
     BL f05LongitudCadena
     MOV x0, x0
@@ -79,7 +91,9 @@ _start:
     // MensajeMinas
     LDR x1, =msgMinas
     MOV x2, #12
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =MensajeMinas
     BL f05LongitudCadena
     MOV x0, x0
@@ -87,7 +101,9 @@ _start:
     // MensajeErrorCantidadFilas
     LDR x1, =msgErrorCantidadFilas
     MOV x2, #22
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =MensajeErrorCantidadFilas
     BL f05LongitudCadena
     MOV x0, x0
@@ -95,7 +111,9 @@ _start:
     // MensajeErrorCantidadColumnas
     LDR x1, =msgErrorCantidadColumnas
     MOV x2, #25
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =MensajeErrorCantidadColumnas
     BL f05LongitudCadena
     MOV x0, x0
@@ -103,7 +121,9 @@ _start:
     // MensajeErrorCantidadMinas
     LDR x1, =msgErrorCantidadMinas
     MOV x2, #21
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =MensajeErrorCantidadMinas
     BL f05LongitudCadena
     MOV x0, x0
@@ -111,7 +131,9 @@ _start:
     // MenuAccion
     LDR x1, =msgMenuAccion
     MOV x2, #11
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =MenuAccion
     BL f05LongitudCadena
     MOV x0, x0
@@ -119,7 +141,9 @@ _start:
     // MensajeFila
     LDR x1, =msgFila
     MOV x2, #12
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =MensajeFila
     BL f05LongitudCadena
     MOV x0, x0
@@ -127,7 +151,9 @@ _start:
     // MensajeColumna
     LDR x1, =msgColumna
     MOV x2, #15
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =MensajeColumna
     BL f05LongitudCadena
     MOV x0, x0
@@ -135,7 +161,9 @@ _start:
     // MensajeDerrota
     LDR x1, =msgDerrota
     MOV x2, #13
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =MensajeDerrota
     BL f05LongitudCadena
     MOV x0, x0
@@ -143,7 +171,9 @@ _start:
     // MensajeVictoria
     LDR x1, =msgVictoria
     MOV x2, #15
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =MensajeVictoria
     BL f05LongitudCadena
     MOV x0, x0
@@ -151,7 +181,9 @@ _start:
     // SimboloVacio
     LDR x1, =msgSimboloVacio
     MOV x2, #13
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =SimboloVacio
     BL f05LongitudCadena
     MOV x0, x0
@@ -159,7 +191,9 @@ _start:
     // SimboloMina
     LDR x1, =msgSimboloMina
     MOV x2, #12
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =SimboloMina
     BL f05LongitudCadena
     MOV x0, x0
@@ -167,7 +201,9 @@ _start:
     // SimboloBandera
     LDR x1, =msgSimboloBandera
     MOV x2, #16
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =SimboloBandera
     BL f05LongitudCadena
     MOV x0, x0
@@ -175,7 +211,9 @@ _start:
     // NuevaLinea
     LDR x1, =msgNuevaLinea
     MOV x2, #12
-    BL f01ImprimirCadena
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
     LDR x1, =NuevaLinea
     BL f05LongitudCadena
     MOV x0, x0
@@ -231,7 +269,6 @@ print_long_loop:
     CMP x0, #0
     BNE print_long_loop
 print_long_done:
-    // invertir el buffer
     MOV x3, #0
     SUB x4, x2, #1
 print_long_reverse:
