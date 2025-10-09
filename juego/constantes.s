@@ -4,8 +4,8 @@
 // Mensaje de bienvenida y salida
 // ============================
 
-        .global Bienvenida, BienvenidaFinal, LargoBienvenidaVal
-        .global MensajeSalir, MensajeSalirFinal, LargoMensajeSalirVal
+        .global Bienvenida, LargoBienvenidaVal
+        .global MensajeSalir, LargoMensajeSalirVal
 
 Bienvenida:
         .asciz "\n==============================\n \
@@ -25,8 +25,8 @@ LargoMensajeSalirVal: .quad LargoMensajeSalir
 // Menú principal
 // ============================
 
-        .global Menu, MenuFinal, LargoMenuVal
-        .global MensajeErrorSeleccion, MensajeErrorSeleccionFinal, LargoMensajeErrorSeleccionVal
+        .global Menu, LargoMenuVal
+        .global MensajeErrorSeleccion, LargoMensajeErrorSeleccionVal
 
 Menu:
         .asciz "==============================\n \
@@ -53,12 +53,12 @@ LargoMensajeErrorSeleccionVal: .quad LargoMensajeErrorSeleccion
 // Configuración personalizada
 // ============================
 
-        .global MensajeFilas, MensajeFilasFinal, LargoMensajeFilasVal
-        .global MensajeColumnas, MensajeColumnasFinal, LargoMensajeColumnasVal
-        .global MensajeMinas, MensajeMinasFinal, LargoMensajeMinasVal
-        .global MensajeErrorCantidadFilas, MensajeErrorCantidadFilasFinal, LargoMensajeErrorCantidadFilasVal
-        .global MensajeErrorCantidadColumnas, MensajeErrorCantidadColumnasFinal, LargoMensajeErrorCantidadColumnasVal
-        .global MensajeErrorCantidadMinas, MensajeErrorCantidadMinasFinal, LargoMensajeErrorCantidadMinasVal
+        .global MensajeFilas, LargoMensajeFilasVal
+        .global MensajeColumnas, LargoMensajeColumnasVal
+        .global MensajeMinas, LargoMensajeMinasVal
+        .global MensajeErrorCantidadFilas, LargoMensajeErrorCantidadFilasVal
+        .global MensajeErrorCantidadColumnas, LargoMensajeErrorCantidadColumnasVal
+        .global MensajeErrorCantidadMinas, LargoMensajeErrorCantidadMinasVal
 
 MensajeFilas:
         .asciz "Ingrese filas (8-30): "
@@ -100,9 +100,9 @@ LargoMensajeErrorCantidadMinasVal: .quad LargoMensajeErrorCantidadMinas
 // Menú de acciones en partida
 // ============================
 
-        .global MenuAccion, MenuAccionFinal, LargoMenuAccionVal
-        .global MensajeFila, MensajeFilaFinal, LargoMensajeFilaVal
-        .global MensajeColumna, MensajeColumnaFinal, LargoMensajeColumnaVal
+        .global MenuAccion, LargoMenuAccionVal
+        .global MensajeFila, LargoMensajeFilaVal
+        .global MensajeColumna, LargoMensajeColumnaVal
 
 MenuAccion:
         .asciz "\n1. Descubrir celda\n \
@@ -129,8 +129,8 @@ LargoMensajeColumnaVal: .quad LargoMensajeColumna
 // Mensajes de fin de juego
 // ============================
 
-        .global MensajeDerrota, MensajeDerrotaFinal, LargoMensajeDerrotaVal
-        .global MensajeVictoria, MensajeVictoriaFinal, LargoMensajeVictoriaVal
+        .global MensajeDerrota, LargoMensajeDerrotaVal
+        .global MensajeVictoria, LargoMensajeVictoriaVal
 
 MensajeDerrota:
         .asciz "\nBOOM! Has pisado una mina. Juego terminado.\n"
@@ -148,10 +148,10 @@ LargoMensajeVictoriaVal: .quad LargoMensajeVictoria
 // Símbolos del tablero
 // ============================
 
-        .global SimboloVacio, SimboloVacioFinal, LargoSimboloVacioVal
-        .global SimboloMina, SimboloMinaFinal, LargoSimboloMinaVal
-        .global SimboloBandera, SimboloBanderaFinal, LargoSimboloBanderaVal
-        .global NuevaLinea, NuevaLineaFinal, LargoNuevaLineaVal
+        .global SimboloVacio, LargoSimboloVacioVal
+        .global SimboloMina, LargoSimboloMinaVal
+        .global SimboloBandera, LargoSimboloBanderaVal
+        .global NuevaLinea, LargoNuevaLineaVal
 
 SimboloVacio:
         .asciz "#"
