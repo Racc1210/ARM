@@ -3,7 +3,6 @@
         .global  ColumnasSel
         .global  MinasSel
         .global  OpcionSel
-        .
 FilasSel:    .skip 8
 ColumnasSel: .skip 8
 MinasSel:    .skip 8
