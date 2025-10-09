@@ -127,13 +127,50 @@ _start:
     SVC #0
 
 // print_long: imprime el valor en x0 como número (simple, solo para ver el resultado)
-// Aquí solo se imprime el valor como carácter (no como número decimal)
-// Para ver el resultado real, deberías convertir x0 a cadena decimal y luego imprimir
+
+// print_long: imprime el valor en x0 como número decimal
+// x0 = número a imprimir
+// Usa un buffer local en la pila
 print_long:
-    // Aquí solo imprime el valor como byte (no como número)
-    // Puedes mejorar esto para imprimir como número decimal si lo necesitas
-    MOV x1, sp
-    STRB w0, [x1]
+    SUB sp, sp, #16         // reservar espacio para buffer (max 16 dígitos)
+    MOV x1, sp              // x1 = buffer
+    MOV x2, #0              // x2 = contador de dígitos
+    CMP x0, #0
+    BNE print_long_loop
+    MOV w3, #'0'
+    STRB w3, [x1]
+    ADD x2, x2, #1
+    B print_long_done
+print_long_loop:
+    MOV x3, x0
+    MOV x4, #10
+    UDIV x0, x3, x4         // x0 = x3 / 10
+    MSUB x5, x0, x4, x3     // x5 = x3 - x0*10 (resto)
+    ADD w5, w5, #'0'        // convertir a ASCII
+    STRB w5, [x1, x2]
+    ADD x2, x2, #1
+    CMP x0, #0
+    BNE print_long_loop
+print_long_done:
+    // invertir el buffer
+    MOV x3, #0
+    SUB x4, x2, #1
+print_long_reverse:
+    CMP x3, x4
+    BGE print_long_print
+    LDRB w5, [x1, x3]
+    LDRB w6, [x1, x4]
+    STRB w6, [x1, x3]
+    STRB w5, [x1, x4]
+    ADD x3, x3, #1
+    SUB x4, x4, #1
+    B print_long_reverse
+print_long_print:
+    MOV x2, x2              // longitud
+    BL f01ImprimirCadena
+    ADD sp, sp, #16         // liberar buffer
+    // imprimir salto de línea
+    LDR x1, =NuevaLinea
     MOV x2, #1
     BL f01ImprimirCadena
     RET
