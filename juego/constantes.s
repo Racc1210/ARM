@@ -12,7 +12,6 @@ Bienvenida:
 ==============================
 BIENVENIDO A BUSCAMINAS ARM64
 ==============================
-
 "
 BienvenidaFinal:
 LargoBienvenida = BienvenidaFinal - Bienvenida
