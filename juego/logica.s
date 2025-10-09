@@ -21,13 +21,13 @@
         .extern ColumnasSel
         .extern MinasSel
 
-        // Mensajes de constantes.s usados en este módulo
+        // Mensajes y longitudes (valores) de constantes.s
         .extern MenuAccion
-        .extern LargoMenuAccion
+        .extern LargoMenuAccionVal
         .extern MensajeFila
-        .extern LargoMensajeFila
+        .extern LargoMensajeFilaVal
         .extern MensajeColumna
-        .extern LargoMensajeColumna
+        .extern LargoMensajeColumnaVal
 
 
 f01ConfigurarYJugar:
@@ -52,7 +52,8 @@ f02BucleJuego:
         BL f03ImprimirTablero
 
         LDR x1, =MenuAccion
-        MOV x2, #LargoMenuAccion
+        LDR x2, =LargoMenuAccionVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
         MOV x9, x0
@@ -69,7 +70,8 @@ f02BucleJuego:
 f03AccionDescubrir:
         // leer fila
         LDR x1, =MensajeFila
-        MOV x2, #LargoMensajeFila
+        LDR x2, =LargoMensajeFilaVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
         MOV x10, x0
@@ -84,7 +86,8 @@ f03AccionDescubrir:
 
         // leer columna
         LDR x1, =MensajeColumna
-        MOV x2, #LargoMensajeColumna
+        LDR x2, =LargoMensajeColumnaVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
         MOV x11, x0
@@ -115,7 +118,8 @@ f03AccionDescubrir:
 f04AccionBandera:
         // leer fila
         LDR x1, =MensajeFila
-        MOV x2, #LargoMensajeFila
+        LDR x2, =LargoMensajeFilaVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
         MOV x10, x0
@@ -130,7 +134,8 @@ f04AccionBandera:
 
         // leer columna
         LDR x1, =MensajeColumna
-        MOV x2, #LargoMensajeColumna
+        LDR x2, =LargoMensajeColumnaVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
         MOV x11, x0
