@@ -248,54 +248,59 @@ msgNuevaLinea:        .asciz "NuevaLinea: "
 // Utiliza f01ImprimirCadena para mostrar el resultado
 // Alinea el stack y valida argumentos
 print_long:
+    // Prologo de función: guardar marco y retorno
+    stp x29, x30, [sp, -16]!
+    mov x29, sp
     // Reservar espacio para el buffer (16 bytes, alineado)
-    SUB sp, sp, #16
-    MOV x1, sp          // x1 = puntero al buffer
-    MOV x2, #0          // x2 = longitud
-    CMP x0, #0
-    BNE print_long_loop
-    MOV w3, #'0'
-    STRB w3, [x1]
-    ADD x2, x2, #1
-    B print_long_done
+    sub sp, sp, #16
+    mov x1, sp          // x1 = puntero al buffer
+    mov x2, #0          // x2 = longitud
+    cmp x0, #0
+    bne print_long_loop
+    mov w3, #'0'
+    strb w3, [x1]
+    add x2, x2, #1
+    b print_long_done
 print_long_loop:
-    MOV x3, x0
-    MOV x4, #10
-    UDIV x0, x3, x4         // x0 = x3 / 10
-    MSUB x5, x0, x4, x3     // x5 = x3 - x0*10 (resto)
-    ADD w5, w5, #'0'        // convertir a ASCII
-    STRB w5, [x1, x2]
-    ADD x2, x2, #1
-    CMP x0, #0
-    BNE print_long_loop
+    mov x3, x0
+    mov x4, #10
+    udiv x0, x3, x4         // x0 = x3 / 10
+    msub x5, x0, x4, x3     // x5 = x3 - x0*10 (resto)
+    add w5, w5, #'0'        // convertir a ASCII
+    strb w5, [x1, x2]
+    add x2, x2, #1
+    cmp x0, #0
+    bne print_long_loop
 print_long_done:
-    MOV x3, #0
-    SUB x4, x2, #1
+    mov x3, #0
+    sub x4, x2, #1
 print_long_reverse:
-    CMP x3, x4
-    BGE print_long_print
-    LDRB w5, [x1, x3]
-    LDRB w6, [x1, x4]
-    STRB w6, [x1, x3]
-    STRB w5, [x1, x4]
-    ADD x3, x3, #1
-    SUB x4, x4, #1
-    B print_long_reverse
+    cmp x3, x4
+    bge print_long_print
+    ldrb w5, [x1, x3]
+    ldrb w6, [x1, x4]
+    strb w6, [x1, x3]
+    strb w5, [x1, x4]
+    add x3, x3, #1
+    sub x4, x4, #1
+    b print_long_reverse
 print_long_print:
     // Imprimir el buffer usando SVC 64 (write)
-    MOV x8, #64         // syscall: write
-    MOV x0, #1          // fd: stdout
-    MOV x1, sp          // buffer
-    MOV x2, x2          // longitud
-    SVC #0
-    ADD sp, sp, #16     // liberar buffer
+    mov x8, #64         // syscall: write
+    mov x0, #1          // fd: stdout
+    mov x1, sp          // buffer
+    mov x2, x2          // longitud
+    svc #0
+    add sp, sp, #16     // liberar buffer
     // imprimir salto de línea
-    LDR x1, =NuevaLinea
-    MOV x2, #1
-    MOV x8, #64         // syscall: write
-    MOV x0, #1          // fd: stdout
-    SVC #0
-    RET
+    ldr x1, =NuevaLinea
+    mov x2, #1
+    mov x8, #64         // syscall: write
+    mov x0, #1          // fd: stdout
+    svc #0
+    // Epilogo de función: restaurar marco y retorno
+    ldp x29, x30, [sp], 16
+    ret
 
 // --- Rutina para asegurar alineación del stack antes de print_long ---
 .align_stack_and_print_long:
