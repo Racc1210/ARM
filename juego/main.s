@@ -9,6 +9,107 @@ MinasSel:    .skip 8
 OpcionSel:      .skip 8
 
         .section .text
+        // Rutina para calcular y guardar el largo de cada mensaje automáticamente
+        // Debe llamarse al inicio de _start
+        // Requiere: .extern f05LongitudCadena
+
+        calcular_largos_mensajes:
+                // Bienvenida
+                ldr x1, =Bienvenida
+                bl f05LongitudCadena
+                ldr x2, =LargoBienvenidaVal
+                str x0, [x2]
+                // Menu
+                ldr x1, =Menu
+                bl f05LongitudCadena
+                ldr x2, =LargoMenuVal
+                str x0, [x2]
+                // MensajeSalir
+                ldr x1, =MensajeSalir
+                bl f05LongitudCadena
+                ldr x2, =LargoMensajeSalirVal
+                str x0, [x2]
+                // MensajeErrorSeleccion
+                ldr x1, =MensajeErrorSeleccion
+                bl f05LongitudCadena
+                ldr x2, =LargoMensajeErrorSeleccionVal
+                str x0, [x2]
+                // MensajeFilas
+                ldr x1, =MensajeFilas
+                bl f05LongitudCadena
+                ldr x2, =LargoMensajeFilasVal
+                str x0, [x2]
+                // MensajeColumnas
+                ldr x1, =MensajeColumnas
+                bl f05LongitudCadena
+                ldr x2, =LargoMensajeColumnasVal
+                str x0, [x2]
+                // MensajeMinas
+                ldr x1, =MensajeMinas
+                bl f05LongitudCadena
+                ldr x2, =LargoMensajeMinasVal
+                str x0, [x2]
+                // MensajeErrorCantidadFilas
+                ldr x1, =MensajeErrorCantidadFilas
+                bl f05LongitudCadena
+                ldr x2, =LargoMensajeErrorCantidadFilasVal
+                str x0, [x2]
+                // MensajeErrorCantidadColumnas
+                ldr x1, =MensajeErrorCantidadColumnas
+                bl f05LongitudCadena
+                ldr x2, =LargoMensajeErrorCantidadColumnasVal
+                str x0, [x2]
+                // MensajeErrorCantidadMinas
+                ldr x1, =MensajeErrorCantidadMinas
+                bl f05LongitudCadena
+                ldr x2, =LargoMensajeErrorCantidadMinasVal
+                str x0, [x2]
+                // MenuAccion
+                ldr x1, =MenuAccion
+                bl f05LongitudCadena
+                ldr x2, =LargoMenuAccionVal
+                str x0, [x2]
+                // MensajeFila
+                ldr x1, =MensajeFila
+                bl f05LongitudCadena
+                ldr x2, =LargoMensajeFilaVal
+                str x0, [x2]
+                // MensajeColumna
+                ldr x1, =MensajeColumna
+                bl f05LongitudCadena
+                ldr x2, =LargoMensajeColumnaVal
+                str x0, [x2]
+                // MensajeDerrota
+                ldr x1, =MensajeDerrota
+                bl f05LongitudCadena
+                ldr x2, =LargoMensajeDerrotaVal
+                str x0, [x2]
+                // MensajeVictoria
+                ldr x1, =MensajeVictoria
+                bl f05LongitudCadena
+                ldr x2, =LargoMensajeVictoriaVal
+                str x0, [x2]
+                // SimboloVacio
+                ldr x1, =SimboloVacio
+                bl f05LongitudCadena
+                ldr x2, =LargoSimboloVacioVal
+                str x0, [x2]
+                // SimboloMina
+                ldr x1, =SimboloMina
+                bl f05LongitudCadena
+                ldr x2, =LargoSimboloMinaVal
+                str x0, [x2]
+                // SimboloBandera
+                ldr x1, =SimboloBandera
+                bl f05LongitudCadena
+                ldr x2, =LargoSimboloBanderaVal
+                str x0, [x2]
+                // NuevaLinea
+                ldr x1, =NuevaLinea
+                bl f05LongitudCadena
+                ldr x2, =LargoNuevaLineaVal
+                str x0, [x2]
+                ret
         .global _start
 
         .extern f01ImprimirCadena
@@ -42,6 +143,7 @@ OpcionSel:      .skip 8
 _start:
         stp x29, x30, [sp, -16]!
         mov x29, sp
+        BL calcular_largos_mensajes
         BL f01IniciarPrograma
         BL f02MenuPrincipal
         ldp x29, x30, [sp], 16

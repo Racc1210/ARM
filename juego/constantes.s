@@ -9,11 +9,11 @@
 
 Bienvenida:
     .asciz "==============================\nBIENVENIDO A BUSCAMINAS ARM64\n==============================\n"
-LargoBienvenidaVal: .quad 92
+LargoBienvenidaVal: .quad 0
 
 MensajeSalir:
     .asciz "\nSaliendo del juego...\n"
-LargoMensajeSalirVal: .quad 23
+LargoMensajeSalirVal: .quad 0
 
 // ============================
 // Menú principal
@@ -24,11 +24,11 @@ LargoMensajeSalirVal: .quad 23
 
 Menu:
     .asciz "==============================\nSELECCIONE DIFICULTAD\n==============================\n1. Principiante (8x8, 10 minas)\n2. Intermedio   (16x16, 40 minas)\n3. Experto      (30x16, 99 minas)\n4. Personalizada\n5. Salir\n==============================\nOpción: "
-LargoMenuVal: .quad 361
+LargoMenuVal: .quad 0
 
 MensajeErrorSeleccion:
     .asciz "\nOpción inválida. Intente de nuevo.\n"
-LargoMensajeErrorSeleccionVal: .quad 36
+LargoMensajeErrorSeleccionVal: .quad 0
 
 // ============================
 // Configuración personalizada
@@ -43,27 +43,27 @@ LargoMensajeErrorSeleccionVal: .quad 36
 
 MensajeFilas:
     .asciz "Ingrese filas (8-30): "
-LargoMensajeFilasVal: .quad 22
+LargoMensajeFilasVal: .quad 0
 
 MensajeColumnas:
     .asciz "Ingrese columnas (8-24): "
-LargoMensajeColumnasVal: .quad 25
+LargoMensajeColumnasVal: .quad 0
 
 MensajeMinas:
     .asciz "Ingrese cantidad de minas: "
-LargoMensajeMinasVal: .quad 27
+LargoMensajeMinasVal: .quad 0
 
 MensajeErrorCantidadFilas:
     .asciz "\nLa cantidad de filas no está en el rango (8-30).\n"
-LargoMensajeErrorCantidadFilasVal: .quad 50
+LargoMensajeErrorCantidadFilasVal: .quad 0
 
 MensajeErrorCantidadColumnas:
     .asciz "\nLa cantidad de columnas no está en el rango (8-24).\n"
-LargoMensajeErrorCantidadColumnasVal: .quad 53
+LargoMensajeErrorCantidadColumnasVal: .quad 0
 
 MensajeErrorCantidadMinas:
     .asciz "\nLa cantidad de minas no debe ser mayor a (filas-1 * columnas-1).\n"
-LargoMensajeErrorCantidadMinasVal: .quad 66
+LargoMensajeErrorCantidadMinasVal: .quad 0
 
 // ============================
 // Menú de acciones en partida
@@ -75,15 +75,15 @@ LargoMensajeErrorCantidadMinasVal: .quad 66
 
 MenuAccion:
     .asciz "\n1. Descubrir celda\n2. Colocar/Quitar bandera\n3. Volver al menu\nOpcion: "
-LargoMenuAccionVal: .quad 71
+LargoMenuAccionVal: .quad 0
 
 MensajeFila:
     .asciz "Fila: "
-LargoMensajeFilaVal: .quad 6
+LargoMensajeFilaVal: .quad 0
 
 MensajeColumna:
     .asciz "Columna: "
-LargoMensajeColumnaVal: .quad 9
+LargoMensajeColumnaVal: .quad 0
 
 // ============================
 // Mensajes de fin de juego
@@ -94,11 +94,11 @@ LargoMensajeColumnaVal: .quad 9
 
 MensajeDerrota:
     .asciz "\nBOOM! Has pisado una mina. Juego terminado.\n"
-LargoMensajeDerrotaVal: .quad 45
+LargoMensajeDerrotaVal: .quad 0
 
 MensajeVictoria:
     .asciz "\nFelicidades, has despejado todo el tablero. ¡Victoria!\n"
-LargoMensajeVictoriaVal: .quad 56
+LargoMensajeVictoriaVal: .quad 0
 
 // ============================
 // Símbolos del tablero
@@ -111,16 +111,16 @@ LargoMensajeVictoriaVal: .quad 56
 
 SimboloVacio:
     .asciz "#"
-LargoSimboloVacioVal: .quad 1
+LargoSimboloVacioVal: .quad 0
 
 SimboloMina:
     .asciz "@"
-LargoSimboloMinaVal: .quad 1
+LargoSimboloMinaVal: .quad 0
 
 SimboloBandera:
     .asciz "!"
-LargoSimboloBanderaVal: .quad 1
+LargoSimboloBanderaVal: .quad 
 
 NuevaLinea:
     .asciz "\n"
-LargoNuevaLineaVal: .quad 1
+LargoNuevaLineaVal: .quad 0
