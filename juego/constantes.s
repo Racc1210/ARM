@@ -27,16 +27,7 @@ LargoMensajeSalirVal: .quad LargoMensajeSalir
         .global MensajeErrorSeleccion, LargoMensajeErrorSeleccionVal
 
 Menu:
-        .asciz "==============================\n \
-                SELECCIONE DIFICULTAD\n \
-                ==============================\n \
-                1. Principiante (8x8, 10 minas)\n \
-                2. Intermedio   (16x16, 40 minas)\n \
-                3. Experto      (30x16, 99 minas)\n \
-                4. Personalizada\n \
-                5. Salir\n \
-                ==============================\n \
-                Opción: "
+        .asciz "==============================\nSELECCIONE DIFICULTAD\n==============================\n1. Principiante (8x8, 10 minas)\n2. Intermedio   (16x16, 40 minas)\n3. Experto      (30x16, 99 minas)\n4. Personalizada\n5. Salir\n==============================\nOpción: "
 MenuFinal:
 LargoMenu = MenuFinal - Menu
 LargoMenuVal: .quad LargoMenu
