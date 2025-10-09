@@ -12,16 +12,27 @@ MinasSel:    .skip 8
 
         .extern f01ConfigurarYJugar  
 
-        .extern Bienvenida, LargoBienvenida
-        .extern Menu, LargoMenu
-        .extern MensajeSalir, LargoMensajeSalir
-        .extern MensajeErrorSeleccion, LargoMensajeErrorSeleccion
-        .extern MensajeFilas, LargoMensajeFilas
-        .extern MensajeColumnas, LargoMensajeColumnas
-        .extern MensajeMinas, LargoMensajeMinas
-        .extern MensajeErrorCantidadFilas, LargoMensajeErrorCantidadFilas
-        .extern MensajeErrorCantidadColumnas, LargoMensajeErrorCantidadColumnas
-        .extern MensajeErrorCantidadMinas, LargoMensajeErrorCantidadMinas
+        // Mensajes y longitudes desde constantes.s
+        .extern Bienvenida
+        .extern LargoBienvenidaVal
+        .extern Menu
+        .extern LargoMenuVal
+        .extern MensajeSalir
+        .extern LargoMensajeSalirVal
+        .extern MensajeErrorSeleccion
+        .extern LargoMensajeErrorSeleccionVal
+        .extern MensajeFilas
+        .extern LargoMensajeFilasVal
+        .extern MensajeColumnas
+        .extern LargoMensajeColumnasVal
+        .extern MensajeMinas
+        .extern LargoMensajeMinasVal
+        .extern MensajeErrorCantidadFilas
+        .extern LargoMensajeErrorCantidadFilasVal
+        .extern MensajeErrorCantidadColumnas
+        .extern LargoMensajeErrorCantidadColumnasVal
+        .extern MensajeErrorCantidadMinas
+        .extern LargoMensajeErrorCantidadMinasVal
 
 _start:
         BL f01IniciarPrograma
@@ -29,13 +40,15 @@ _start:
 
 f01IniciarPrograma:
         LDR x1, =Bienvenida
-        MOV x2, #LargoBienvenida
+        LDR x2, =LargoBienvenidaVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         RET
 
 f02MenuPrincipal:
         LDR x1, =Menu
-        MOV x2, #LargoMenu
+        LDR x2, =LargoMenuVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
 
         BL f03LeerNumero
@@ -54,13 +67,15 @@ f02MenuPrincipal:
         BEQ f07Personalizada
 
         LDR x1, =MensajeErrorSeleccion
-        MOV x2, #LargoMensajeErrorSeleccion
+        LDR x2, =LargoMensajeErrorSeleccionVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         B f02MenuPrincipal
 
 f03SalirPrograma:
         LDR x1, =MensajeSalir
-        MOV x2, #LargoMensajeSalir
+        LDR x2, =LargoMensajeSalirVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         MOV x0, #0
         MOV x8, #93
@@ -84,12 +99,11 @@ f06Experto:
         MOV x2, #99
         B f12GuardarConfig
 
-
-
 f07Personalizada:
 f08LeerFilas:
         LDR x1, =MensajeFilas
-        MOV x2, #LargoMensajeFilas
+        LDR x2, =LargoMensajeFilasVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
         MOV x10, x0
@@ -102,14 +116,16 @@ f08LeerFilas:
         BNE f09FilasOK
 
         LDR x1, =MensajeErrorCantidadFilas
-        MOV x2, #LargoMensajeErrorCantidadFilas
+        LDR x2, =LargoMensajeErrorCantidadFilasVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         B f08LeerFilas
 
 f09FilasOK:
 f09LeerColumnas:
         LDR x1, =MensajeColumnas
-        MOV x2, #LargoMensajeColumnas
+        LDR x2, =LargoMensajeColumnasVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
         MOV x11, x0
@@ -122,14 +138,16 @@ f09LeerColumnas:
         BNE f10ColumnasOK
 
         LDR x1, =MensajeErrorCantidadColumnas
-        MOV x2, #LargoMensajeErrorCantidadColumnas
+        LDR x2, =LargoMensajeErrorCantidadColumnasVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         B f09LeerColumnas
 
 f10ColumnasOK:
 f10LeerMinas:
         LDR x1, =MensajeMinas
-        MOV x2, #LargoMensajeMinas
+        LDR x2, =LargoMensajeMinasVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
         MOV x12, x0
@@ -143,7 +161,8 @@ f10LeerMinas:
         BNE f11MinasOK
 
         LDR x1, =MensajeErrorCantidadMinas
-        MOV x2, #LargoMensajeErrorCantidadMinas
+        LDR x2, =LargoMensajeErrorCantidadMinasVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         B f10LeerMinas
 
@@ -152,8 +171,6 @@ f11MinasOK:
         MOV x1, x11
         MOV x2, x12
         B f12GuardarConfig
-
-
 
 f12GuardarConfig:
         LDR x13, =FilasSel
