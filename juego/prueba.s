@@ -1,5 +1,6 @@
 .section .text
 .global _start
+.global OpcionSel
 .extern f01ImprimirCadena
 .extern f05LongitudCadena
 .extern Bienvenida
