@@ -37,7 +37,7 @@ _start:
     LDR x1, =Bienvenida
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // MensajeSalir
     LDR x1, =msgSalir
     MOV x2, #12
@@ -47,7 +47,7 @@ _start:
     LDR x1, =MensajeSalir
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // Menu
     LDR x1, =msgMenu
     MOV x2, #5
@@ -57,7 +57,7 @@ _start:
     LDR x1, =Menu
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // MensajeErrorSeleccion
     LDR x1, =msgErrorSeleccion
     MOV x2, #21
@@ -67,7 +67,7 @@ _start:
     LDR x1, =MensajeErrorSeleccion
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // MensajeFilas
     LDR x1, =msgFilas
     MOV x2, #13
@@ -77,7 +77,7 @@ _start:
     LDR x1, =MensajeFilas
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // MensajeColumnas
     LDR x1, =msgColumnas
     MOV x2, #16
@@ -87,7 +87,7 @@ _start:
     LDR x1, =MensajeColumnas
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // MensajeMinas
     LDR x1, =msgMinas
     MOV x2, #12
@@ -97,7 +97,7 @@ _start:
     LDR x1, =MensajeMinas
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // MensajeErrorCantidadFilas
     LDR x1, =msgErrorCantidadFilas
     MOV x2, #22
@@ -107,7 +107,7 @@ _start:
     LDR x1, =MensajeErrorCantidadFilas
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // MensajeErrorCantidadColumnas
     LDR x1, =msgErrorCantidadColumnas
     MOV x2, #25
@@ -117,7 +117,7 @@ _start:
     LDR x1, =MensajeErrorCantidadColumnas
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // MensajeErrorCantidadMinas
     LDR x1, =msgErrorCantidadMinas
     MOV x2, #21
@@ -127,7 +127,7 @@ _start:
     LDR x1, =MensajeErrorCantidadMinas
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // MenuAccion
     LDR x1, =msgMenuAccion
     MOV x2, #11
@@ -137,7 +137,7 @@ _start:
     LDR x1, =MenuAccion
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // MensajeFila
     LDR x1, =msgFila
     MOV x2, #12
@@ -147,7 +147,7 @@ _start:
     LDR x1, =MensajeFila
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // MensajeColumna
     LDR x1, =msgColumna
     MOV x2, #15
@@ -157,7 +157,7 @@ _start:
     LDR x1, =MensajeColumna
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // MensajeDerrota
     LDR x1, =msgDerrota
     MOV x2, #13
@@ -167,7 +167,7 @@ _start:
     LDR x1, =MensajeDerrota
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // MensajeVictoria
     LDR x1, =msgVictoria
     MOV x2, #15
@@ -177,7 +177,7 @@ _start:
     LDR x1, =MensajeVictoria
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // SimboloVacio
     LDR x1, =msgSimboloVacio
     MOV x2, #13
@@ -187,7 +187,7 @@ _start:
     LDR x1, =SimboloVacio
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // SimboloMina
     LDR x1, =msgSimboloMina
     MOV x2, #12
@@ -197,7 +197,7 @@ _start:
     LDR x1, =SimboloMina
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // SimboloBandera
     LDR x1, =msgSimboloBandera
     MOV x2, #16
@@ -207,7 +207,7 @@ _start:
     LDR x1, =SimboloBandera
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // NuevaLinea
     LDR x1, =msgNuevaLinea
     MOV x2, #12
@@ -217,7 +217,7 @@ _start:
     LDR x1, =NuevaLinea
     BL f05LongitudCadena
     MOV x0, x0
-    BL print_long
+    BL .align_stack_and_print_long
     // Fin
     MOV x8, #93
     SVC #0
@@ -295,5 +295,24 @@ print_long_print:
     MOV x8, #64         // syscall: write
     MOV x0, #1          // fd: stdout
     SVC #0
+    RET
+
+// --- Rutina para asegurar alineación del stack antes de print_long ---
+.align_stack_and_print_long:
+    // Alinear el stack a 16 bytes antes de llamar a print_long
+    MOV x9, sp
+    AND x9, x9, #15
+    CMP x9, #0
+    BEQ .call_print_long
+    SUB sp, sp, #8      // Ajusta el stack si es necesario
+.call_print_long:
+    BL print_long
+    // Restaurar el stack si se ajustó
+    MOV x9, sp
+    AND x9, x9, #15
+    CMP x9, #0
+    BEQ .done_restore
+    ADD sp, sp, #8
+.done_restore:
     RET
 
