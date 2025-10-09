@@ -26,6 +26,58 @@ OpcionSel:      .skip 8
 .extern SimboloBandera
 .extern NuevaLinea
 
+// --- NUEVA RUTINA print_long: minimalista, robusta y alineada ---
+print_long:
+    stp x29, x30, [sp, -16]!
+    mov x29, sp
+    // Reservar buffer local en el stack (16 bytes)
+    sub sp, sp, #16
+    mov x1, sp          // x1 = buffer
+    mov x2, #0          // x2 = longitud
+    cmp x0, #0
+    bne .pl_loop
+    mov w3, #'0'
+    strb w3, [x1]
+    add x2, x2, #1
+    b .pl_done
+.pl_loop:
+    mov x3, x0
+    mov x4, #10
+    udiv x0, x3, x4
+    msub x5, x0, x4, x3
+    add w5, w5, #'0'
+    strb w5, [x1, x2]
+    add x2, x2, #1
+    cmp x0, #0
+    bne .pl_loop
+.pl_done:
+    mov x3, #0
+    sub x4, x2, #1
+.pl_reverse:
+    cmp x3, x4
+    bge .pl_print
+    ldrb w5, [x1, x3]
+    ldrb w6, [x1, x4]
+    strb w6, [x1, x3]
+    strb w5, [x1, x4]
+    add x3, x3, #1
+    sub x4, x4, #1
+    b .pl_reverse
+.pl_print:
+    mov x8, #64
+    mov x0, #1
+    mov x1, sp
+    mov x2, x2
+    svc #0
+    add sp, sp, #16
+    ldr x1, =NuevaLinea
+    mov x2, #1
+    mov x8, #64
+    mov x0, #1
+    svc #0
+    ldp x29, x30, [sp], 16
+    ret
+
 // --- INICIO TEST CON IDENTIFICADORES ---
 _start:
     // Bienvenida
@@ -36,8 +88,7 @@ _start:
     SVC #0
     LDR x1, =Bienvenida
     BL f05LongitudCadena
-    MOV x0, x0
-    BL .align_stack_and_print_long
+    BL print_long
     // MensajeSalir
     LDR x1, =msgSalir
     MOV x2, #12
@@ -243,81 +294,3 @@ msgSimboloVacio:      .asciz "SimboloVacio: "
 msgSimboloMina:       .asciz "SimboloMina: "
 msgSimboloBandera:    .asciz "SimboloBandera: "
 msgNuevaLinea:        .asciz "NuevaLinea: "
-// --- Rutina corregida para imprimir un número decimal en ARMv8 ---
-// Entrada: x0 = número a imprimir
-// Utiliza f01ImprimirCadena para mostrar el resultado
-// Alinea el stack y valida argumentos
-print_long:
-    // Prologo de función: guardar marco y retorno
-    stp x29, x30, [sp, -16]!
-    mov x29, sp
-    // Reservar espacio para el buffer (16 bytes, alineado)
-    sub sp, sp, #16
-    mov x1, sp          // x1 = puntero al buffer
-    mov x2, #0          // x2 = longitud
-    cmp x0, #0
-    bne print_long_loop
-    mov w3, #'0'
-    strb w3, [x1]
-    add x2, x2, #1
-    b print_long_done
-print_long_loop:
-    mov x3, x0
-    mov x4, #10
-    udiv x0, x3, x4         // x0 = x3 / 10
-    msub x5, x0, x4, x3     // x5 = x3 - x0*10 (resto)
-    add w5, w5, #'0'        // convertir a ASCII
-    strb w5, [x1, x2]
-    add x2, x2, #1
-    cmp x0, #0
-    bne print_long_loop
-print_long_done:
-    mov x3, #0
-    sub x4, x2, #1
-print_long_reverse:
-    cmp x3, x4
-    bge print_long_print
-    ldrb w5, [x1, x3]
-    ldrb w6, [x1, x4]
-    strb w6, [x1, x3]
-    strb w5, [x1, x4]
-    add x3, x3, #1
-    sub x4, x4, #1
-    b print_long_reverse
-print_long_print:
-    // Imprimir el buffer usando SVC 64 (write)
-    mov x8, #64         // syscall: write
-    mov x0, #1          // fd: stdout
-    mov x1, sp          // buffer
-    mov x2, x2          // longitud
-    svc #0
-    add sp, sp, #16     // liberar buffer
-    // imprimir salto de línea
-    ldr x1, =NuevaLinea
-    mov x2, #1
-    mov x8, #64         // syscall: write
-    mov x0, #1          // fd: stdout
-    svc #0
-    // Epilogo de función: restaurar marco y retorno
-    ldp x29, x30, [sp], 16
-    ret
-
-// --- Rutina para asegurar alineación del stack antes de print_long ---
-.align_stack_and_print_long:
-    // Alinear el stack a 16 bytes antes de llamar a print_long
-    MOV x9, sp
-    AND x9, x9, #15
-    CMP x9, #0
-    BEQ .call_print_long
-    SUB sp, sp, #8      // Ajusta el stack si es necesario
-.call_print_long:
-    BL print_long
-    // Restaurar el stack si se ajustó
-    MOV x9, sp
-    AND x9, x9, #15
-    CMP x9, #0
-    BEQ .done_restore
-    ADD sp, sp, #8
-.done_restore:
-    RET
-
