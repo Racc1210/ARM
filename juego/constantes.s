@@ -24,7 +24,7 @@ LargoMensajeSalirVal: .quad 23
 
 Menu:
     .asciz "==============================\nSELECCIONE DIFICULTAD\n==============================\n1. Principiante (8x8, 10 minas)\n2. Intermedio   (16x16, 40 minas)\n3. Experto      (30x16, 99 minas)\n4. Personalizada\n5. Salir\n==============================\nOpción: "
-LargoMenuVal: .quad 359
+LargoMenuVal: .quad 249
 
 MensajeErrorSeleccion:
     .asciz "\nOpción inválida. Intente de nuevo.\n"
