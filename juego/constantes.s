@@ -8,9 +8,9 @@
         .global MensajeSalir, LargoMensajeSalirVal
 
 Bienvenida:
-        .asciz "============================== \
-BIENVENIDO A BUSCAMINAS ARM64 \
-============================== \"
+        .asciz "\n==============================\n \
+                BIENVENIDO A BUSCAMINAS ARM64\n \
+                ==============================\n\n"
 BienvenidaFinal:
 LargoBienvenida = BienvenidaFinal - Bienvenida
 LargoBienvenidaVal: .quad LargoBienvenida
