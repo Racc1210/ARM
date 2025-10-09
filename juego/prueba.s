@@ -89,6 +89,60 @@ _start:
     LDR x1, =Bienvenida
     BL f05LongitudCadena
     BL print_long
+    // MensajeSalir
+    LDR x1, =msgSalir
+    MOV x2, #12
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
+    LDR x1, =MensajeSalir
+    BL f05LongitudCadena
+    BL print_long
+    // Menu
+    LDR x1, =msgMenu
+    MOV x2, #5
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
+    LDR x1, =Menu
+    BL f05LongitudCadena
+    BL print_long
+    // MensajeErrorSeleccion
+    LDR x1, =msgErrorSeleccion
+    MOV x2, #21
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
+    LDR x1, =MensajeErrorSeleccion
+    BL f05LongitudCadena
+    BL print_long
+    // MensajeFilas
+    LDR x1, =msgFilas
+    MOV x2, #13
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
+    LDR x1, =MensajeFilas
+    BL f05LongitudCadena
+    BL print_long
+    // MensajeColumnas
+    LDR x1, =msgColumnas
+    MOV x2, #16
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
+    LDR x1, =MensajeColumnas
+    BL f05LongitudCadena
+    BL print_long
+    // MensajeMinas
+    LDR x1, =msgMinas
+    MOV x2, #12
+    MOV x8, #64
+    MOV x0, #1
+    SVC #0
+    LDR x1, =MensajeMinas
+    BL f05LongitudCadena
+    BL print_long
     // Fin
     MOV x8, #93
     SVC #0
