@@ -40,17 +40,26 @@ OpcionSel:      .skip 8
         .extern LargoMensajeErrorCantidadMinasVal
 
 _start:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         BL f01IniciarPrograma
         BL f02MenuPrincipal
+        ldp x29, x30, [sp], 16
+        RET
 
 f01IniciarPrograma:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         LDR x1, =Bienvenida
         LDR x2, =LargoBienvenidaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
+        ldp x29, x30, [sp], 16
         RET
 
 f02MenuPrincipal:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         LDR x1, =Menu
         LDR x2, =LargoMenuVal
         LDR x2, [x2]
@@ -78,34 +87,47 @@ f02MenuPrincipal:
         B f02MenuPrincipal
 
 f03SalirPrograma:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         LDR x1, =MensajeSalir
         LDR x2, =LargoMensajeSalirVal
         LDR x2, [x2]
         BL f01ImprimirCadena
         MOV x0, #0
         MOV x8, #93
+        ldp x29, x30, [sp], 16
         SVC #0
 
 f04Principiante:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         MOV x0, #8
         MOV x1, #8
         MOV x2, #10
         B f12GuardarConfig
 
 f05Intermedio:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         MOV x0, #16
         MOV x1, #16
         MOV x2, #40
         B f12GuardarConfig
 
 f06Experto:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         MOV x0, #30
         MOV x1, #16
         MOV x2, #99
         B f12GuardarConfig
 
 f07Personalizada:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
 f08LeerFilas:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         LDR x1, =MensajeFilas
         LDR x2, =LargoMensajeFilasVal
         LDR x2, [x2]
@@ -127,7 +149,11 @@ f08LeerFilas:
         B f08LeerFilas
 
 f09FilasOK:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
 f09LeerColumnas:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         LDR x1, =MensajeColumnas
         LDR x2, =LargoMensajeColumnasVal
         LDR x2, [x2]
@@ -149,7 +175,11 @@ f09LeerColumnas:
         B f09LeerColumnas
 
 f10ColumnasOK:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
 f10LeerMinas:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         LDR x1, =MensajeMinas
         LDR x2, =LargoMensajeMinasVal
         LDR x2, [x2]
@@ -172,12 +202,16 @@ f10LeerMinas:
         B f10LeerMinas
 
 f11MinasOK:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         MOV x0, x10
         MOV x1, x11
         MOV x2, x12
         B f12GuardarConfig
 
 f12GuardarConfig:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         LDR x13, =FilasSel
         STR x0, [x13]
         LDR x14, =ColumnasSel

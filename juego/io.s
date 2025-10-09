@@ -1,16 +1,22 @@
-        .section .text
+.section .text
         .global f01ImprimirCadena
         .global f02LeerCadena
 
 f01ImprimirCadena:
-        MOV x8, #64          // syscall write
-        MOV x0, #1           // fd = 1 (stdout)
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        MOV x8, #64         
+        MOV x0, #1           
         SVC #0
+        ldp x29, x30, [sp], 16
         RET
 
 
 f02LeerCadena:
+        stp x29, x30, [sp, -16]! 
+        mov x29, sp
         MOV x8, #63          
         MOV x0, #0           
         SVC #0
+        ldp x29, x30, [sp], 16
         RET

@@ -28,10 +28,9 @@ OpcionSel:      .skip 8
 
 // --- NUEVA RUTINA print_long: minimalista, robusta y alineada ---
 print_long:
-    stp x29, x30, [sp, -16]!
+    stp x29, x30, [sp, -32]!
     mov x29, sp
-    // Reservar buffer local en el stack (16 bytes)
-    sub sp, sp, #16
+    // Reservar buffer local en el stack (16 bytes, ya incluido en stp)
     mov x1, sp          // x1 = buffer
     mov x2, #0          // x2 = longitud
     cmp x0, #0
@@ -69,13 +68,12 @@ print_long:
     mov x1, sp
     mov x2, x2
     svc #0
-    add sp, sp, #16
     ldr x1, =NuevaLinea
     mov x2, #1
     mov x8, #64
     mov x0, #1
     svc #0
-    ldp x29, x30, [sp], 16
+    ldp x29, x30, [sp], 32
     ret
 
 // --- INICIO TEST CON IDENTIFICADORES ---

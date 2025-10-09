@@ -33,6 +33,8 @@ Tablero:
 // Inicializar tablero
 // =====================================
 f01InicializarTablero:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         MOV x3, #0
         MUL x4, x0, x1
         LDR x5, =Tablero
@@ -45,12 +47,15 @@ f01InicializarTablero_loop:
         ADD x3, x3, #1
         B f01InicializarTablero_loop
 f01InicializarTablero_fin:
+        ldp x29, x30, [sp], 16
         RET
 
 // =====================================
 // Colocar minas
 // =====================================
 f02ColocarMinas:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         MUL x3, x0, x1
         MOV x4, x2
         LDR x5, =Tablero
@@ -70,12 +75,15 @@ f02ColocarMinas_loop:
         SUB x4, x4, #1
         B f02ColocarMinas_loop
 f02ColocarMinas_fin:
+        ldp x29, x30, [sp], 16
         RET
 
 // =====================================
 // Imprimir tablero
 // =====================================
 f03ImprimirTablero:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         MOV x3, #0
         LDR x5, =Tablero
 f03ImprimirTablero_filas:
@@ -101,12 +109,15 @@ f03ImprimirTablero_nuevaLinea:
         ADD x3, x3, #1
         B f03ImprimirTablero_filas
 f03ImprimirTablero_fin:
+        ldp x29, x30, [sp], 16
         RET
 
 // =====================================
 // Descubrir celda
 // =====================================
 f04DescubrirCelda:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         MUL x4, x0, x3
         ADD x4, x4, x1
         LDR x5, =Tablero
@@ -195,12 +206,15 @@ f04DescubrirCelda_mina:
         MOV x1, x3
         BL f05Derrota
 f04DescubrirCelda_fin:
+        ldp x29, x30, [sp], 16
         RET
 
 // =====================================
 // Derrota
 // =====================================
 f05Derrota:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         LDR x1, =MensajeDerrota
         LDR x2, =LargoMensajeDerrotaVal
         LDR x2, [x2]
@@ -251,12 +265,15 @@ f05Derrota_nuevaLinea:
 f05Derrota_fin:
         MOV x0, #0
         MOV x8, #93          // syscall exit
+        ldp x29, x30, [sp], 16
         SVC #0
 
 // =====================================
 // Victoria
 // =====================================
 f06Victoria:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         MOV x3, #0
         LDR x5, =Tablero
 f06Victoria_filas:
@@ -281,6 +298,7 @@ f06Victoria_columnas:
         CMP w8, w10
         BEQ f06Victoria_nextCol
 
+        ldp x29, x30, [sp], 16
         RET                     // aún quedan celdas ocultas → no victoria
 
 f06Victoria_nextCol:
@@ -298,12 +316,15 @@ f06Victoria_ganar:
         BL f01ImprimirCadena
         MOV x0, #0
         MOV x8, #93
+        ldp x29, x30, [sp], 16
         SVC #0
 
 // =====================================
 // Colocar/Quitar bandera
 // =====================================
 f07ColocarBandera:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         MUL x4, x0, x3
         ADD x4, x4, x1
         LDR x5, =Tablero
@@ -317,6 +338,7 @@ f07ColocarBandera:
         LDR x9, =SimboloBandera
         LDRB w9, [x9]
         STRB w9, [x6]
+        ldp x29, x30, [sp], 16
         RET
 
 f07ColocarBandera_checkFlag:
@@ -329,4 +351,5 @@ f07ColocarBandera_checkFlag:
         STRB w11, [x6]
 
 f07ColocarBandera_fin:
+        ldp x29, x30, [sp], 16
         RET

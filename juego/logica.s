@@ -31,6 +31,8 @@
 
 
 f01ConfigurarYJugar:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         LDR x13, =FilasSel
         LDR x0, [x13]
         LDR x14, =ColumnasSel
@@ -44,6 +46,8 @@ f01ConfigurarYJugar:
 
 
 f02BucleJuego:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         LDR x20, =FilasSel
         LDR x20, [x20]
         LDR x21, =ColumnasSel
@@ -63,11 +67,14 @@ f02BucleJuego:
         CMP x9, #2
         BEQ f04AccionBandera     
         CMP x9, #3
+        ldp x29, x30, [sp], 16
         RET                      
         B f02BucleJuego
 
 
 f03AccionDescubrir:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         // leer fila
         LDR x1, =MensajeFila
         LDR x2, =LargoMensajeFilaVal
@@ -116,6 +123,8 @@ f03AccionDescubrir:
 
 
 f04AccionBandera:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
         // leer fila
         LDR x1, =MensajeFila
         LDR x2, =LargoMensajeFilaVal
