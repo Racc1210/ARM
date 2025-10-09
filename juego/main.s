@@ -144,6 +144,12 @@ _start:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         BL calcular_largos_mensajes
+        // DEBUG: imprimir Bienvenida y su largo
+        LDR x1, =Bienvenida
+        LDR x2, =LargoBienvenidaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
+        // Fin debug
         BL f01IniciarPrograma
         BL f02MenuPrincipal
         ldp x29, x30, [sp], 16
