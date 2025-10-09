@@ -9,11 +9,11 @@
 
 Bienvenida:
     .asciz "==============================\nBIENVENIDO A BUSCAMINAS ARM64\n==============================\n"
-LargoBienvenidaVal: .quad 81
+LargoBienvenidaVal: .quad 92
 
 MensajeSalir:
     .asciz "\nSaliendo del juego...\n"
-LargoMensajeSalirVal: .quad 24
+LargoMensajeSalirVal: .quad 23
 
 // ============================
 // Menú principal
@@ -24,7 +24,7 @@ LargoMensajeSalirVal: .quad 24
 
 Menu:
     .asciz "==============================\nSELECCIONE DIFICULTAD\n==============================\n1. Principiante (8x8, 10 minas)\n2. Intermedio   (16x16, 40 minas)\n3. Experto      (30x16, 99 minas)\n4. Personalizada\n5. Salir\n==============================\nOpción: "
-LargoMenuVal: .quad 202
+LargoMenuVal: .quad 361
 
 MensajeErrorSeleccion:
     .asciz "\nOpción inválida. Intente de nuevo.\n"
@@ -51,19 +51,19 @@ LargoMensajeColumnasVal: .quad 25
 
 MensajeMinas:
     .asciz "Ingrese cantidad de minas: "
-LargoMensajeMinasVal: .quad 26
+LargoMensajeMinasVal: .quad 27
 
 MensajeErrorCantidadFilas:
     .asciz "\nLa cantidad de filas no está en el rango (8-30).\n"
-LargoMensajeErrorCantidadFilasVal: .quad 48
+LargoMensajeErrorCantidadFilasVal: .quad 50
 
 MensajeErrorCantidadColumnas:
     .asciz "\nLa cantidad de columnas no está en el rango (8-24).\n"
-LargoMensajeErrorCantidadColumnasVal: .quad 52
+LargoMensajeErrorCantidadColumnasVal: .quad 53
 
 MensajeErrorCantidadMinas:
     .asciz "\nLa cantidad de minas no debe ser mayor a (filas-1 * columnas-1).\n"
-LargoMensajeErrorCantidadMinasVal: .quad 68
+LargoMensajeErrorCantidadMinasVal: .quad 66
 
 // ============================
 // Menú de acciones en partida
@@ -74,8 +74,8 @@ LargoMensajeErrorCantidadMinasVal: .quad 68
         .global MensajeColumna, LargoMensajeColumnaVal
 
 MenuAccion:
-    .asciz "\n1. Descubrir celda\n2. Colocar/Quitar bandera\n3. Volver al menú\nOpción: "
-LargoMenuAccionVal: .quad 81
+    .asciz "\n1. Descubrir celda\n2. Colocar/Quitar bandera\n3. Volver al menu\nOpcion: "
+LargoMenuAccionVal: .quad 71
 
 MensajeFila:
     .asciz "Fila: "
@@ -94,11 +94,11 @@ LargoMensajeColumnaVal: .quad 9
 
 MensajeDerrota:
     .asciz "\nBOOM! Has pisado una mina. Juego terminado.\n"
-LargoMensajeDerrotaVal: .quad 48
+LargoMensajeDerrotaVal: .quad 45
 
 MensajeVictoria:
     .asciz "\nFelicidades, has despejado todo el tablero. ¡Victoria!\n"
-LargoMensajeVictoriaVal: .quad 62
+LargoMensajeVictoriaVal: .quad 56
 
 // ============================
 // Símbolos del tablero
