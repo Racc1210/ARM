@@ -2,7 +2,7 @@
 
 Bienvenida:
         .asciz "\n==============================\n" \
-               "  BIENVENIDO A BUSCAMINAS ARM64\n" \
+               "  BIENVENIDO A BUSCAMINAS ARM\n" \
                "==============================\n\n"
 BienvenidaFinal:
 LargoBienvenida = BienvenidaFinal - Bienvenida
@@ -12,8 +12,10 @@ MensajeSalir:
 MensajeSalirFinal:
 LargoMensajeSalir = MensajeSalirFinal - MensajeSalir
 
+; ============================
+; Menú principal
+; ============================
 
-//Menu Principal
 Menu:
         .asciz "==============================\n" \
                "   SELECCIONE DIFICULTAD\n" \
@@ -33,8 +35,10 @@ MensajeErrorSeleccion:
 MensajeErrorSeleccionFinal:
 LargoMensajeErrorSeleccion = MensajeErrorSeleccionFinal - MensajeErrorSeleccion
 
+; ============================
+; Configuración personalizada
+; ============================
 
-//Configuracion de dimensiones
 MensajeFilas:     .asciz "Ingrese filas (8-30): "
 MensajeFilasFinal:
 LargoMensajeFilas = MensajeFilasFinal - MensajeFilas
@@ -62,12 +66,15 @@ MensajeErrorCantidadMinas:
 MensajeErrorCantidadMinasFinal:
 LargoMensajeErrorCantidadMinas = MensajeErrorCantidadMinasFinal - MensajeErrorCantidadMinas
 
+; ============================
+; Menú de acciones en partida
+; ============================
 
-
-
-//Acciones en partida
 MenuAccion:
-        .asciz "\n1. Descubrir celda\n2. Colocar/Quitar bandera\n3. Volver al menú\nOpción: "
+        .asciz "\n1. Descubrir celda\n" \
+               "2. Colocar/Quitar bandera\n" \
+               "3. Volver al menú\n" \
+               "Opción: "
 MenuAccionFinal:
 LargoMenuAccion = MenuAccionFinal - MenuAccion
 
@@ -79,20 +86,24 @@ MensajeColumna: .asciz "Columna: "
 MensajeColumnaFinal:
 LargoMensajeColumna = MensajeColumnaFinal - MensajeColumna
 
+; ============================
+; Mensajes de fin de juego
+; ============================
 
-//Mensajes de fin de juego
 MensajeDerrota:
-        .asciz "Has explotado! Pisaste una mina. Juego terminado.\n"
+        .asciz "\nBOOM! Has pisado una mina. Juego terminado.\n"
 MensajeDerrotaFinal:
 LargoMensajeDerrota = MensajeDerrotaFinal - MensajeDerrota
 
 MensajeVictoria:
-        .asciz "\Felicidades, has descubierto todas las minas. ¡Victoria!\n"
+        .asciz "\nFelicidades, has despejado todo el tablero. ¡Victoria!\n"
 MensajeVictoriaFinal:
 LargoMensajeVictoria = MensajeVictoriaFinal - MensajeVictoria
 
+; ============================
+; Símbolos del tablero
+; ============================
 
-//Simbolos del tablero
 SimboloVacio:     .asciz "#"
 SimboloVacioFinal:
 LargoSimboloVacio = SimboloVacioFinal - SimboloVacio
