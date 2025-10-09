@@ -1,27 +1,24 @@
-# Compilador y enlazador
-AS      = as
-LD      = ld
-ASFLAGS = --warn --fatal-warnings
-LDFLAGS = 
+# Makefile para proyecto Buscaminas ARM64
 
-# Archivos objeto
-OBJS = main.o logica.o tablero.o utilidades.o io.o constantes.o
+AS=as
+LD=ld
+ASFLAGS=
+LDFLAGS=
 
-# Ejecutable final
-TARGET = buscaminas
+SRC=main.s logica.s tablero.s utilidades.s io.s constantes.s
+OBJ=$(SRC:.s=.o)
 
-# Regla principal
-all: $(TARGET)
+BIN=juego
 
-# Enlazado
-$(TARGET): $(OBJS)
-    $(LD) -o $@ $(OBJS) $(LDFLAGS)
+all: $(BIN)
 
-# Compilación de cada .s a .o
+$(BIN): $(OBJ)
+	$(LD) $(LDFLAGS) -o $@ $(OBJ)
+
 %.o: %.s
-    $(AS) $(ASFLAGS) -o $@ $<
+	$(AS) $(ASFLAGS) -o $@ $<
 
-
-# Limpieza
 clean:
-    rm -f $(OBJS) $(TARGET)
+	rm -f $(OBJ) $(BIN)
+
+.PHONY: all clean

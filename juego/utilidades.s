@@ -9,7 +9,7 @@ Semilla: .quad 123456789
 
         .extern f01ImprimirCadena
         .extern f02LeerCadena
-        .extern Buffer
+        .extern OpcionSel
 
 
 f01AsciiANumero:
@@ -46,10 +46,10 @@ f02NumeroAleatorio:
 
 f03LeerNumero:
         BL f01ImprimirCadena
-        LDR x1, =Buffer
+        LDR x1, =OpcionSel
         MOV x2, #4
         BL f02LeerCadena
-        LDR x1, =Buffer
+        LDR x1, =OpcionSel
         MOV x2, #4
         BL f01AsciiANumero
         RET

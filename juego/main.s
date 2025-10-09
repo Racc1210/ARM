@@ -1,9 +1,13 @@
         .section .bss
-        .global  Buffer
+        .global  FilasSel
+        .global  ColumnasSel
+        .global  MinasSel
+        .global  OpcionSel
+        .
 FilasSel:    .skip 8
 ColumnasSel: .skip 8
 MinasSel:    .skip 8
-Buffer:      .skip 8
+OpcionSel:      .skip 8
 
         .section .text
         .global _start
