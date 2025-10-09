@@ -205,11 +205,12 @@ msgSimboloVacio:      .asciz "SimboloVacio: "
 msgSimboloMina:       .asciz "SimboloMina: "
 msgSimboloBandera:    .asciz "SimboloBandera: "
 msgNuevaLinea:        .asciz "NuevaLinea: "
-// --- Rutina para imprimir un número decimal en ARMv8 ---
+// --- Rutina corregida para imprimir un número decimal en ARMv8 ---
 // Entrada: x0 = número a imprimir
 // Utiliza f01ImprimirCadena para mostrar el resultado
+// Alinea el stack y valida argumentos
 print_long:
-    // Reservar espacio para el buffer (16 bytes)
+    // Reservar espacio para el buffer (16 bytes, alineado)
     SUB sp, sp, #16
     MOV x1, sp          // x1 = puntero al buffer
     MOV x2, #0          // x2 = longitud
@@ -244,11 +245,17 @@ print_long_reverse:
     SUB x4, x4, #1
     B print_long_reverse
 print_long_print:
-    MOV x2, x2              // longitud
+    // Validar que la longitud no sea cero ni negativa
+    CMP x2, #0
+    BLE print_long_exit
+    // Llamar a f01ImprimirCadena con puntero y longitud correctos
+    MOV x0, x1          // puntero al buffer
+    MOV x1, x2          // longitud
     BL f01ImprimirCadena
-    ADD sp, sp, #16         // liberar buffer
+    ADD sp, sp, #16     // liberar buffer
     // imprimir salto de línea
-    LDR x1, =NuevaLinea
-    MOV x2, #1
+    LDR x0, =NuevaLinea
+    MOV x1, #1
     BL f01ImprimirCadena
+print_long_exit:
     RET
