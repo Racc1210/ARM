@@ -8,7 +8,7 @@
         .global MensajeSalir, LargoMensajeSalirVal
 
 Bienvenida:
-        .asciz "
+        .asciz "\
 ============================== \
 BIENVENIDO A BUSCAMINAS ARM64 \
 =============================="
