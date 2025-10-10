@@ -35,17 +35,87 @@ Tablero:
 f01InicializarTablero:
         stp x29, x30, [sp, -16]!
         mov x29, sp
+        // Print valores de filas y columnas
+        MOV x10, x0
+        MOV x11, x1
+        ADR x1, debug_tablero_filas
+        MOV x2, #14
+        BL f01ImprimirCadena
+        MOV x0, x10
+        BL print_decimal
+        ADR x1, debug_tablero_columnas
+        MOV x2, #17
+        BL f01ImprimirCadena
+        MOV x0, x11
+        BL print_decimal
         MOV x3, #0
-        MUL x4, x0, x1
+        MUL x4, x10, x11
         LDR x5, =Tablero
         LDR x6, =SimboloVacio
         LDRB w6, [x6]
 f01InicializarTablero_loop:
+        // Print índice antes de acceso
+        ADR x1, debug_tablero_indice
+        MOV x2, #8
+        BL f01ImprimirCadena
+        MOV x0, x3
+        BL print_decimal
         CMP x3, x4
         B.GE f01InicializarTablero_fin
         STRB w6, [x5, x3]
         ADD x3, x3, #1
         B f01InicializarTablero_loop
+        // Rutina para imprimir número decimal en x0
+        .section .text
+print_decimal:
+        SUB sp, sp, #16
+        MOV x1, sp
+        MOV x2, #0
+        MOV x3, x0
+        CMP x3, #0
+        BNE .print_decimal_loop
+        MOV w4, #'0'
+        STRB w4, [x1]
+        ADD x2, x2, #1
+        B .print_decimal_done
+.print_decimal_loop:
+        MOV x4, #10
+        UDIV x5, x3, x4
+        MSUB x6, x5, x4, x3
+        ADD w6, w6, #'0'
+        STRB w6, [x1, x2]
+        ADD x2, x2, #1
+        MOV x3, x5
+        CMP x3, #0
+        BNE .print_decimal_loop
+.print_decimal_done:
+        MOV x4, #0
+        MOV x5, x2
+        SUB x5, x5, #1
+.print_decimal_reverse:
+        CMP x4, x5
+        BGE .print_decimal_print
+        LDRB w6, [x1, x4]
+        LDRB w7, [x1, x5]
+        STRB w7, [x1, x4]
+        STRB w6, [x1, x5]
+        ADD x4, x4, #1
+        SUB x5, x5, #1
+        B .print_decimal_reverse
+.print_decimal_print:
+        MOV x1, sp
+        MOV x2, x2
+        BL f01ImprimirCadena
+        ADD sp, sp, #16
+        RET
+        .section .rodata
+debug_tablero_filas:
+        .asciz "TABLERO FILAS: "
+debug_tablero_columnas:
+        .asciz "TABLERO COLUMNAS: "
+debug_tablero_indice:
+        .asciz "INDICE: "
+        .section .text
 f01InicializarTablero_fin:
         ldp x29, x30, [sp], 16
         RET
