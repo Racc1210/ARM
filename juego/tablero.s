@@ -285,35 +285,22 @@ f03ImprimirTablero:
         mov x29, sp
         MOV x3, #0
         ADR x5, Tablero
+// =====================================
+// Imprimir tablero (básico)
+// =====================================
+f03ImprimirTablero:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        MOV x3, #0              // fila
 f03ImprimirTablero_filas:
-        // (Depuración eliminada para imprimir solo el tablero)
         CMP x3, x0
         B.GE f03ImprimirTablero_fin
-        MOV x4, #0
+        MOV x4, #0              // columna
 f03ImprimirTablero_columnas:
         CMP x4, x1
         B.GE f03ImprimirTablero_nuevaLinea
-        MUL x6, x3, x1
-        ADD x6, x6, x4
-        ADD x7, x5, x6
-        // DEPURACION: Imprimir índice y valor de celda
-        ADR x1, debug_tablero_indice
-        BL f05LongitudCadena
-        MOV x2, x0
-        ADR x1, debug_tablero_indice
-        BL f01ImprimirCadena
-        MOV x0, x6
-        BL print_decimal
-        MOV w0, w9
-        BL print_decimal
-        // Copiar el símbolo a CeldaPrint y agregar cero
-        ADR x8, CeldaPrint
-        LDRB w9, [x7]         // w9 = símbolo
-        STRB w9, [x8]         // CeldaPrint[0] = símbolo
-        MOV w10, #0
-        STRB w10, [x8, #1]    // CeldaPrint[1] = cero
-        MOV x1, x8            // x1 = CeldaPrint
-        MOV x2, #2            // longitud (símbolo + cero)
+        ADR x1, simbolo_punto
+        MOV x2, #1
         BL f01ImprimirCadena
         ADD x4, x4, #1
         B f03ImprimirTablero_columnas
@@ -327,6 +314,9 @@ f03ImprimirTablero_nuevaLinea:
 f03ImprimirTablero_fin:
         ldp x29, x30, [sp], 16
         RET
+        .section .rodata
+simbolo_punto:
+        .asciz "."
 
 // =====================================
 // Descubrir celda
