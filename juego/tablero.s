@@ -8,6 +8,10 @@ debug_iterando_fila:
         MOV x2, x0
         ADR x1, debug_tablero_filas
         BL f01ImprimirCadena
+        ADR x1, NuevaLinea
+        ADR x2, LargoNuevaLineaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
         MOV x0, x0
         BL print_decimal
         // DEPURACION: Imprimir valor de columnas
@@ -15,6 +19,10 @@ debug_iterando_fila:
         BL f05LongitudCadena
         MOV x2, x0
         ADR x1, debug_tablero_columnas
+        BL f01ImprimirCadena
+        ADR x1, NuevaLinea
+        ADR x2, LargoNuevaLineaVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         MOV x0, x1
         BL print_decimal
@@ -24,17 +32,29 @@ debug_iterando_fila:
         MOV x2, x0
         ADR x1, debug_antes_menu_acciones
         BL f01ImprimirCadena
+        ADR x1, NuevaLinea
+        ADR x2, LargoNuevaLineaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
         // DEPURACION: Antes de imprimir tablero
         ADR x1, debug_antes_imprimir_tablero
         BL f05LongitudCadena
         MOV x2, x0
         ADR x1, debug_antes_imprimir_tablero
         BL f01ImprimirCadena
+        ADR x1, NuevaLinea
+        ADR x2, LargoNuevaLineaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
         // DEPURACION: Después de imprimir tablero
         ADR x1, debug_despues_imprimir_tablero
         BL f05LongitudCadena
         MOV x2, x0
         ADR x1, debug_despues_imprimir_tablero
+        BL f01ImprimirCadena
+        ADR x1, NuevaLinea
+        ADR x2, LargoNuevaLineaVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         .section .bss
 Tablero:
@@ -175,6 +195,10 @@ debug_tablero_minas:
         MOV x2, x0
         ADR x1, debug_colocar_minas_ini
         BL f01ImprimirCadena
+        ADR x1, NuevaLinea
+        ADR x2, LargoNuevaLineaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
         MUL x3, x0, x1      // x3 = filas * columnas (tamaño del tablero)
         // x4 ya tiene la cantidad de minas correcta
         ADR x5, Tablero
@@ -184,6 +208,10 @@ f02ColocarMinas_loop:
         BL f05LongitudCadena
         MOV x2, x0
         ADR x1, debug_minas_restantes
+        BL f01ImprimirCadena
+        ADR x1, NuevaLinea
+        ADR x2, LargoNuevaLineaVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         MOV x0, x4
         BL print_decimal
@@ -210,6 +238,10 @@ f02ColocarMinas_fin:
         MOV x2, x0
         ADR x1, debug_colocar_minas_fin
         BL f01ImprimirCadena
+        ADR x1, NuevaLinea
+        ADR x2, LargoNuevaLineaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
         ldp x29, x30, [sp], 16
         RET
         .section .rodata
@@ -227,6 +259,10 @@ f03ImprimirTablero:
         BL f05LongitudCadena
         MOV x2, x0
         ADR x1, debug_entrando_imprimir_tablero
+        BL f01ImprimirCadena
+        ADR x1, NuevaLinea
+        ADR x2, LargoNuevaLineaVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         // DEPURACION: Valor de x0 (filas)
         ADR x1, debug_tablero_filas
