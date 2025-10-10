@@ -156,6 +156,16 @@ f02ColocarMinas:
         MOV x4, x2
         ADR x5, Tablero
 f02ColocarMinas_loop:
+        // DEPURACION: Imprimir valor de x4 (minas restantes)
+        ADR x1, debug_minas_restantes
+        BL f05LongitudCadena
+        MOV x2, x0
+        ADR x1, debug_minas_restantes
+        BL f01ImprimirCadena
+        MOV x0, x4
+        BL print_decimal
+debug_minas_restantes:
+        .asciz "MINAS RESTANTES: "
         CMP x4, #0
         BEQ f02ColocarMinas_fin
         BL f02NumeroAleatorio
