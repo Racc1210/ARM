@@ -176,8 +176,7 @@ f09LeerColumnas:
         B f09LeerColumnas
 
 f10ColumnasOK:
-        stp x29, x30, [sp, -16]!
-        mov x29, sp
+        // ...sin cierre de marco de pila...
 f10LeerMinas:
 
         stp x29, x30, [sp, -16]!
@@ -203,8 +202,7 @@ f10LeerMinas:
         B f10LeerMinas
 
 f11MinasOK:
-        stp x29, x30, [sp, -16]!
-        mov x29, sp
+        // ...sin cierre de marco de pila...
         MOV x0, x10
         MOV x1, x11
         MOV x2, x12
