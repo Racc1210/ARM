@@ -110,6 +110,10 @@ f01InicializarTablero_fin:
 f02ColocarMinas:
         stp x29, x30, [sp, -16]!
         mov x29, sp
+        // Depuración: INICIO colocar minas
+        LDR x1, =debug_colocar_minas_ini
+        MOV x2, #18
+        BL f01ImprimirCadena
         MUL x3, x0, x1
         MOV x4, x2
         LDR x5, =Tablero
@@ -129,8 +133,17 @@ f02ColocarMinas_loop:
         SUB x4, x4, #1
         B f02ColocarMinas_loop
 f02ColocarMinas_fin:
+        // Depuración: FIN colocar minas
+        LDR x1, =debug_colocar_minas_fin
+        MOV x2, #16
+        BL f01ImprimirCadena
         ldp x29, x30, [sp], 16
         RET
+        .section .rodata
+debug_colocar_minas_ini:
+        .asciz "INICIO COLOCAR MINAS"
+debug_colocar_minas_fin:
+        .asciz "FIN COLOCAR MINAS"
 
 // =====================================
 // Imprimir tablero
