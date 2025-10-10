@@ -282,7 +282,7 @@ f04DescubrirCelda_fin:
 f05Derrota:
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        LDR x1, =MensajeDerrota
+        ADR x1, MensajeDerrota
         ADR x2, LargoMensajeDerrotaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
@@ -322,7 +322,7 @@ f05Derrota_nextCol:
         B f05Derrota_columnas
 
 f05Derrota_nuevaLinea:
-        LDR x1, =NuevaLinea
+        ADR x1, NuevaLinea
         ADR x2, LargoNuevaLineaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
@@ -360,7 +360,7 @@ f06Victoria_columnas:
         ADR x9, SimboloBandera
         LDRB w9, [x9]
 
-        LDR x10, =SimboloMina
+        ADR x10, SimboloMina
         LDRB w10, [x10]
         CMP w8, w10
         BEQ f06Victoria_nextCol
@@ -394,7 +394,7 @@ f07ColocarBandera:
         mov x29, sp
         MUL x4, x0, x3
         ADD x4, x4, x1
-        LDR x5, =Tablero
+        ADR x5, Tablero
         ADD x6, x5, x4
         LDRB w7, [x6]
 
@@ -409,9 +409,8 @@ f07ColocarBandera:
         RET
 
 f07ColocarBandera_checkFlag:
-        LDR x10, =SimboloBandera
-                ADR x10, SimboloBandera
-                LDRB w10, [x10]
+        ADR x10, SimboloBandera
+        LDRB w10, [x10]
         CMP w7, w10
         BNE f07ColocarBandera_fin
                 ADR x11, SimboloVacio
