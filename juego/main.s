@@ -218,11 +218,6 @@ f10MinasError:
         B f10LeerMinas
 
 f11MinasOK:
-        // Print debug: listo para iniciar juego
-        LDR x1, =Bienvenida
-        LDR x2, =LargoBienvenidaVal
-        LDR x2, [x2]
-        BL f01ImprimirCadena
         LDR x0, =TmpFilas
         LDR x0, [x0]
         LDR x1, =TmpColumnas

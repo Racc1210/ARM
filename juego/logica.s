@@ -33,11 +33,6 @@
 f01ConfigurarYJugar:
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        // Print debug: entrando a f01ConfigurarYJugar
-        LDR x1, =Bienvenida
-        LDR x2, =LargoBienvenidaVal
-        LDR x2, [x2]
-        BL f01ImprimirCadena
         LDR x13, =FilasSel
         LDR x0, [x13]
         LDR x14, =ColumnasSel
@@ -55,11 +50,15 @@ f01ConfigurarYJugar:
 f02BucleJuego:
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        // Print debug: entrando a f02BucleJuego
-        LDR x1, =MenuAccion
-        LDR x2, =LargoMenuAccionVal
-        LDR x2, [x2]
+        // Print debug: INICIO JUEGO
+        ADR x1, inicio_juego_msg
+        MOV x2, #13
         BL f01ImprimirCadena
+
+        .section .rodata
+inicio_juego_msg:
+        .asciz "INICIO JUEGO\n"
+        .section .text
         LDR x20, =FilasSel
         LDR x20, [x20]
         LDR x21, =ColumnasSel
