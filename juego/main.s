@@ -92,6 +92,10 @@ f03SalirPrograma:
         LDR x1, =MensajeSalir
         LDR x2, =LargoMensajeSalirVal
         LDR x2, [x2]
+        // Inicializar OpcionSel a cero antes de leer
+        LDR x1, =OpcionSel
+        MOV x0, #0
+        STR x0, [x1]
         BL f01ImprimirCadena
         MOV x0, #0
         MOV x8, #93
