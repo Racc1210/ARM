@@ -35,24 +35,60 @@ f01ConfigurarYJugar:
         ADR x1, debug_msg_filas
         MOV x2, #14
         BL f01ImprimirCadena
-        MOV x1, x0
-        BL print_num
+        MOV x0, x0        // filas en x0
+        BL print_decimal
         ADR x1, debug_msg_columnas
         MOV x2, #17
         BL f01ImprimirCadena
-        MOV x1, x1
-        BL print_num
-        // Rutina simple para imprimir número en x1
-        // Solo para depuración, imprime un dígito
+        MOV x0, x1        // columnas en x0
+        BL print_decimal
+        // Rutina para imprimir número decimal en x0
         .section .text
-print_num:
-        // Convierte x1 a carácter ASCII y lo imprime
-        ADD w2, w1, #'0'
-        STRB w2, [sp, #-1]!
+print_decimal:
+        // x0: número a imprimir
+        // buffer temporal en stack
+        SUB sp, sp, #16
         MOV x1, sp
-        MOV x2, #1
+        MOV x2, #0        // contador de dígitos
+        MOV x3, x0        // copia de número
+        CMP x3, #0
+        BNE .print_decimal_loop
+        // Si es cero, imprime '0'
+        MOV w4, #'0'
+        STRB w4, [x1]
+        ADD x2, x2, #1
+        B .print_decimal_done
+.print_decimal_loop:
+        // Extrae dígitos en orden inverso
+        MOV x4, #10
+        UDIV x5, x3, x4
+        MSUB x6, x5, x4, x3
+        ADD w6, w6, #'0'
+        STRB w6, [x1, x2]
+        ADD x2, x2, #1
+        MOV x3, x5
+        CMP x3, #0
+        BNE .print_decimal_loop
+.print_decimal_done:
+        // Invierte el buffer
+        MOV x4, #0
+        MOV x5, x2
+        SUB x5, x5, #1
+.print_decimal_reverse:
+        CMP x4, x5
+        BGE .print_decimal_print
+        LDRB w6, [x1, x4]
+        LDRB w7, [x1, x5]
+        STRB w7, [x1, x4]
+        STRB w6, [x1, x5]
+        ADD x4, x4, #1
+        SUB x5, x5, #1
+        B .print_decimal_reverse
+.print_decimal_print:
+        MOV x1, sp
+        MOV x2, x2
         BL f01ImprimirCadena
-        ADD sp, sp, #1
+        ADD sp, sp, #16
         RET
         .section .rodata
 debug_msg_filas:
