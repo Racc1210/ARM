@@ -35,31 +35,15 @@ Tablero:
 f01InicializarTablero:
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        // Print valores de filas y columnas
+        // Inicializar tablero con símbolo vacío
         MOV x10, x0
         MOV x11, x1
-        ADR x1, debug_tablero_filas
-        MOV x2, #14
-        BL f01ImprimirCadena
-        MOV x0, x10
-        BL print_decimal
-        ADR x1, debug_tablero_columnas
-        MOV x2, #17
-        BL f01ImprimirCadena
-        MOV x0, x11
-        BL print_decimal
         MOV x3, #0
         MUL x4, x10, x11
         LDR x5, =Tablero
         LDR x6, =SimboloVacio
         LDRB w6, [x6]
 f01InicializarTablero_loop:
-        // Print índice antes de acceso
-        ADR x1, debug_tablero_indice
-        MOV x2, #8
-        BL f01ImprimirCadena
-        MOV x0, x3
-        BL print_decimal
         CMP x3, x4
         B.GE f01InicializarTablero_fin
         STRB w6, [x5, x3]
