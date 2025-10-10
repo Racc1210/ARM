@@ -46,6 +46,16 @@ f01ConfigurarYJugar:
         BL f01ImprimirCadena
         MOV x0, x11       // imprimir columnas
         BL print_long
+        // Inicializar tablero y comenzar juego
+        LDR x13, =FilasSel
+        LDR x0, [x13]
+        LDR x14, =ColumnasSel
+        LDR x1, [x14]
+        LDR x15, =MinasSel
+        LDR x2, [x15]
+        BL f01InicializarTablero
+        BL f02ColocarMinas
+        BL f02BucleJuego
         RET
         // Rutina para imprimir número decimal en x0
         .section .text
