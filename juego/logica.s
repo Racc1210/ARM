@@ -221,10 +221,19 @@ debug_msg_post_bucle:
 f02BucleJuego:
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        // Print debug: INICIO JUEGO
+        // Depuración: INICIO JUEGO
         ADR x1, inicio_juego_msg
         MOV x2, #13
         BL f01ImprimirCadena
+        // Imprimir valores de filas y columnas
+        LDR x20, =FilasSel
+        LDR x20, [x20]
+        LDR x21, =ColumnasSel
+        LDR x21, [x21]
+        // Imprimir tablero
+        MOV x0, x20
+        MOV x1, x21
+        BL f03ImprimirTablero
 
         .section .rodata
 inicio_juego_msg:
