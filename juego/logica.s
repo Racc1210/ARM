@@ -72,15 +72,7 @@ f01ConfigurarYJugar:
         MOV x2, #25
         BL f01ImprimirCadena
         RET
-        .section .rodata
-debug_msg_tablero:
-        .asciz "ANTES INICIALIZAR TABLERO\n"
-debug_msg_post_tablero:
-        .asciz "DESPUES INICIALIZAR TABLERO\n"
-debug_msg_post_minas:
-        .asciz "DESPUES COLOCAR MINAS\n"
-debug_msg_post_bucle:
-        .asciz "DESPUES BUCLE JUEGO\n"
+        // ...existing code...
         // Rutina para imprimir número decimal en x0
         .section .text
 print_decimal:
