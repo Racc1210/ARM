@@ -116,7 +116,7 @@ f02ColocarMinas:
         BL f01ImprimirCadena
         MUL x3, x0, x1
         MOV x4, x2
-        LDR x5, =Tablero
+        ADR x5, Tablero
 f02ColocarMinas_loop:
         CMP x4, #0
         BEQ f02ColocarMinas_fin
@@ -125,7 +125,7 @@ f02ColocarMinas_loop:
         MSUB x6, x7, x3, x0
         ADD x8, x5, x6
         LDRB w9, [x8]
-        LDR x10, =SimboloMina
+        ADR x10, SimboloMina
         LDRB w10, [x10]
         CMP w9, w10
         BEQ f02ColocarMinas_loop
@@ -152,7 +152,7 @@ f03ImprimirTablero:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         MOV x3, #0
-        LDR x5, =Tablero
+        ADR x5, Tablero
 f03ImprimirTablero_filas:
         CMP x3, x0
         B.GE f03ImprimirTablero_fin
@@ -287,7 +287,7 @@ f05Derrota:
         LDR x2, [x2]
         BL f01ImprimirCadena
         MOV x3, #0
-        LDR x5, =Tablero
+        ADR x5, Tablero
 f05Derrota_filas:
         CMP x3, x0
         B.GE f05Derrota_fin
@@ -342,7 +342,7 @@ f06Victoria:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         MOV x3, #0
-        LDR x5, =Tablero
+        ADR x5, Tablero
 f06Victoria_filas:
         CMP x3, x0
         B.GE f06Victoria_ganar
@@ -355,10 +355,10 @@ f06Victoria_columnas:
         ADD x7, x5, x6
         LDRB w8, [x7]
 
-        LDR x9, =SimboloVacio
+        ADR x8, SimboloVacio
+        LDRB w8, [x8]
+        ADR x9, SimboloBandera
         LDRB w9, [x9]
-        CMP w8, w9
-        BNE f06Victoria_nextCol
 
         LDR x10, =SimboloMina
         LDRB w10, [x10]
@@ -377,8 +377,8 @@ f06Victoria_nextFila:
         B f06Victoria_filas
 
 f06Victoria_ganar:
-        LDR x1, =MensajeVictoria
-        LDR x2, =LargoMensajeVictoriaVal
+        ADR x1, MensajeVictoria
+        ADR x2, LargoMensajeVictoriaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
         MOV x0, #0
@@ -398,10 +398,10 @@ f07ColocarBandera:
         ADD x6, x5, x4
         LDRB w7, [x6]
 
-        LDR x8, =SimboloVacio
-        LDRB w8, [x8]
-        CMP w7, w8
-        BNE f07ColocarBandera_checkFlag
+        ADR x9, SimboloVacio
+        LDRB w9, [x9]
+        ADR x10, SimboloMina
+        LDRB w10, [x10]
         LDR x9, =SimboloBandera
         LDRB w9, [x9]
         STRB w9, [x6]
@@ -410,10 +410,11 @@ f07ColocarBandera:
 
 f07ColocarBandera_checkFlag:
         LDR x10, =SimboloBandera
-        LDRB w10, [x10]
+                ADR x10, SimboloBandera
+                LDRB w10, [x10]
         CMP w7, w10
         BNE f07ColocarBandera_fin
-        LDR x11, SimboloVacio
+                ADR x11, SimboloVacio
         LDRB w11, [x11]
         STRB w11, [x6]
 
