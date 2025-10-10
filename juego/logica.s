@@ -227,12 +227,10 @@ f02BucleJuego:
         BL f01ImprimirCadena
         // Imprimir valores de filas y columnas
         LDR x20, =FilasSel
-        LDR x20, [x20]
+        LDR x0, [x20]      // x0 = filas
         LDR x21, =ColumnasSel
-        LDR x21, [x21]
+        LDR x1, [x21]      // x1 = columnas
         // Imprimir tablero
-        MOV x0, x20
-        MOV x1, x21
         BL f03ImprimirTablero
 
         .section .rodata
