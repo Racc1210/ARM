@@ -40,8 +40,8 @@ f01InicializarTablero:
         MOV x11, x1
         MOV x3, #0
         MUL x4, x10, x11
-        ADR x5, Tablero
-        LDR x6, =SimboloVacio
+                ADR x5, Tablero
+                ADR x6, SimboloVacio
         LDRB w6, [x6]
 f01InicializarTablero_loop:
         CMP x3, x4
