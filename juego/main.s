@@ -1,4 +1,7 @@
         .section .bss
+TmpFilas:    .skip 8
+TmpColumnas: .skip 8
+TmpMinas:    .skip 8
         .global  FilasSel
         .global  ColumnasSel
         .global  MinasSel
@@ -133,7 +136,8 @@ f08LeerFilas:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        MOV x10, x0
+        LDR x13, =TmpFilas
+        STR x0, [x13]
         MOV x0, x10
         MOV x1, #8
         MOV x2, #30
@@ -157,7 +161,8 @@ f09LeerColumnas:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        MOV x11, x0
+        LDR x13, =TmpColumnas
+        STR x0, [x13]
         MOV x0, x11
         MOV x1, #8
         MOV x2, #24
@@ -180,7 +185,8 @@ f10LeerMinas:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        MOV x12, x0
+        LDR x13, =TmpMinas
+        STR x0, [x13]
         MOV x0, x12
         MOV x1, #1
         MUL x2, x10, x11
@@ -196,9 +202,12 @@ f10LeerMinas:
         B f10LeerMinas
 
 f11MinasOK:
-        MOV x0, x10
-        MOV x1, x11
-        MOV x2, x12
+        LDR x0, =TmpFilas
+        LDR x0, [x0]
+        LDR x1, =TmpColumnas
+        LDR x1, [x1]
+        LDR x2, =TmpMinas
+        LDR x2, [x2]
         B f12GuardarConfig
 
 f12GuardarConfig:
