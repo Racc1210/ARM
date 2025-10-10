@@ -413,7 +413,7 @@ f07ColocarBandera_checkFlag:
         LDRB w10, [x10]
         CMP w7, w10
         BNE f07ColocarBandera_fin
-        LDR x11, =SimboloVacio
+        LDR x11, SimboloVacio
         LDRB w11, [x11]
         STRB w11, [x6]
 
