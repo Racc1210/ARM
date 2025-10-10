@@ -249,7 +249,16 @@ f03ImprimirTablero_columnas:
         MUL x6, x3, x1
         ADD x6, x6, x4
         ADD x7, x5, x6
-        // (Depuración eliminada para imprimir solo el tablero)
+        // DEPURACION: Imprimir índice y valor de celda
+        ADR x1, debug_tablero_indice
+        BL f05LongitudCadena
+        MOV x2, x0
+        ADR x1, debug_tablero_indice
+        BL f01ImprimirCadena
+        MOV x0, x6
+        BL print_decimal
+        MOV x0, w9
+        BL print_decimal
         // Copiar el símbolo a CeldaPrint y agregar cero
         ADR x8, CeldaPrint
         LDRB w9, [x7]         // w9 = símbolo
