@@ -193,9 +193,16 @@ f03ImprimirTablero_columnas:
         MUL x6, x3, x1
         ADD x6, x6, x4
         ADD x7, x5, x6
-        ADD x1, x5, x6
-        MOV x2, #1
+        // Copiar el símbolo a un buffer temporal y agregar cero
+        SUB sp, sp, #16
+        LDRB w8, [x7]         // w8 = símbolo
+        STRB w8, [sp]         // buffer[0] = símbolo
+        MOV w9, #0
+        STRB w9, [sp, #1]     // buffer[1] = cero
+        MOV x1, sp            // x1 = buffer
+        MOV x2, #1            // longitud (solo símbolo)
         BL f01ImprimirCadena
+        ADD sp, sp, #16
         ADD x4, x4, #1
         B f03ImprimirTablero_columnas
 f03ImprimirTablero_nuevaLinea:
