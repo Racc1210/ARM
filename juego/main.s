@@ -199,21 +199,8 @@ f10LeerMinas:
         BL f04ValidarRango
         CMP x0, #0
         BEQ f10MinasError
-        // Print debug: validación OK
-        LDR x1, =MensajeMinas
-        LDR x2, =LargoMensajeMinasVal
-        LDR x2, [x2]
-        BL f01ImprimirCadena
-        // Print debug: valor de minas
-        MOV x1, x12
-        // Aquí podrías llamar a una rutina de impresión de número si existe
         B f10GuardarMinas
 f10GuardarMinas:
-        // Print debug: guardando minas
-        LDR x1, =MensajeMinas
-        LDR x2, =LargoMensajeMinasVal
-        LDR x2, [x2]
-        BL f01ImprimirCadena
         LDR x13, =TmpMinas
         STR x12, [x13]
         B f11MinasOK
@@ -231,6 +218,11 @@ f10MinasError:
         B f10LeerMinas
 
 f11MinasOK:
+        // Print debug: listo para iniciar juego
+        LDR x1, =Bienvenida
+        LDR x2, =LargoBienvenidaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
         LDR x0, =TmpFilas
         LDR x0, [x0]
         LDR x1, =TmpColumnas
