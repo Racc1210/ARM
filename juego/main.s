@@ -150,7 +150,6 @@ f08LeerFilas:
         B f08LeerFilas
 
 f09FilasOK:
-        ldp x29, x30, [sp], 16
         B f09LeerColumnas
 
 f09LeerColumnas:
