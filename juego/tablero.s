@@ -1,3 +1,38 @@
+        .global f02ColocarMinas
+        .global f04DescubrirCelda
+        .global f06Victoria
+        .global f07ColocarBandera
+
+// -------------------------------------------------
+// Stubs mínimos para evitar errores de linker
+// -------------------------------------------------
+f02ColocarMinas:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        // TODO: lógica de colocación de minas
+        ldp x29, x30, [sp], 16
+        RET
+
+f04DescubrirCelda:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        // TODO: lógica de descubrir celda
+        ldp x29, x30, [sp], 16
+        RET
+
+f06Victoria:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        // TODO: lógica de victoria
+        ldp x29, x30, [sp], 16
+        RET
+
+f07ColocarBandera:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        // TODO: lógica de colocar/quitar bandera
+        ldp x29, x30, [sp], 16
+        RET
 // =====================================
 // Tablero ARM64: estructura y funciones mínimas
 // =====================================
