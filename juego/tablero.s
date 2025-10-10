@@ -309,8 +309,8 @@ f05Derrota_columnas:
         LDR x1, =SimboloMina
         LDR x2, =LargoSimboloMinaVal
         LDR x2, [x2]
-        BL f01ImprimirCadena
-        B f05Derrota_nextCol
+                 ADR x9, SimboloMina
+                 ADR x1, SimboloMina
 
 f05Derrota_imprimirCelda:
         ADD x1, x5, x6
