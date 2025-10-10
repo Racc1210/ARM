@@ -146,12 +146,14 @@ f01InicializarTablero_fin:
 // =====================================
 f02ColocarMinas:
         // DEPURACION: Imprimir valor de minas
+        LDR x15, =MinasSel
+        LDR x4, [x15]        // x4 = cantidad de minas (global)
         ADR x1, debug_tablero_minas
         BL f05LongitudCadena
         MOV x2, x0
         ADR x1, debug_tablero_minas
         BL f01ImprimirCadena
-        MOV x0, x2
+        MOV x0, x4
         BL print_decimal
 debug_tablero_minas:
         .asciz "MINAS: "
@@ -163,7 +165,7 @@ debug_tablero_minas:
         MOV x2, x0
         BL f01ImprimirCadena
         MUL x3, x0, x1      // x3 = filas * columnas (tamaño del tablero)
-        MOV x4, x2           // x4 = cantidad de minas
+        // x4 ya tiene la cantidad de minas correcta
         ADR x5, Tablero
 f02ColocarMinas_loop:
         // DEPURACION: Imprimir valor de x4 (minas restantes)
