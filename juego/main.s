@@ -111,7 +111,7 @@ f04Principiante:
         MOV x0, #8
         MOV x1, #8
         MOV x2, #10
-        B f12GuardarConfig
+        BL f12GuardarConfig
 
 f05Intermedio:
         stp x29, x30, [sp, -16]!
@@ -119,7 +119,7 @@ f05Intermedio:
         MOV x0, #16
         MOV x1, #16
         MOV x2, #40
-        B f12GuardarConfig
+        BL f12GuardarConfig
 
 f06Experto:
         stp x29, x30, [sp, -16]!
@@ -127,7 +127,7 @@ f06Experto:
         MOV x0, #30
         MOV x1, #16
         MOV x2, #99
-        B f12GuardarConfig
+        BL f12GuardarConfig
 f07Personalizada:
 
 f08LeerFilas:
@@ -229,7 +229,7 @@ f11MinasOK:
         LDR x1, [x1]
         LDR x2, =TmpMinas
         LDR x2, [x2]
-        B f12GuardarConfig
+        BL f12GuardarConfig
 
 f12GuardarConfig:
         stp x29, x30, [sp, -16]!
@@ -242,3 +242,5 @@ f12GuardarConfig:
         STR x2, [x15]
 
         BL f01ConfigurarYJugar
+        ldp x29, x30, [sp], 16
+        RET

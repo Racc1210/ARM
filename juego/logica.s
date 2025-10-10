@@ -47,7 +47,9 @@ f01ConfigurarYJugar:
 
         BL f01InicializarTablero
         BL f02ColocarMinas
-        B f02BucleJuego
+        BL f02BucleJuego
+        ldp x29, x30, [sp], 16
+        RET
 
 
 f02BucleJuego:
