@@ -128,11 +128,14 @@ print_tablero_columnas:
         ADD x4, x4, #1
         B print_tablero_columnas
 print_tablero_nuevaLinea:
-        // Imprimir salto de línea después de cada fila
-        LDR x1, =NuevaLinea
-        LDR x2, =LargoNuevaLineaVal
-        LDR x2, [x2]
+        // Imprimir salto de línea ASCII (0x0A) después de cada fila
+        SUB sp, sp, #8
+        MOV w7, #0x0A
+        STRB w7, [sp]
+        MOV x1, sp
+        MOV x2, #1
         BL f01ImprimirCadena
+        ADD sp, sp, #8
         ADD x3, x3, #1
         B print_tablero_filas
 print_tablero_fin:
