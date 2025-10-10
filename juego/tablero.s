@@ -257,7 +257,7 @@ f03ImprimirTablero_columnas:
         BL f01ImprimirCadena
         MOV x0, x6
         BL print_decimal
-        MOV x0, w9
+        MOV w0, w9
         BL print_decimal
         // Copiar el símbolo a CeldaPrint y agregar cero
         ADR x8, CeldaPrint
