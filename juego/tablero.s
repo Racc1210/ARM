@@ -128,6 +128,7 @@ print_tablero_columnas:
         ADD x4, x4, #1
         B print_tablero_columnas
 print_tablero_nuevaLinea:
+        // Imprimir salto de línea después de cada fila
         LDR x1, =NuevaLinea
         LDR x2, =LargoNuevaLineaVal
         LDR x2, [x2]
