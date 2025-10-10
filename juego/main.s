@@ -230,5 +230,4 @@ f12GuardarConfig:
         STR x2, [x15]
 
         BL f01ConfigurarYJugar
-        ldp x29, x30, [sp], 16
-        RET
+        B f02BucleJuego
