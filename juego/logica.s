@@ -31,6 +31,35 @@
 
 
 f01ConfigurarYJugar:
+        // Print valores de filas y columnas
+        ADR x1, debug_msg_filas
+        MOV x2, #14
+        BL f01ImprimirCadena
+        MOV x1, x0
+        BL print_num
+        ADR x1, debug_msg_columnas
+        MOV x2, #17
+        BL f01ImprimirCadena
+        MOV x1, x1
+        BL print_num
+        // Rutina simple para imprimir número en x1
+        // Solo para depuración, imprime un dígito
+        .section .text
+print_num:
+        // Convierte x1 a carácter ASCII y lo imprime
+        ADD w2, w1, #'0'
+        STRB w2, [sp, #-1]!
+        MOV x1, sp
+        MOV x2, #1
+        BL f01ImprimirCadena
+        ADD sp, sp, #1
+        RET
+        .section .rodata
+debug_msg_filas:
+        .asciz "FILAS: "
+debug_msg_columnas:
+        .asciz "COLUMNAS: "
+        .section .text
         stp x29, x30, [sp, -16]!
         mov x29, sp
         LDR x13, =FilasSel
