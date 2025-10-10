@@ -125,7 +125,6 @@ f06Experto:
         MOV x1, #16
         MOV x2, #99
         B f12GuardarConfig
-        BNE f09FilasOK_close
 f07Personalizada:
 
 f08LeerFilas:
