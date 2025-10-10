@@ -187,14 +187,14 @@ f04DescubrirCelda:
         mov x29, sp
         MUL x4, x0, x3
         ADD x4, x4, x1
-        LDR x5, =Tablero
+        ADR x5, Tablero
         ADD x6, x5, x4
         LDRB w7, [x6]
-        LDR x10, =SimboloMina
+        ADR x10, SimboloMina
         LDRB w10, [x10]
         CMP w7, w10
         BEQ f04DescubrirCelda_mina
-        LDR x11, =SimboloVacio
+        ADR x11, SimboloVacio
         LDRB w11, [x11]
         CMP w7, w11
         BNE f04DescubrirCelda_fin
