@@ -145,6 +145,16 @@ f01InicializarTablero_fin:
 // Colocar minas
 // =====================================
 f02ColocarMinas:
+        // DEPURACION: Imprimir valor de minas
+        ADR x1, debug_tablero_minas
+        BL f05LongitudCadena
+        MOV x2, x0
+        ADR x1, debug_tablero_minas
+        BL f01ImprimirCadena
+        MOV x0, x2
+        BL print_decimal
+debug_tablero_minas:
+        .asciz "MINAS: "
         stp x29, x30, [sp, -16]!
         mov x29, sp
         // Depuración: INICIO colocar minas
