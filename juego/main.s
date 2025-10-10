@@ -222,4 +222,3 @@ f12GuardarConfig:
         STR x2, [x15]
 
         BL f01ConfigurarYJugar
-        B f02MenuPrincipal
