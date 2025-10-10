@@ -55,7 +55,6 @@ f02NumeroAleatorio:
 f03LeerNumero:
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        BL f01ImprimirCadena
         LDR x1, =OpcionSel
         MOV x2, #4
         BL f02LeerCadena
