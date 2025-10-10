@@ -196,6 +196,12 @@ f03ImprimirTablero_columnas:
         MUL x6, x3, x1
         ADD x6, x6, x4
         ADD x7, x5, x6
+        // DEPURACION: Imprimir índice de celda
+        ADR x11, debug_tablero_indice
+        MOV x12, #8
+        BL f01ImprimirCadena
+        MOV x0, x6
+        BL print_decimal
         // Copiar el símbolo a CeldaPrint y agregar cero
         ADR x8, CeldaPrint
         LDRB w9, [x7]         // w9 = símbolo
@@ -203,7 +209,7 @@ f03ImprimirTablero_columnas:
         MOV w10, #0
         STRB w10, [x8, #1]    // CeldaPrint[1] = cero
         MOV x1, x8            // x1 = CeldaPrint
-        MOV x2, #1            // longitud (solo símbolo)
+        MOV x2, #2            // longitud (símbolo + cero)
         BL f01ImprimirCadena
         ADD x4, x4, #1
         B f03ImprimirTablero_columnas
