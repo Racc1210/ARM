@@ -1,3 +1,7 @@
+debug_entrando_imprimir_tablero:
+        .asciz "ENTRANDO A IMPRIMIR TABLERO\n"
+debug_iterando_fila:
+        .asciz "ITERANDO FILA: "
         // DEPURACION: Imprimir valor de filas
         ADR x1, debug_tablero_filas
         MOV x2, #15
