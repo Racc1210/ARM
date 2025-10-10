@@ -46,7 +46,7 @@ f01ConfigurarYJugar:
         BL f01ImprimirCadena
         MOV x0, x11       // imprimir columnas
         BL print_long
-        // No imprimir nada más aquí
+        RET
         // Rutina para imprimir número decimal en x0
         .section .text
 print_decimal:
