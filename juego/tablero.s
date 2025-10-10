@@ -152,8 +152,8 @@ f02ColocarMinas:
         BL f05LongitudCadena   // x0 = longitud
         MOV x2, x0
         BL f01ImprimirCadena
-        MUL x3, x0, x1
-        MOV x4, x2
+        MUL x3, x0, x1      // x3 = filas * columnas (tamaño del tablero)
+        MOV x4, x2           // x4 = cantidad de minas
         ADR x5, Tablero
 f02ColocarMinas_loop:
         // DEPURACION: Imprimir valor de x4 (minas restantes)
