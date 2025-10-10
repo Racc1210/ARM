@@ -1,3 +1,15 @@
+        // DEPURACION: Imprimir valor de filas
+        ADR x1, debug_tablero_filas
+        MOV x2, #15
+        BL f01ImprimirCadena
+        MOV x0, x0
+        BL print_decimal
+        // DEPURACION: Imprimir valor de columnas
+        ADR x1, debug_tablero_columnas
+        MOV x2, #18
+        BL f01ImprimirCadena
+        MOV x0, x1
+        BL print_decimal
         // DEPURACION: Antes de mostrar menú de acciones
         ADR x1, debug_antes_menu_acciones
         MOV x2, #32
