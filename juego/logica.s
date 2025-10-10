@@ -46,7 +46,10 @@ f01ConfigurarYJugar:
         BL f01ImprimirCadena
         MOV x0, x11       // imprimir columnas
         BL print_long
-        // Inicializar tablero y comenzar juego
+        // Depuración: antes de inicializar tablero
+        ADR x1, debug_msg_tablero
+        MOV x2, #22
+        BL f01ImprimirCadena
         LDR x13, =FilasSel
         LDR x0, [x13]
         LDR x14, =ColumnasSel
@@ -54,9 +57,30 @@ f01ConfigurarYJugar:
         LDR x15, =MinasSel
         LDR x2, [x15]
         BL f01InicializarTablero
+        // Depuración: después de inicializar tablero
+        ADR x1, debug_msg_post_tablero
+        MOV x2, #27
+        BL f01ImprimirCadena
         BL f02ColocarMinas
+        // Depuración: después de colocar minas
+        ADR x1, debug_msg_post_minas
+        MOV x2, #25
+        BL f01ImprimirCadena
         BL f02BucleJuego
+        // Depuración: después de bucle juego
+        ADR x1, debug_msg_post_bucle
+        MOV x2, #25
+        BL f01ImprimirCadena
         RET
+        .section .rodata
+debug_msg_tablero:
+        .asciz "ANTES INICIALIZAR TABLERO\n"
+debug_msg_post_tablero:
+        .asciz "DESPUES INICIALIZAR TABLERO\n"
+debug_msg_post_minas:
+        .asciz "DESPUES COLOCAR MINAS\n"
+debug_msg_post_bucle:
+        .asciz "DESPUES BUCLE JUEGO\n"
         // Rutina para imprimir número decimal en x0
         .section .text
 print_decimal:
