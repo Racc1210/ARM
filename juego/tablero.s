@@ -125,9 +125,9 @@ f02ColocarMinas_loop:
         MSUB x6, x7, x3, x0
         ADD x8, x5, x6
         LDRB w9, [x8]
-        ADR x10, SimboloMina
-        LDRB w10, [x10]
-        CMP w9, w10
+        ADR x1, SimboloMina
+        ADR x2, LargoSimboloMinaVal
+        LDR x2, [x2]
         BEQ f02ColocarMinas_loop
         STRB w10, [x8]
         SUB x4, x4, #1
@@ -170,7 +170,7 @@ f03ImprimirTablero_columnas:
         B f03ImprimirTablero_columnas
 f03ImprimirTablero_nuevaLinea:
         ADR x1, NuevaLinea
-        LDR x2, =LargoNuevaLineaVal
+        ADR x2, LargoNuevaLineaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
         ADD x3, x3, #1
@@ -283,7 +283,7 @@ f05Derrota:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         LDR x1, =MensajeDerrota
-        LDR x2, =LargoMensajeDerrotaVal
+        ADR x2, LargoMensajeDerrotaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
         MOV x3, #0
@@ -307,7 +307,7 @@ f05Derrota_columnas:
 
         // imprimir mina
         LDR x1, =SimboloMina
-        LDR x2, =LargoSimboloMinaVal
+        ADR x2, LargoSimboloMinaVal
         LDR x2, [x2]
                  ADR x9, SimboloMina
                  ADR x1, SimboloMina
@@ -323,7 +323,7 @@ f05Derrota_nextCol:
 
 f05Derrota_nuevaLinea:
         LDR x1, =NuevaLinea
-        LDR x2, =LargoNuevaLineaVal
+        ADR x2, LargoNuevaLineaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
         ADD x3, x3, #1
