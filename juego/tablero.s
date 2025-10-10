@@ -112,7 +112,7 @@ print_tablero_filas:
         MOV x4, #0         // columna
 print_tablero_columnas:
         CMP x4, x1
-        B.GE print_tablero_nuevaLinea
+        B.GE print_tablero_finFila
         // Calcular offset: offset = fila * columnas + columna
         MUL x5, x3, x1
         ADD x5, x5, x4
@@ -127,8 +127,8 @@ print_tablero_columnas:
         ADD sp, sp, #8
         ADD x4, x4, #1
         B print_tablero_columnas
-print_tablero_nuevaLinea:
-        // Imprimir salto de línea ASCII (0x0A) después de cada fila
+print_tablero_finFila:
+        // Imprimir salto de línea solo después de terminar la fila
         SUB sp, sp, #8
         MOV w7, #0x0A
         STRB w7, [sp]
