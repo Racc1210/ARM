@@ -198,8 +198,23 @@ f10LeerMinas:
         SUB x2, x2, #1
         BL f04ValidarRango
         CMP x0, #0
+        // Print debug: validación OK
+        LDR x1, =MensajeMinas
+        LDR x2, =LargoMensajeMinasVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
+        // Print debug: valor de minas
+        MOV x1, x12
+        // Convertir a string y mostrar (simple)
+        // Aquí podrías llamar a una rutina de impresión de número si existe
+        // Si no, solo imprime el mensaje anterior
         BNE f10GuardarMinas
 f10GuardarMinas:
+        // Print debug: guardando minas
+        LDR x1, =MensajeMinas
+        LDR x2, =LargoMensajeMinasVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
         LDR x13, =TmpMinas
         STR x12, [x13]
         B f11MinasOK
