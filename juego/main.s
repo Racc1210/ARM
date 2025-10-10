@@ -121,10 +121,8 @@ f06Experto:
         MOV x1, #16
         MOV x2, #99
         B f12GuardarConfig
-
+        BNE f09FilasOK_close
 f07Personalizada:
-        stp x29, x30, [sp, -16]!
-        mov x29, sp
 f08LeerFilas:
         stp x29, x30, [sp, -16]!
         mov x29, sp
@@ -132,9 +130,9 @@ f08LeerFilas:
         LDR x2, =LargoMensajeFilasVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        BL f03LeerNumero
-        MOV x10, x0
-
+f09FilasOK_close:
+        ldp x29, x30, [sp], 16
+        B f09LeerColumnas
         MOV x0, x10
         MOV x1, #8
         MOV x2, #30

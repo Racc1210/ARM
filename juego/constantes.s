@@ -43,7 +43,7 @@ LargoMensajeErrorSeleccionVal: .quad 36
 
 MensajeFilas:
     .asciz "Ingrese filas (8-30): "
-LargoMensajeFilasVal: .quad 20
+LargoMensajeFilasVal: .quad 22
 
 MensajeColumnas:
     .asciz "Ingrese columnas (8-24): "
