@@ -207,12 +207,7 @@ f03ImprimirTablero:
         MOV x3, #0
         ADR x5, Tablero
 f03ImprimirTablero_filas:
-        // DEPURACION: Iterando fila x3
-        ADR x1, debug_iterando_fila
-        MOV x2, #20
-        BL f01ImprimirCadena
-        MOV x0, x3
-        BL print_decimal
+        // (Depuración eliminada para imprimir solo el tablero)
         CMP x3, x0
         B.GE f03ImprimirTablero_fin
         MOV x4, #0
@@ -222,12 +217,7 @@ f03ImprimirTablero_columnas:
         MUL x6, x3, x1
         ADD x6, x6, x4
         ADD x7, x5, x6
-        // DEPURACION: Imprimir índice de celda
-        ADR x11, debug_tablero_indice
-        MOV x12, #8
-        BL f01ImprimirCadena
-        MOV x0, x6
-        BL print_decimal
+        // (Depuración eliminada para imprimir solo el tablero)
         // Copiar el símbolo a CeldaPrint y agregar cero
         ADR x8, CeldaPrint
         LDRB w9, [x7]         // w9 = símbolo
