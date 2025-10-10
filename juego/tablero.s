@@ -149,7 +149,8 @@ f02ColocarMinas:
         mov x29, sp
         // Depuración: INICIO colocar minas
         ADR x1, debug_colocar_minas_ini
-        MOV x2, #18
+        BL f05LongitudCadena   // x0 = longitud
+        MOV x2, x0
         BL f01ImprimirCadena
         MUL x3, x0, x1
         MOV x4, x2
