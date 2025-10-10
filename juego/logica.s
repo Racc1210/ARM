@@ -32,15 +32,17 @@
 
 f01ConfigurarYJugar:
         // Print valores de filas y columnas
+        MOV x10, x0       // guardar filas
+        MOV x11, x1       // guardar columnas
         ADR x1, debug_msg_filas
         MOV x2, #14
         BL f01ImprimirCadena
-        MOV x0, x0        // filas en x0
+        MOV x0, x10       // imprimir filas
         BL print_decimal
         ADR x1, debug_msg_columnas
         MOV x2, #17
         BL f01ImprimirCadena
-        MOV x0, x1        // columnas en x0
+        MOV x0, x11       // imprimir columnas
         BL print_decimal
         // Rutina para imprimir número decimal en x0
         .section .text
