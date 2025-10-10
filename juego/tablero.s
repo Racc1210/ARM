@@ -1,3 +1,15 @@
+        // DEPURACION: Antes de mostrar menú de acciones
+        ADR x1, debug_antes_menu_acciones
+        MOV x2, #32
+        BL f01ImprimirCadena
+        // DEPURACION: Antes de imprimir tablero
+        ADR x1, debug_antes_imprimir_tablero
+        MOV x2, #28
+        BL f01ImprimirCadena
+        // DEPURACION: Después de imprimir tablero
+        ADR x1, debug_despues_imprimir_tablero
+        MOV x2, #30
+        BL f01ImprimirCadena
         .section .bss
 Tablero:
         .skip 720
@@ -93,6 +105,12 @@ print_decimal:
         ADD sp, sp, #16
         RET
         .section .rodata
+debug_antes_menu_acciones:
+        .asciz "ANTES DE MENU DE ACCIONES\n"
+debug_antes_imprimir_tablero:
+        .asciz "ANTES DE IMPRIMIR TABLERO\n"
+debug_despues_imprimir_tablero:
+        .asciz "DESPUES DE IMPRIMIR TABLERO\n"
 debug_tablero_filas:
         .asciz "TABLERO FILAS: "
 debug_tablero_columnas:
