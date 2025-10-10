@@ -209,10 +209,6 @@ f03ImprimirTablero_filas:
         BL f01ImprimirCadena
         MOV x0, x3
         BL print_decimal
-debug_entrando_imprimir_tablero:
-        .asciz "ENTRANDO A IMPRIMIR TABLERO\n"
-debug_iterando_fila:
-        .asciz "ITERANDO FILA: "
         CMP x3, x0
         B.GE f03ImprimirTablero_fin
         MOV x4, #0
