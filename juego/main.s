@@ -155,9 +155,6 @@ f09FilasOK:
         ldp x29, x30, [sp], 16
         B f09LeerColumnas
 
-f09FilasOK:
-        stp x29, x30, [sp, -16]!
-        mov x29, sp
 f09LeerColumnas:
 
         stp x29, x30, [sp, -16]!
