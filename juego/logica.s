@@ -37,8 +37,8 @@ f01ConfigurarYJugar:
         ADR x1, debug_msg_filas
         MOV x2, #14
         BL f01ImprimirCadena
-        MOV x0, x10       // imprimir filas
-        BL print_decimal
+                 MOV x0, x10       // imprimir filas
+                 BL print_long
         ADR x1, debug_msg_columnas
         MOV x2, #17
         BL f01ImprimirCadena
@@ -92,6 +92,54 @@ print_decimal:
         BL f01ImprimirCadena
         ADD sp, sp, #16
         RET
+        print_long:
+            stp x29, x30, [sp, -32]!
+            mov x29, sp
+            // Reservar buffer local en el stack (16 bytes, ya incluido en stp)
+            mov x1, sp          // x1 = buffer
+            mov x2, #0          // x2 = longitud
+            cmp x0, #0
+            bne .pl_loop
+            mov w3, #'0'
+            strb w3, [x1]
+            add x2, x2, #1
+            b .pl_done
+        .pl_loop:
+            mov x3, x0
+            mov x4, #10
+            udiv x0, x3, x4
+            msub x5, x0, x4, x3
+            add w5, w5, #'0'
+            strb w5, [x1, x2]
+            add x2, x2, #1
+            cmp x0, #0
+            bne .pl_loop
+        .pl_done:
+            mov x3, #0
+            sub x4, x2, #1
+        .pl_reverse:
+            cmp x3, x4
+            bge .pl_print
+            ldrb w5, [x1, x3]
+            ldrb w6, [x1, x4]
+            strb w6, [x1, x3]
+            strb w5, [x1, x4]
+            add x3, x3, #1
+            sub x4, x4, #1
+            b .pl_reverse
+        .pl_print:
+            mov x8, #64
+            mov x0, #1
+            mov x1, sp
+            mov x2, x2
+            svc #0
+            ldr x1, =NuevaLinea
+            mov x2, #1
+            mov x8, #64
+            mov x0, #1
+            svc #0
+            ldp x29, x30, [sp], 32
+            ret
         .section .rodata
 debug_msg_filas:
         .asciz "FILAS: "
