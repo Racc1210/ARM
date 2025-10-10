@@ -111,7 +111,7 @@ f02ColocarMinas:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         // Depuración: INICIO colocar minas
-        LDR x1, =debug_colocar_minas_ini
+        ADR x1, debug_colocar_minas_ini
         MOV x2, #18
         BL f01ImprimirCadena
         MUL x3, x0, x1
@@ -134,7 +134,7 @@ f02ColocarMinas_loop:
         B f02ColocarMinas_loop
 f02ColocarMinas_fin:
         // Depuración: FIN colocar minas
-        LDR x1, =debug_colocar_minas_fin
+        ADR x1, debug_colocar_minas_fin
         MOV x2, #16
         BL f01ImprimirCadena
         ldp x29, x30, [sp], 16
