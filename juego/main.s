@@ -127,6 +127,7 @@ f06Experto:
         B f12GuardarConfig
         BNE f09FilasOK_close
 f07Personalizada:
+
 f08LeerFilas:
         stp x29, x30, [sp, -16]!
         mov x29, sp
@@ -134,9 +135,8 @@ f08LeerFilas:
         LDR x2, =LargoMensajeFilasVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-f09FilasOK_close:
-        ldp x29, x30, [sp], 16
-        B f09LeerColumnas
+        BL f03LeerNumero
+        MOV x10, x0
         MOV x0, x10
         MOV x1, #8
         MOV x2, #30
@@ -148,12 +148,18 @@ f09FilasOK_close:
         LDR x2, =LargoMensajeErrorCantidadFilasVal
         LDR x2, [x2]
         BL f01ImprimirCadena
+        ldp x29, x30, [sp], 16
         B f08LeerFilas
+
+f09FilasOK:
+        ldp x29, x30, [sp], 16
+        B f09LeerColumnas
 
 f09FilasOK:
         stp x29, x30, [sp, -16]!
         mov x29, sp
 f09LeerColumnas:
+
         stp x29, x30, [sp, -16]!
         mov x29, sp
         LDR x1, =MensajeColumnas
@@ -162,7 +168,6 @@ f09LeerColumnas:
         BL f01ImprimirCadena
         BL f03LeerNumero
         MOV x11, x0
-
         MOV x0, x11
         MOV x1, #8
         MOV x2, #24
@@ -174,12 +179,14 @@ f09LeerColumnas:
         LDR x2, =LargoMensajeErrorCantidadColumnasVal
         LDR x2, [x2]
         BL f01ImprimirCadena
+        ldp x29, x30, [sp], 16
         B f09LeerColumnas
 
 f10ColumnasOK:
         stp x29, x30, [sp, -16]!
         mov x29, sp
 f10LeerMinas:
+
         stp x29, x30, [sp, -16]!
         mov x29, sp
         LDR x1, =MensajeMinas
@@ -188,7 +195,6 @@ f10LeerMinas:
         BL f01ImprimirCadena
         BL f03LeerNumero
         MOV x12, x0
-
         MOV x0, x12
         MOV x1, #1
         MUL x2, x10, x11
@@ -201,6 +207,7 @@ f10LeerMinas:
         LDR x2, =LargoMensajeErrorCantidadMinasVal
         LDR x2, [x2]
         BL f01ImprimirCadena
+        ldp x29, x30, [sp], 16
         B f10LeerMinas
 
 f11MinasOK:
