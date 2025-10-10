@@ -136,14 +136,17 @@ f08LeerFilas:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        LDR x13, =TmpFilas
-        STR x0, [x13]
+        MOV x10, x0
         MOV x0, x10
         MOV x1, #8
         MOV x2, #30
         BL f04ValidarRango
         CMP x0, #0
-        BNE f09FilasOK
+        BNE f08GuardarFila
+f08GuardarFila:
+        LDR x13, =TmpFilas
+        STR x10, [x13]
+        B f09FilasOK
 
         LDR x1, =MensajeErrorCantidadFilas
         LDR x2, =LargoMensajeErrorCantidadFilasVal
@@ -161,14 +164,17 @@ f09LeerColumnas:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        LDR x13, =TmpColumnas
-        STR x0, [x13]
+        MOV x11, x0
         MOV x0, x11
         MOV x1, #8
         MOV x2, #24
         BL f04ValidarRango
         CMP x0, #0
-        BNE f10ColumnasOK
+        BNE f09GuardarColumna
+f09GuardarColumna:
+        LDR x13, =TmpColumnas
+        STR x11, [x13]
+        B f10ColumnasOK
 
         LDR x1, =MensajeErrorCantidadColumnas
         LDR x2, =LargoMensajeErrorCantidadColumnasVal
@@ -185,15 +191,18 @@ f10LeerMinas:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        LDR x13, =TmpMinas
-        STR x0, [x13]
+        MOV x12, x0
         MOV x0, x12
         MOV x1, #1
         MUL x2, x10, x11
         SUB x2, x2, #1
         BL f04ValidarRango
         CMP x0, #0
-        BNE f11MinasOK
+        BNE f10GuardarMinas
+f10GuardarMinas:
+        LDR x13, =TmpMinas
+        STR x12, [x13]
+        B f11MinasOK
 
         LDR x1, =MensajeErrorCantidadMinas
         LDR x2, =LargoMensajeErrorCantidadMinasVal
