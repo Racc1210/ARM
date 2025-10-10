@@ -202,7 +202,6 @@ f10LeerMinas:
         B f10LeerMinas
 
 f11MinasOK:
-        // ...sin cierre de marco de pila...
         MOV x0, x10
         MOV x1, x11
         MOV x2, x12
