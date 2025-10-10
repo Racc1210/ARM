@@ -40,7 +40,7 @@ f01InicializarTablero:
         MOV x11, x1
         MOV x3, #0
         MUL x4, x10, x11
-        LDR x5, =Tablero
+        ADR x5, Tablero
         LDR x6, =SimboloVacio
         LDRB w6, [x6]
 f01InicializarTablero_loop:
@@ -169,7 +169,7 @@ f03ImprimirTablero_columnas:
         ADD x4, x4, #1
         B f03ImprimirTablero_columnas
 f03ImprimirTablero_nuevaLinea:
-        LDR x1, =NuevaLinea
+        ADR x1, NuevaLinea
         LDR x2, =LargoNuevaLineaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
