@@ -128,8 +128,6 @@ f06Experto:
 f07Personalizada:
 
 f08LeerFilas:
-        stp x29, x30, [sp, -16]!
-        mov x29, sp
         LDR x1, =MensajeFilas
         LDR x2, =LargoMensajeFilasVal
         LDR x2, [x2]
@@ -154,8 +152,6 @@ f09FilasOK:
 
 f09LeerColumnas:
 
-        stp x29, x30, [sp, -16]!
-        mov x29, sp
         LDR x1, =MensajeColumnas
         LDR x2, =LargoMensajeColumnasVal
         LDR x2, [x2]
@@ -179,8 +175,6 @@ f10ColumnasOK:
         // ...sin cierre de marco de pila...
 f10LeerMinas:
 
-        stp x29, x30, [sp, -16]!
-        mov x29, sp
         LDR x1, =MensajeMinas
         LDR x2, =LargoMensajeMinasVal
         LDR x2, [x2]
