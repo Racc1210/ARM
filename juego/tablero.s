@@ -8,6 +8,10 @@ debug_iterando_fila:
         MOV x2, x0
         ADR x1, debug_tablero_filas
         BL f01ImprimirCadena
+        ADR x1, NuevaLinea
+        ADR x2, LargoNuevaLineaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
         MOV x0, x0
         BL print_decimal
         // DEPURACION: Imprimir valor de columnas
@@ -15,6 +19,10 @@ debug_iterando_fila:
         BL f05LongitudCadena
         MOV x2, x0
         ADR x1, debug_tablero_columnas
+        BL f01ImprimirCadena
+        ADR x1, NuevaLinea
+        ADR x2, LargoNuevaLineaVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         MOV x0, x1
         BL print_decimal
@@ -24,11 +32,19 @@ debug_iterando_fila:
         MOV x2, x0
         ADR x1, debug_antes_menu_acciones
         BL f01ImprimirCadena
+        ADR x1, NuevaLinea
+        ADR x2, LargoNuevaLineaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
         // DEPURACION: Antes de imprimir tablero
         ADR x1, debug_antes_imprimir_tablero
         BL f05LongitudCadena
         MOV x2, x0
         ADR x1, debug_antes_imprimir_tablero
+        BL f01ImprimirCadena
+        ADR x1, NuevaLinea
+        ADR x2, LargoNuevaLineaVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
         // DEPURACION: Después de imprimir tablero
         ADR x1, debug_despues_imprimir_tablero
@@ -36,6 +52,11 @@ debug_iterando_fila:
         MOV x2, x0
         ADR x1, debug_despues_imprimir_tablero
         BL f01ImprimirCadena
+        ADR x1, NuevaLinea
+        ADR x2, LargoNuevaLineaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
+        BL f03ImprimirTablero
         .section .bss
 Tablero:
         .skip 720
