@@ -147,7 +147,6 @@ f08LeerFilas:
         LDR x2, =LargoMensajeErrorCantidadFilasVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        ldp x29, x30, [sp], 16
         B f08LeerFilas
 
 f09FilasOK:
@@ -175,7 +174,6 @@ f09LeerColumnas:
         LDR x2, =LargoMensajeErrorCantidadColumnasVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        ldp x29, x30, [sp], 16
         B f09LeerColumnas
 
 f10ColumnasOK:
@@ -203,7 +201,6 @@ f10LeerMinas:
         LDR x2, =LargoMensajeErrorCantidadMinasVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        ldp x29, x30, [sp], 16
         B f10LeerMinas
 
 f11MinasOK:
