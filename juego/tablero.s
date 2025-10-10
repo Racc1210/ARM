@@ -300,13 +300,13 @@ f05Derrota_columnas:
         ADD x6, x6, x4
         ADD x7, x5, x6
         LDRB w8, [x7]
-        LDR x9, =SimboloMina
+        ADR x9, SimboloMina
         LDRB w9, [x9]
         CMP w8, w9
         BNE f05Derrota_imprimirCelda
 
         // imprimir mina
-        LDR x1, =SimboloMina
+        ADR x1, SimboloMina
         ADR x2, LargoSimboloMinaVal
         LDR x2, [x2]
                  ADR x9, SimboloMina
@@ -402,7 +402,7 @@ f07ColocarBandera:
         LDRB w9, [x9]
         ADR x10, SimboloMina
         LDRB w10, [x10]
-        LDR x9, =SimboloBandera
+        ADR x9, SimboloBandera
         LDRB w9, [x9]
         STRB w9, [x6]
         ldp x29, x30, [sp], 16
