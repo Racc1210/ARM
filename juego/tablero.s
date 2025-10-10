@@ -4,27 +4,37 @@ debug_iterando_fila:
         .asciz "ITERANDO FILA: "
         // DEPURACION: Imprimir valor de filas
         ADR x1, debug_tablero_filas
-        MOV x2, #15
+        BL f05LongitudCadena
+        MOV x2, x0
+        ADR x1, debug_tablero_filas
         BL f01ImprimirCadena
         MOV x0, x0
         BL print_decimal
         // DEPURACION: Imprimir valor de columnas
         ADR x1, debug_tablero_columnas
-        MOV x2, #18
+        BL f05LongitudCadena
+        MOV x2, x0
+        ADR x1, debug_tablero_columnas
         BL f01ImprimirCadena
         MOV x0, x1
         BL print_decimal
         // DEPURACION: Antes de mostrar menú de acciones
         ADR x1, debug_antes_menu_acciones
-        MOV x2, #32
+        BL f05LongitudCadena
+        MOV x2, x0
+        ADR x1, debug_antes_menu_acciones
         BL f01ImprimirCadena
         // DEPURACION: Antes de imprimir tablero
         ADR x1, debug_antes_imprimir_tablero
-        MOV x2, #28
+        BL f05LongitudCadena
+        MOV x2, x0
+        ADR x1, debug_antes_imprimir_tablero
         BL f01ImprimirCadena
         // DEPURACION: Después de imprimir tablero
         ADR x1, debug_despues_imprimir_tablero
-        MOV x2, #30
+        BL f05LongitudCadena
+        MOV x2, x0
+        ADR x1, debug_despues_imprimir_tablero
         BL f01ImprimirCadena
         .section .bss
 Tablero:
