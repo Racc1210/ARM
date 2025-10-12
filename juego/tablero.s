@@ -59,6 +59,7 @@ BufferSimbolo:
         .extern NuevaLinea, LargoNuevaLineaVal
         .extern Espacio, LargoEspacioVal
         .extern f01ImprimirCadena
+        .extern f06CrearCadenaDinamica, f07ImprimirCadenaNVeces
 
 // -------------------------------------------------
 // f01InicializarTablero
@@ -107,85 +108,19 @@ init_tablero_fin:
 f03ImprimirTablero:
         stp x29, x30, [sp, -16]!
         mov x29, sp
+        // Obtener cantidad de filas y columnas
         LDR x10, =FilasSel
         LDR x0, [x10]      // x0 = filas
         LDR x11, =ColumnasSel
         LDR x1, [x11]      // x1 = columnas
-        LDR x12, =Tablero
-        MOV x20, #0        // fila actual
-print_tablero_filas:
-        CMP x20, x0
-        B.GE print_tablero_fin_directo
-        MOV x21, #0        // columna actual
-print_tablero_columnas:
-        CMP x21, x1
-        B.GE print_tablero_fin_fila
-        // Calcular offset base: offset = 2 * (fila * columnas + columna)
-        MUL x5, x20, x1
-        ADD x5, x5, x21
-        LSL x5, x5, #1     // x5 = x5 * 2
-        ADD x6, x12, x5    // dirección base de celda
-        // Leer mina y estado
-        LDRB w7, [x6]      // mina
-        LDRB w8, [x6, #1]  // estado
-        // Seleccionar símbolo a imprimir
-        CMP w8, #0
-        BEQ print_simbolo_vacio
-        CMP w8, #1
-        BEQ print_simbolo_descubierta
-        CMP w8, #2
-        BEQ print_simbolo_bandera
-        B print_simbolo_vacio
-print_simbolo_vacio:
-        LDR x1, =SimboloVacio
-        LDR x2, =LargoSimboloVacioVal
-        LDR x2, [x2]
-        MOV x8, #64
-        MOV x0, #1
-        SVC #0
-        ADD x21, x21, #1
-        B print_tablero_columnas
-print_simbolo_descubierta:
-        CMP w7, #1
-        BEQ print_simbolo_mina
-        // Si no hay mina, imprimir espacio
-        MOV w9, #' '
-        SUB sp, sp, #8
-        STRB w9, [sp]
-        MOV x1, sp
-        MOV x2, #1
-        MOV x8, #64
-        MOV x0, #1
-        SVC #0
-        ADD sp, sp, #8
-        ADD x21, x21, #1
-        B print_tablero_columnas
-print_simbolo_mina:
-        LDR x1, =SimboloMina
-        LDR x2, =LargoSimboloMinaVal
-        LDR x2, [x2]
-        MOV x8, #64
-        MOV x0, #1
-        SVC #0
-        ADD x21, x21, #1
-        B print_tablero_columnas
-print_simbolo_bandera:
-        LDR x1, =SimboloBandera
-        LDR x2, =LargoSimboloBanderaVal
-        LDR x2, [x2]
-        MOV x8, #64
-        MOV x0, #1
-        SVC #0
-        ADD x21, x21, #1
-        B print_tablero_columnas
-print_tablero_fin_fila:
-        LDR x1, =NuevaLinea
-        MOV x2, #1
-        MOV x8, #64
-        MOV x0, #1
-        SVC #0
-        ADD x20, x20, #1
-        B print_tablero_filas
-print_tablero_fin_directo:
+        // Crear cadena de una fila con símbolo vacío
+        LDR x12, =SimboloVacio
+        LDRB w13, [x12]    // w13 = símbolo vacío
+        MOV x2, x1         // cantidad de columnas
+        MOV x1, w13        // carácter a repetir
+        BL f06CrearCadenaDinamica
+        // x3 = dirección de la cadena, x2 = longitud
+        MOV x4, x0         // cantidad de filas
+        BL f06ImprimirCadenaNVeces
         ldp x29, x30, [sp], 16
         RET
