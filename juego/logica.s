@@ -34,6 +34,22 @@ f01ConfigurarYJugar:
         // Print valores de filas y columnas
         MOV x10, x0       // guardar filas
         MOV x11, x1       // guardar columnas
+        // Imprimir 'FILAS: ' y el valor
+        ADR x1, debug_msg_filas
+        MOV x2, #7        // Solo 'FILAS: '
+        BL f01ImprimirCadena
+        MOV x0, x10       // imprimir filas
+        BL print_long
+        // Imprimir 'COLUMNAS: ' y el valor
+        ADR x1, debug_msg_columnas
+        MOV x2, #10       // Solo 'COLUMNAS: '
+        BL f01ImprimirCadena
+        MOV x0, x11       // imprimir columnas
+        BL print_long
+        // Depuración: antes de inicializar tablero
+        ADR x1, debug_msg_tablero
+        MOV x2, #22
+        BL f01ImprimirCadena
         LDR x13, =FilasSel
         LDR x0, [x13]
         LDR x14, =ColumnasSel
@@ -41,18 +57,24 @@ f01ConfigurarYJugar:
         LDR x15, =MinasSel
         LDR x2, [x15]
         BL f01InicializarTablero
-        LDR x13, =FilasSel
-        LDR x0, [x13]
+        // Depuración: después de inicializar tablero
+        ADR x1, debug_msg_post_tablero
+        MOV x2, #27
+        BL f01ImprimirCadena
         BL f02ColocarMinas
-        LDR x13, =FilasSel
-        LDR x0, [x13]
+        // Depuración: después de colocar minas
+        ADR x1, debug_msg_post_minas
+        MOV x2, #25
+        BL f01ImprimirCadena
         BL f02BucleJuego
-                RET
+        // Depuración: después de bucle juego
+        ADR x1, debug_msg_post_bucle
+        MOV x2, #25
+        BL f01ImprimirCadena
         RET
         // ...existing code...
         // Rutina para imprimir número decimal en x0
         .section .text
-        .global print_decimal
 print_decimal:
         // x0: número a imprimir
         // buffer temporal en stack
@@ -148,6 +170,10 @@ print_decimal:
             ldp x29, x30, [sp], 32
             ret
         .section .rodata
+debug_msg_filas:
+        .asciz "FILAS: "
+debug_msg_columnas:
+        .asciz "COLUMNAS: "
         .section .text
         stp x29, x30, [sp, -16]!
         mov x29, sp
@@ -183,14 +209,8 @@ print_decimal:
         .section .rodata
 debug_msg_tablero:
         .asciz "ANTES INICIALIZAR TABLERO\n"
-debug_msg_filas_pre_init:
-        .asciz "[PRE INIT] FilasSel antes de inicializar: "
-debug_msg_filas_post_init:
-        .asciz "[POST INIT] FilasSel después de inicializar: "
 debug_msg_post_tablero:
         .asciz "DESPUES INICIALIZAR TABLERO\n"
-debug_msg_filas_post_minas:
-        .asciz "[POST MINAS] FilasSel después de colocar minas: "
 debug_msg_post_minas:
         .asciz "DESPUES COLOCAR MINAS\n"
 debug_msg_post_bucle:
@@ -204,30 +224,23 @@ f02BucleJuego:
         // Depuración: INICIO JUEGO
         ADR x1, inicio_juego_msg
         MOV x2, #13
-        // Print de checkpoint antes de llamar a f03ImprimirTablero
-        ADR x1, debug_msg_checkpoint_tablero_1
-        // Print de checkpoint justo antes de f03ImprimirTablero
-        ADR x1, debug_msg_checkpoint_tablero_2
+        BL f01ImprimirCadena
+        // Imprimir valores de filas y columnas
+        LDR x20, =FilasSel
+        LDR x0, [x20]      // x0 = filas
         LDR x21, =ColumnasSel
         LDR x1, [x21]      // x1 = columnas
+        // Imprimir tablero
         BL f03ImprimirTablero
-        // Print de checkpoint justo después de f03ImprimirTablero
-        ADR x1, debug_msg_checkpoint_tablero_3
-        MOV x2, #42
-        // Depuración: valor de FilasSel después de imprimir tablero
-        ADR x1, debug_msg_filas_post_tablero
 
         .section .rodata
+inicio_juego_msg:
         .asciz "INICIO JUEGO\n"
-debug_msg_filas_pre_tablero:
-        .asciz "[PRE TABLERO] FilasSel antes de imprimir tablero: "
-debug_msg_checkpoint_tablero_1:
-        .asciz "[CHECKPOINT 1] FilasSel antes de f03ImprimirTablero: "
-        .asciz "[CHECKPOINT 2] FilasSel justo antes de f03ImprimirTablero: "
-        .asciz "[CHECKPOINT 3] FilasSel justo después de f03ImprimirTablero: "
-        .asciz "[POST TABLERO] FilasSel después de imprimir tablero: "
+        .section .text
         LDR x20, =FilasSel
+        LDR x20, [x20]
         LDR x21, =ColumnasSel
+        LDR x21, [x21]
 
         BL f03ImprimirTablero
 
