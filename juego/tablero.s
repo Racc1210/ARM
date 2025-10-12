@@ -53,10 +53,6 @@ BufferSimbolo:
 
         .extern FilasSel
         .extern ColumnasSel
-        .extern print_decimal
-        .section .rodata
-debug_msg_filas_tablero:
-        .asciz "FILAS TABLERO: "
         .extern SimboloVacio, LargoSimboloVacioVal
         .extern SimboloMina, LargoSimboloMinaVal
         .extern SimboloBandera, LargoSimboloBanderaVal
@@ -121,31 +117,10 @@ f03ImprimirTablero:
         LDR x12, =SimboloVacio
         LDRB w13, [x12]    // w13 = símbolo vacío
         MOV x2, x1         // cantidad de columnas
-        MOV w1, w13        // carácter a repetir
+        MOV x1, w13        // carácter a repetir
         BL f06CrearCadenaDinamica
         // x3 = dirección de la cadena, x2 = longitud
-        // Depuración: imprimir cantidad de filas (x0)
-        // Guardar x0 en stack temporal
-        SUB sp, sp, #16
-        STR x0, [sp]
-        // Mensaje
-        LDR x1, =debug_msg_filas_tablero
-        MOV x2, #22
-        BL f01ImprimirCadena
-        // Imprimir valor
-        LDR x0, [sp]
-        BL print_decimal
-        ADD sp, sp, #16
-        MOV x4, #0         // contador de filas
-f03ImprimirTablero_filas_loop:
-        CMP x4, x0         // x0 = cantidad de filas
-        B.GE f03ImprimirTablero_fin
-        // Imprimir la cadena dinámica (una fila)
-        mov x1, x3         // buffer
-        mov x2, x2         // longitud
-        bl f01ImprimirCadena
-        ADD x4, x4, #1
-        B f03ImprimirTablero_filas_loop
-f03ImprimirTablero_fin:
+        MOV x4, x0         // cantidad de filas
+        BL f07ImprimirCadenaNVeces
         ldp x29, x30, [sp], 16
         RET
