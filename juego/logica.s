@@ -9,7 +9,7 @@
 
         // Dependencias de tablero
         .extern f01InicializarTablero
-        .extern f02ColocarMinas
+        // ...sin lógica de minas...
         .extern f03ImprimirTablero
         .extern f04DescubrirCelda
         .extern f05Derrota
@@ -42,9 +42,7 @@ f01ConfigurarYJugar:
         LDR x15, =MinasSel
         LDR x2, [x15]
         BL f01InicializarTablero
-        LDR x13, =FilasSel
-        LDR x0, [x13]
-        BL f02ColocarMinas
+        // ...sin lógica de minas...
         // ...sin diagnóstico...
         LDR x13, =FilasSel
         LDR x0, [x13]
@@ -161,7 +159,7 @@ print_decimal:
         LDR x2, [x15]
 
         BL f01InicializarTablero
-        BL f02ColocarMinas
+        // ...sin lógica de minas...
         BL f02BucleJuego
         ldp x29, x30, [sp], 16
         RET
