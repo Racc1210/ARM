@@ -124,10 +124,12 @@ f03ImprimirTablero:
         LDR x1, =debug_msg_filas_tablero
         MOV x2, #16
         BL f01ImprimirCadena
+        MOV x20, x0        // Guardar valor original de x0 (filas)
         MOV x1, sp
         STR x0, [x1]
-        MOV x0, x0
+        MOV x0, x20        // Usar valor original para print_decimal
         BL print_decimal
+        MOV x0, x20        // Restaurar valor original de x0 (filas)
         .section .rodata
 debug_msg_filas_tablero:
         .asciz "FilasTablero: "
