@@ -106,28 +106,28 @@ f03ImprimirTablero:
         LDR x1, [x11]      // x1 = columnas
         LDR x12, =Tablero
         MOV x3, #0         // fila
-        SUB sp, sp, #64    // buffer temporal para una fila (máx 64 columnas)
-print_tablero_filas:
+print_tablero_filas_directo:
         CMP x3, x0
-        B.GE print_tablero_fin
+        B.GE print_tablero_fin_directo
         MOV x4, #0         // columna
-        MOV x5, sp         // puntero al buffer de la fila
-print_tablero_columnas:
+print_tablero_columnas_directo:
         CMP x4, x1
-        B.GE print_tablero_imprimirFila
+        B.GE print_tablero_nuevaLinea_directo
         // Calcular offset: offset = fila * columnas + columna
-        MUL x6, x3, x1
-        ADD x6, x6, x4
-        ADD x6, x12, x6
-        LDRB w7, [x6]      // símbolo de la celda
-        STRB w7, [x5, x4, LSL #0]  // guardar en buffer
-        ADD x4, x4, #1
-        B print_tablero_columnas
-print_tablero_imprimirFila:
-        MOV x1, sp         // buffer de la fila
-        MOV x2, x1         // x2 = columnas (incorrecto)
-        MOV x2, x11        // x2 = columnas (corregido)
+        MUL x5, x3, x1
+        ADD x5, x5, x4
+        ADD x5, x12, x5
+        LDRB w6, [x5]      // símbolo de la celda
+        // Imprimir el símbolo
+        SUB sp, sp, #8
+        STRB w6, [sp]
+        MOV x1, sp
+        MOV x2, #1
         BL f01ImprimirCadena
+        ADD sp, sp, #8
+        ADD x4, x4, #1
+        B print_tablero_columnas_directo
+print_tablero_nuevaLinea_directo:
         // Imprimir salto de línea
         SUB sp, sp, #8
         MOV w7, #0x0A
@@ -137,8 +137,7 @@ print_tablero_imprimirFila:
         BL f01ImprimirCadena
         ADD sp, sp, #8
         ADD x3, x3, #1
-        B print_tablero_filas
-print_tablero_fin:
-        ADD sp, sp, #64    // liberar buffer
+        B print_tablero_filas_directo
+print_tablero_fin_directo:
         ldp x29, x30, [sp], 16
         RET
