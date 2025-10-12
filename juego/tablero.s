@@ -119,23 +119,18 @@ print_tablero_columnas_directo:
         ADD x5, x12, x5
         LDRB w6, [x5]      // símbolo de la celda
         // Imprimir el símbolo
-        SUB sp, sp, #8
-        STRB w6, [sp]
         MOV x1, sp
+        STRB w6, [x1]
         MOV x2, #1
         BL f01ImprimirCadena
-        ADD sp, sp, #8
         ADD x4, x4, #1
         B print_tablero_columnas_directo
 print_tablero_nuevaLinea_directo:
-        // Imprimir salto de línea
-        SUB sp, sp, #8
-        MOV w7, #0x0A
-        STRB w7, [sp]
-        MOV x1, sp
-        MOV x2, #1
+        // Imprimir salto de línea usando la cadena global
+        LDR x1, =NuevaLinea
+        LDR x2, =LargoNuevaLineaVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
-        ADD sp, sp, #8
         ADD x3, x3, #1
         B print_tablero_filas_directo
 print_tablero_fin_directo:
