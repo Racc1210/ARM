@@ -78,73 +78,51 @@ print_long:
 
 // --- INICIO TEST CON IDENTIFICADORES ---
 _start:
-    // Bienvenida
-    LDR x1, =msgBienvenida
-    MOV x2, #11
-    MOV x8, #64      // syscall: write
-    MOV x0, #1       // fd: stdout
-    SVC #0
-    LDR x1, =Bienvenida
-    BL f05LongitudCadena
-    BL print_long
-    // MensajeSalir
-    LDR x1, =msgSalir
-    MOV x2, #12
-    MOV x8, #64
-    MOV x0, #1
-    SVC #0
-    LDR x1, =MensajeSalir
-    BL f05LongitudCadena
-    BL print_long
-    // Menu
-    LDR x1, =msgMenu
-    MOV x2, #5
-    MOV x8, #64
-    MOV x0, #1
-    SVC #0
-    LDR x1, =Menu
-    BL f05LongitudCadena
-    BL print_long
-    // MensajeErrorSeleccion
-    LDR x1, =msgErrorSeleccion
-    MOV x2, #21
-    MOV x8, #64
-    MOV x0, #1
-    SVC #0
-    LDR x1, =MensajeErrorSeleccion
-    BL f05LongitudCadena
-    BL print_long
-    // MensajeFilas
-    LDR x1, =msgFilas
-    MOV x2, #13
-    MOV x8, #64
-    MOV x0, #1
-    SVC #0
-    LDR x1, =MensajeFilas
-    BL f05LongitudCadena
-    BL print_long
-    // MensajeColumnas
-    LDR x1, =msgColumnas
-    MOV x2, #16
-    MOV x8, #64
-    MOV x0, #1
-    SVC #0
-    LDR x1, =MensajeColumnas
-    BL f05LongitudCadena
-    BL print_long
-    // MensajeMinas
-    LDR x1, =msgMinas
-    MOV x2, #12
-    MOV x8, #64
-    MOV x0, #1
-    SVC #0
-    LDR x1, =MensajeMinas
-    BL f05LongitudCadena
-    BL print_long
-    // Fin
+    // Prueba de cadena dinámica: repetir 'R' 5 veces y mostrar
+    MOV x1, #'R'      // Carácter a repetir
+    MOV x2, #5        // Cantidad de repeticiones
+    BL repetir_caracter_n_veces
+    // Fin del programa
     MOV x8, #93
     SVC #0
 // --- FIN TEST CON IDENTIFICADORES ---
+
+// --- Rutina: repetir_caracter_n_veces ---
+// x1: carácter, x2: cantidad
+// Reserva memoria dinámica, rellena, añade salto de línea, imprime
+repetir_caracter_n_veces:
+    stp x29, x30, [sp, -16]!
+    mov x29, sp
+    // 1. Obtener heap actual
+    MOV x8, #214      // syscall: brk (ARM64)
+    MOV x0, #0
+    SVC #0
+    MOV x3, x0        // x3 = base heap
+    // 2. Reservar N+1 bytes
+    ADD x0, x3, x2    // x0 = base + N
+    ADD x0, x0, #1    // x0 = base + N + 1
+    MOV x8, #214      // syscall: brk
+    SVC #0
+    // 3. Rellenar N veces con el carácter
+    MOV x4, #0        // índice
+repetir_bucle:
+    CMP x4, x2
+    B.GE repetir_fin_bucle
+    STRB w1, [x3, x4]
+    ADD x4, x4, #1
+    B repetir_bucle
+repetir_fin_bucle:
+    // 4. Añadir salto de línea
+    MOV w5, #10       // '\n'
+    STRB w5, [x3, x2]
+    // 5. Imprimir la cadena
+    MOV x8, #64       // syscall: write
+    MOV x0, #1        // fd: stdout
+    MOV x1, x3        // buffer
+    ADD x2, x2, #1    // longitud = N + 1
+    SVC #0
+    ldp x29, x30, [sp], 16
+    RET
 
 .section .data
 msgBienvenida:        .asciz "Bienvenida: "
