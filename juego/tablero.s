@@ -109,10 +109,19 @@ f03ImprimirTablero:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         // Obtener cantidad de filas y columnas
-        LDR x10, =FilasSel
-        LDR x0, [x10]      // x0 = filas
-        LDR x11, =ColumnasSel
-        LDR x1, [x11]      // x1 = columnas
+                MOV x4, #0         // índice de fila actual
+        f03ImprimirTablero_filas_loop:
+                CMP x4, x0         // ¿imprimimos todas las filas?
+                B.GE f03ImprimirTablero_fin
+                // Imprimir la cadena dinámica (una fila)
+                mov x1, x3         // buffer
+                mov x2, x2         // longitud
+                bl f01ImprimirCadena
+                ADD x4, x4, #1     // incrementar índice de fila
+                B f03ImprimirTablero_filas_loop
+        f03ImprimirTablero_fin:
+                ldp x29, x30, [sp], 16
+                RET
         // Crear cadena de una fila con símbolo vacío
         LDR x12, =SimboloVacio
         LDRB w13, [x12]    // w13 = símbolo vacío
