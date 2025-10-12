@@ -108,6 +108,7 @@ LargoMensajeVictoriaVal: .quad 56
         .global SimboloMina, LargoSimboloMinaVal
         .global SimboloBandera, LargoSimboloBanderaVal
         .global NuevaLinea, LargoNuevaLineaVal
+        .global espacio, LargoEspacioVal
 
 SimboloVacio:
     .asciz "#"
@@ -124,3 +125,7 @@ LargoSimboloBanderaVal: .quad 1
 NuevaLinea:
     .asciz "\n"
 LargoNuevaLineaVal: .quad 1
+
+Espacio:
+    .asciz " "
+LargoEspacioVal: .quad 1
