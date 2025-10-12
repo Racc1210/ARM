@@ -50,18 +50,37 @@ f01ConfigurarYJugar:
         ADR x1, debug_msg_tablero
         MOV x2, #22
         BL f01ImprimirCadena
+        // Depuración: valor de FilasSel antes de inicializar tablero
+        ADR x1, debug_msg_filas_pre_init
+        MOV x2, #32
+        BL f01ImprimirCadena
         LDR x13, =FilasSel
         LDR x0, [x13]
+        BL print_long
         LDR x14, =ColumnasSel
         LDR x1, [x14]
         LDR x15, =MinasSel
         LDR x2, [x15]
         BL f01InicializarTablero
+        // Depuración: valor de FilasSel después de inicializar tablero
+        ADR x1, debug_msg_filas_post_init
+        MOV x2, #34
+        BL f01ImprimirCadena
+        LDR x13, =FilasSel
+        LDR x0, [x13]
+        BL print_long
         // Depuración: después de inicializar tablero
         ADR x1, debug_msg_post_tablero
         MOV x2, #27
         BL f01ImprimirCadena
         BL f02ColocarMinas
+        // Depuración: valor de FilasSel después de colocar minas
+        ADR x1, debug_msg_filas_post_minas
+        MOV x2, #32
+        BL f01ImprimirCadena
+        LDR x13, =FilasSel
+        LDR x0, [x13]
+        BL print_long
         // Depuración: después de colocar minas
         ADR x1, debug_msg_post_minas
         MOV x2, #25
@@ -210,8 +229,14 @@ debug_msg_columnas:
         .section .rodata
 debug_msg_tablero:
         .asciz "ANTES INICIALIZAR TABLERO\n"
+debug_msg_filas_pre_init:
+        .asciz "[PRE INIT] FilasSel antes de inicializar: "
+debug_msg_filas_post_init:
+        .asciz "[POST INIT] FilasSel después de inicializar: "
 debug_msg_post_tablero:
         .asciz "DESPUES INICIALIZAR TABLERO\n"
+debug_msg_filas_post_minas:
+        .asciz "[POST MINAS] FilasSel después de colocar minas: "
 debug_msg_post_minas:
         .asciz "DESPUES COLOCAR MINAS\n"
 debug_msg_post_bucle:
@@ -226,17 +251,32 @@ f02BucleJuego:
         ADR x1, inicio_juego_msg
         MOV x2, #13
         BL f01ImprimirCadena
-        // Imprimir valores de filas y columnas
+        // Depuración: valor de FilasSel antes de imprimir tablero
+        ADR x1, debug_msg_filas_pre_tablero
+        MOV x2, #36
+        BL f01ImprimirCadena
         LDR x20, =FilasSel
         LDR x0, [x20]      // x0 = filas
+        BL print_long
         LDR x21, =ColumnasSel
         LDR x1, [x21]      // x1 = columnas
         // Imprimir tablero
         BL f03ImprimirTablero
+        // Depuración: valor de FilasSel después de imprimir tablero
+        ADR x1, debug_msg_filas_post_tablero
+        MOV x2, #37
+        BL f01ImprimirCadena
+        LDR x20, =FilasSel
+        LDR x0, [x20]
+        BL print_long
 
         .section .rodata
 inicio_juego_msg:
         .asciz "INICIO JUEGO\n"
+debug_msg_filas_pre_tablero:
+        .asciz "[PRE TABLERO] FilasSel antes de imprimir tablero: "
+debug_msg_filas_post_tablero:
+        .asciz "[POST TABLERO] FilasSel después de imprimir tablero: "
         .section .text
         LDR x20, =FilasSel
         LDR x20, [x20]
