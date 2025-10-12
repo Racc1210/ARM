@@ -128,48 +128,30 @@ print_tablero_columnas:
         // Leer mina y estado
         LDRB w7, [x6]      // mina
         LDRB w8, [x6, #1]  // estado
-        // Imprimir como sublista: [mina, estado]
-        // Imprimir '['
-        MOV w9, #'['
-        SUB sp, sp, #8
-        STRB w9, [sp]
-        MOV x1, sp
-        MOV x2, #1
+        // Seleccionar símbolo a imprimir
+        // estado = 0: oculta -> SimboloVacio
+        // estado = 1: descubierta
+        //    mina = 1 -> SimboloMina
+        //    mina = 0 -> ' '
+        // estado = 2: bandera -> SimboloBandera
+        CMP w8, #0
+        BEQ print_simbolo_vacio
+        CMP w8, #1
+        BEQ print_simbolo_descubierta
+        CMP w8, #2
+        BEQ print_simbolo_bandera
+        B print_simbolo_vacio
+print_simbolo_vacio:
+        LDR x1, =SimboloVacio
+        LDR x2, =LargoSimboloVacioVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
-        ADD sp, sp, #8
-        // Imprimir mina (como dígito)
-        ADD w9, w7, #'0'
-        SUB sp, sp, #8
-        STRB w9, [sp]
-        MOV x1, sp
-        MOV x2, #1
-        BL f01ImprimirCadena
-        ADD sp, sp, #8
-        // Imprimir ','
-        MOV w9, #','
-        SUB sp, sp, #8
-        STRB w9, [sp]
-        MOV x1, sp
-        MOV x2, #1
-        BL f01ImprimirCadena
-        ADD sp, sp, #8
-        // Imprimir estado (como dígito)
-        ADD w9, w8, #'0'
-        SUB sp, sp, #8
-        STRB w9, [sp]
-        MOV x1, sp
-        MOV x2, #1
-        BL f01ImprimirCadena
-        ADD sp, sp, #8
-        // Imprimir ']'
-        MOV w9, #']'
-        SUB sp, sp, #8
-        STRB w9, [sp]
-        MOV x1, sp
-        MOV x2, #1
-        BL f01ImprimirCadena
-        ADD sp, sp, #8
-        // Imprimir espacio entre sublistas
+        ADD x21, x21, #1
+        B print_tablero_columnas
+print_simbolo_descubierta:
+        CMP w7, #1
+        BEQ print_simbolo_mina
+        // Si no hay mina, imprimir espacio
         MOV w9, #' '
         SUB sp, sp, #8
         STRB w9, [sp]
@@ -177,6 +159,20 @@ print_tablero_columnas:
         MOV x2, #1
         BL f01ImprimirCadena
         ADD sp, sp, #8
+        ADD x21, x21, #1
+        B print_tablero_columnas
+print_simbolo_mina:
+        LDR x1, =SimboloMina
+        LDR x2, =LargoSimboloMinaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
+        ADD x21, x21, #1
+        B print_tablero_columnas
+print_simbolo_bandera:
+        LDR x1, =SimboloBandera
+        LDR x2, =LargoSimboloBanderaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
         ADD x21, x21, #1
         B print_tablero_columnas
 print_tablero_fin_fila:
