@@ -353,9 +353,10 @@ f03ImprimirTablero_fila_loop:
         SVC #0
         MOV x3, x0        // x3 = base heap
         // Reservar espacio: columnas*3 + 1 (símbolo + 2 espacios por celda + salto de línea)
-        MOV x5, x21
-        MUL x5, x5, #3
-        ADD x5, x5, #1
+        MOV x5, x21        // x5 = columnas
+        MOV x22, #3
+        MUL x5, x5, x22    // x5 = columnas * 3
+        ADD x5, x5, #1     // x5 = columnas * 3 + 1
         ADD x0, x3, x5
         MOV x8, #214
         SVC #0
@@ -381,10 +382,10 @@ f03ImprimirTablero_columna_loop:
         LDR w18, [x18]
         LDR x19, =SimboloVacio
         LDRB w19, [x19]
-        LDR x20a, =SimboloMina
-        LDRB w20a, [x20a]
-        LDR x21a, =SimboloBandera
-        LDRB w21a, [x21a]
+        LDR x23, =SimboloMina
+        LDRB w24, [x23]
+        LDR x25, =SimboloBandera
+        LDRB w26, [x25]
         MOV w22, w19        // por defecto: vacío
         CMP w16, w18        // ¿bandera?
         BEQ f03ImprimirTablero_bandera
@@ -392,16 +393,16 @@ f03ImprimirTablero_columna_loop:
         BEQ f03ImprimirTablero_descubierta
         B f03ImprimirTablero_simbolo
 f03ImprimirTablero_bandera:
-        MOV w22, w21a      // símbolo bandera
+        MOV w22, w26      // símbolo bandera
         B f03ImprimirTablero_simbolo
 f03ImprimirTablero_descubierta:
         CMP w15, #1        // ¿mina?
         BEQ f03ImprimirTablero_mina
         // Calcular número de minas cercanas
-        MOV x25, x4        // fila
-        MOV x26, x6        // columna
-        MOV x0, x25
-        MOV x1, x26
+        MOV x27, x4        // fila
+        MOV x28, x6        // columna
+        MOV x0, x27
+        MOV x1, x28
         BL f12ContarMinasCercanas
         CMP x0, #0
         BEQ f03ImprimirTablero_vacia
@@ -412,7 +413,7 @@ f03ImprimirTablero_vacia:
         MOV w22, w19       // símbolo vacío
         B f03ImprimirTablero_simbolo
 f03ImprimirTablero_mina:
-        MOV w22, w20a      // símbolo mina
+        MOV w22, w24      // símbolo mina
         B f03ImprimirTablero_simbolo
 f03ImprimirTablero_simbolo:
         STRB w22, [x3, x7] // símbolo
