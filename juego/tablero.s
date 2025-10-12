@@ -1,3 +1,100 @@
+        .global f08DescubrirCelda
+        .global f09ColocarBandera
+        .global f10HayMina
+// -------------------------------------------------
+// f08DescubrirCelda
+// Descubre la celda en (fila, columna)
+// Entrada: x0 = fila, x1 = columna
+// Modifica el estado a DESCUBIERTA si no tiene bandera
+// -------------------------------------------------
+f08DescubrirCelda:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        LDR x10, =FilasSel
+        LDR x10, [x10]
+        LDR x11, =ColumnasSel
+        LDR x11, [x11]
+        LDR x12, =Tablero
+        // Calcular offset base: offset = 2 * (fila * columnas + columna)
+        MUL x13, x0, x11
+        ADD x13, x13, x1
+        LSL x13, x13, #1
+        ADD x14, x12, x13
+        // Leer estado actual
+        LDRB w15, [x14, #1]
+        LDR x16, =ESTADO_BANDERA
+        LDR w16, [x16]
+        CMP w15, w16
+        BEQ f08DescubrirCelda_fin // Si tiene bandera, no descubrir
+        LDR x17, =ESTADO_DESCUBIERTA
+        LDR w17, [x17]
+        STRB w17, [x14, #1] // Marcar como descubierta
+f08DescubrirCelda_fin:
+        ldp x29, x30, [sp], 16
+        RET
+
+// -------------------------------------------------
+// f09ColocarBandera
+// Coloca o quita bandera en (fila, columna)
+// Entrada: x0 = fila, x1 = columna
+// Si está oculta, pone bandera; si tiene bandera, la quita
+// -------------------------------------------------
+f09ColocarBandera:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        LDR x10, =FilasSel
+        LDR x10, [x10]
+        LDR x11, =ColumnasSel
+        LDR x11, [x11]
+        LDR x12, =Tablero
+        MUL x13, x0, x11
+        ADD x13, x13, x1
+        LSL x13, x13, #1
+        ADD x14, x12, x13
+        LDRB w15, [x14, #1]
+        LDR x16, =ESTADO_BANDERA
+        LDR w16, [x16]
+        CMP w15, w16
+        BEQ f09QuitarBandera
+        // Si está oculta, poner bandera
+        LDR x17, =ESTADO_OCULTA
+        LDR w17, [x17]
+        CMP w15, w17
+        BEQ f09PonerBandera
+        B f09ColocarBandera_fin
+f09PonerBandera:
+        STRB w16, [x14, #1]
+        B f09ColocarBandera_fin
+f09QuitarBandera:
+        LDR x18, =ESTADO_OCULTA
+        LDR w18, [x18]
+        STRB w18, [x14, #1]
+f09ColocarBandera_fin:
+        ldp x29, x30, [sp], 16
+        RET
+
+// -------------------------------------------------
+// f10HayMina
+// Consulta si la celda (fila, columna) tiene mina
+// Entrada: x0 = fila, x1 = columna
+// Salida: x0 = 1 si hay mina, 0 si no
+// -------------------------------------------------
+f10HayMina:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        LDR x10, =FilasSel
+        LDR x10, [x10]
+        LDR x11, =ColumnasSel
+        LDR x11, [x11]
+        LDR x12, =Tablero
+        MUL x13, x0, x11
+        ADD x13, x13, x1
+        LSL x13, x13, #1
+        ADD x14, x12, x13
+        LDRB w15, [x14] // primer byte: mina
+        MOV x0, x15
+        ldp x29, x30, [sp], 16
+        RET
         .global f02ColocarMinas
         .global f04DescubrirCelda
         .global f06Victoria

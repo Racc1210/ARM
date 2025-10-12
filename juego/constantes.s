@@ -1,4 +1,11 @@
         .section .data
+// ============================
+// Estados de celda del tablero
+// ============================
+    .global ESTADO_OCULTA, ESTADO_DESCUBIERTA, ESTADO_BANDERA
+ESTADO_OCULTA:      .quad 0
+ESTADO_DESCUBIERTA: .quad 1
+ESTADO_BANDERA:     .quad 2
 
 // ============================
 // Mensaje de bienvenida y salida
