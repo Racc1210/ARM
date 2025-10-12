@@ -144,3 +144,9 @@ msgSimboloVacio:      .asciz "SimboloVacio: "
 msgSimboloMina:       .asciz "SimboloMina: "
 msgSimboloBandera:    .asciz "SimboloBandera: "
 msgNuevaLinea:        .asciz "NuevaLinea: "
+
+// Definición local para pruebas unitarias
+.section .data
+.global NuevaLinea
+NuevaLinea:
+    .asciz "\n"
