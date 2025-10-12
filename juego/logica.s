@@ -75,6 +75,7 @@ f01ConfigurarYJugar:
         // ...existing code...
         // Rutina para imprimir número decimal en x0
         .section .text
+        .global print_decimal
 print_decimal:
         // x0: número a imprimir
         // buffer temporal en stack

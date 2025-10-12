@@ -53,6 +53,10 @@ BufferSimbolo:
 
         .extern FilasSel
         .extern ColumnasSel
+        .extern print_decimal
+        .section .rodata
+debug_msg_filas_tablero:
+        .asciz "FILAS TABLERO: "
         .extern SimboloVacio, LargoSimboloVacioVal
         .extern SimboloMina, LargoSimboloMinaVal
         .extern SimboloBandera, LargoSimboloBanderaVal
