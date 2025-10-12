@@ -379,6 +379,15 @@ init_tablero_fin:
 // Imprime el buffer del tablero en formato hexadecimal (mina, estado)
 // -------------------------------------------------
 f99DiagnosticoTablero:
+        // Imprimir encabezado de diagnóstico
+        LDR x1, =diag_tablero_msg
+        MOV x2, #20
+        MOV x8, #64
+        MOV x0, #1
+        SVC #0
+
+        .section .rodata
+diag_tablero_msg: .asciz "DIAGNOSTICO TABLERO\n"
         stp x29, x30, [sp, -16]!
         mov x29, sp
         LDR x10, =FilasSel
