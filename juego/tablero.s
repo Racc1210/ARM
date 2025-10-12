@@ -31,8 +31,10 @@ f08DescubrirCelda:
         LDR w17, [x17]
         STRB w17, [x14, #1] // Marcar como descubierta
         // Calcular minas cercanas
-        MOV x0, x0 // fila
-        MOV x1, x1 // columna
+        MOV x20, x0 // fila
+        MOV x21, x1 // columna
+        MOV x0, x20
+        MOV x1, x21
         BL f12ContarMinasCercanas
         CMP x0, #0
         BNE f08DescubrirCelda_fin
@@ -237,7 +239,43 @@ f10HayMina:
 f02ColocarMinas:
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        // TODO: lógica de colocación de minas
+        // Colocar minas aleatorias en el tablero
+        LDR x10, =FilasSel
+        LDR x10, [x10]
+        LDR x11, =ColumnasSel
+        LDR x11, [x11]
+        LDR x12, =MinasSel
+        LDR x12, [x12]
+        LDR x13, =Tablero
+        MOV x14, #0      // contador de minas colocadas
+f02ColocarMinas_loop:
+        CMP x14, x12
+        B.GE f02ColocarMinas_fin
+        // Generar fila aleatoria
+        MOV x0, #0
+        BL f02NumeroAleatorio
+        UDIV x15, x0, x10
+        MSUB x15, x15, x10, x0
+        // Generar columna aleatoria
+        MOV x0, #0
+        BL f02NumeroAleatorio
+        UDIV x16, x0, x11
+        MSUB x16, x16, x11, x0
+        // Calcular offset de celda
+        MUL x17, x15, x11
+        ADD x17, x17, x16
+        LSL x17, x17, #1
+        ADD x18, x13, x17
+        // Verificar si ya hay mina
+        LDRB w19, [x18]
+        CMP w19, #1
+        BEQ f02ColocarMinas_loop // Si ya hay mina, intentar otra posición
+        // Colocar mina
+        MOV w19, #1
+        STRB w19, [x18]
+        ADD x14, x14, #1
+        B f02ColocarMinas_loop
+f02ColocarMinas_fin:
         ldp x29, x30, [sp], 16
         RET
 
