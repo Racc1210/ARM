@@ -7,13 +7,14 @@ Semilla: .quad 123456789
         .global f03LeerNumero
         .global f04ValidarRango
         .global f05LongitudCadena
+        .global f06CrearCadenaDinamica
+        .global f07ImprimirCadenaNVeces
 
         .extern f01ImprimirCadena
         .extern f02LeerCadena
         .extern OpcionSel
 
         
-
 f01AsciiANumero:
         stp x29, x30, [sp, -16]!
         mov x29, sp
