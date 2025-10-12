@@ -140,7 +140,9 @@ print_simbolo_vacio:
         LDR x1, =SimboloVacio
         LDR x2, =LargoSimboloVacioVal
         LDR x2, [x2]
-        BL f01ImprimirCadena
+        MOV x8, #64
+        MOV x0, #1
+        SVC #0
         ADD x21, x21, #1
         B print_tablero_columnas
 print_simbolo_descubierta:
@@ -152,7 +154,9 @@ print_simbolo_descubierta:
         STRB w9, [sp]
         MOV x1, sp
         MOV x2, #1
-        BL f01ImprimirCadena
+        MOV x8, #64
+        MOV x0, #1
+        SVC #0
         ADD sp, sp, #8
         ADD x21, x21, #1
         B print_tablero_columnas
@@ -160,22 +164,26 @@ print_simbolo_mina:
         LDR x1, =SimboloMina
         LDR x2, =LargoSimboloMinaVal
         LDR x2, [x2]
-        BL f01ImprimirCadena
+        MOV x8, #64
+        MOV x0, #1
+        SVC #0
         ADD x21, x21, #1
         B print_tablero_columnas
 print_simbolo_bandera:
         LDR x1, =SimboloBandera
         LDR x2, =LargoSimboloBanderaVal
         LDR x2, [x2]
-        BL f01ImprimirCadena
+        MOV x8, #64
+        MOV x0, #1
+        SVC #0
         ADD x21, x21, #1
         B print_tablero_columnas
 print_tablero_fin_fila:
-        // Imprimir salto de línea
         LDR x1, =NuevaLinea
-        LDR x2, =LargoNuevaLineaVal
-        LDR x2, [x2]
-        BL f01ImprimirCadena
+        MOV x2, #1
+        MOV x8, #64
+        MOV x0, #1
+        SVC #0
         ADD x20, x20, #1
         B print_tablero_filas
 print_tablero_fin_directo:
