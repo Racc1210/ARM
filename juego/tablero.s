@@ -120,6 +120,18 @@ f03ImprimirTablero:
         MOV w1, w13        // carácter a repetir
         BL f06CrearCadenaDinamica
         // x3 = dirección de la cadena, x2 = longitud
+        // Depuración: imprimir cantidad de filas (x0)
+        // Guardar x0 en stack temporal
+        SUB sp, sp, #16
+        STR x0, [sp]
+        // Mensaje
+        LDR x1, =debug_msg_filas_tablero
+        MOV x2, #22
+        BL f01ImprimirCadena
+        // Imprimir valor
+        LDR x0, [sp]
+        BL print_decimal
+        ADD sp, sp, #16
         MOV x4, #0         // contador de filas
 f03ImprimirTablero_filas_loop:
         CMP x4, x0         // x0 = cantidad de filas

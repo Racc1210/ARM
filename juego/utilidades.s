@@ -125,7 +125,7 @@ f06CrearCadenaDinamica_loop:
 f06CrearCadenaDinamica_fin:
         MOV w5, #10       // Salto de línea '\n'
         STRB w5, [x3, x2] // Añadir salto de línea
-        ADD x2, x2, #1    // Longitud total
+        ADD x2, x2, #1    // Longitud total (columnas + salto de línea)
         ldp x29, x30, [sp], 16
         RET
 
