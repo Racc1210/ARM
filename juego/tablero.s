@@ -240,42 +240,40 @@ f02ColocarMinas:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         // Colocar minas aleatorias en el tablero
-        LDR x20, =FilasSel
-        LDR x20, [x20]
-        LDR x21, =ColumnasSel
-        LDR x21, [x21]
-        LDR x22, =MinasSel
-        LDR x22, [x22]
-        LDR x23, =Tablero
-        MOV x24, #0      // contador de minas colocadas
+        LDR x4, =FilasSel
+        LDR x4, [x4]      // filas
+        LDR x5, =ColumnasSel
+        LDR x5, [x5]      // columnas
+        LDR x6, =MinasSel
+        LDR x6, [x6]      // minas
+        LDR x7, =Tablero
+        MOV x8, #0        // contador de minas colocadas
 f02ColocarMinas_loop:
-        CMP x24, x22
+        CMP x8, x6
         B.GE f02ColocarMinas_fin
         // Generar fila aleatoria
-        MOV x25, #0
-        MOV x0, x25
+        MOV x0, #0
         BL f02NumeroAleatorio
-        UDIV x26, x0, x20
-        MSUB x26, x26, x20, x0
+        UDIV x9, x0, x4
+        MSUB x9, x9, x4, x0
         // Generar columna aleatoria
-        MOV x27, #0
-        MOV x0, x27
+        MOV x0, #0
         BL f02NumeroAleatorio
-        UDIV x28, x0, x21
-        MSUB x28, x28, x21, x0
+        UDIV x10, x0, x5
+        MSUB x10, x10, x5, x0
         // Calcular offset de celda
-        MUL x29, x26, x21
-        ADD x29, x29, x28
-        LSL x29, x29, #1
-        ADD x30, x23, x29
+        MUL x11, x9, x5
+        ADD x11, x11, x10
+        LSL x11, x11, #1
+        ADD x12, x7, x11
         // Verificar si ya hay mina
-        LDRB w19, [x30]
-        CMP w19, #1
+        LDRB w13, [x12]
+        CMP w13, #1
         BEQ f02ColocarMinas_loop // Si ya hay mina, intentar otra posición
         // Colocar mina
-        MOV w19, #1
-        STRB w19, [x30]
-        ADD x24, x24, #1
+        MOV w13, #1
+        STRB w13, [x12]
+        ADD x8, x8, #1
         B f02ColocarMinas_loop
 f02ColocarMinas_fin:
         ldp x29, x30, [sp], 16
