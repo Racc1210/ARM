@@ -136,12 +136,14 @@ print_tablero_columnas_directo:
         ADD x4, x4, #1
         B print_tablero_columnas_directo
 print_tablero_nuevaLinea_directo:
-        // Imprimir salto de línea como carácter ASCII 0x0A usando buffer temporal
-        MOV x1, x13
+        // Imprimir salto de línea usando un buffer local
+        SUB sp, sp, #8
         MOV w7, #10        // 0x0A = 10 decimal
-        STRB w7, [x1]
+        STRB w7, [sp]
+        MOV x1, sp
         MOV x2, #1
         BL f01ImprimirCadena
+        ADD sp, sp, #8
         ADD x3, x3, #1
         B print_tablero_filas_directo
 print_tablero_fin_directo:
