@@ -1,7 +1,7 @@
         .global f11DescubrirCascada
         .global f08DescubrirCelda
         .global f09ColocarBandera
-        .global f10HayMina
+        // ...sin lógica de minas...
         .global f99DiagnosticoTablero
 // -------------------------------------------------
 // f08DescubrirCelda
@@ -207,78 +207,12 @@ f09ColocarBandera_fin:
         ldp x29, x30, [sp], 16
         RET
 
-// -------------------------------------------------
-// f10HayMina
-// Consulta si la celda (fila, columna) tiene mina
-// Entrada: x0 = fila, x1 = columna
-// Salida: x0 = 1 si hay mina, 0 si no
-// -------------------------------------------------
-f10HayMina:
-        stp x29, x30, [sp, -16]!
-        mov x29, sp
-        LDR x10, =FilasSel
-        LDR x10, [x10]
-        LDR x11, =ColumnasSel
-        LDR x11, [x11]
-        LDR x12, =Tablero
-        MUL x13, x0, x11
-        ADD x13, x13, x1
-        LSL x13, x13, #1
-        ADD x14, x12, x13
-        LDRB w15, [x14] // primer byte: mina
-        MOV x0, x15
-        ldp x29, x30, [sp], 16
-        RET
-        .global f02ColocarMinas
+        // ...sin lógica de minas...
         .global f04DescubrirCelda
         .global f06Victoria
         .global f07ColocarBandera
 
-// -------------------------------------------------
-// Stubs mínimos para evitar errores de linker
-// -------------------------------------------------
-f02ColocarMinas:
-        stp x29, x30, [sp, -16]!
-        mov x29, sp
-        // Colocar minas aleatorias en el tablero
-        LDR x4, =FilasSel
-        LDR x4, [x4]      // filas
-        LDR x5, =ColumnasSel
-        LDR x5, [x5]      // columnas
-        LDR x6, =MinasSel
-        LDR x6, [x6]      // minas
-        LDR x7, =Tablero
-        MOV x8, #0        // contador de minas colocadas
-f02ColocarMinas_loop:
-        CMP x8, x6
-        B.GE f02ColocarMinas_fin
-        // Generar fila aleatoria
-        MOV x0, #0
-        BL f02NumeroAleatorio
-        UDIV x9, x0, x4
-        MSUB x9, x9, x4, x0
-        // Generar columna aleatoria
-        MOV x0, #0
-        BL f02NumeroAleatorio
-        UDIV x10, x0, x5
-        MSUB x10, x10, x5, x0
-        // Calcular offset de celda
-        MUL x11, x9, x5
-        ADD x11, x11, x10
-        LSL x11, x11, #1
-        ADD x12, x7, x11
-        // Verificar si ya hay mina
-        LDRB w13, [x12]
-        CMP w13, #1
-        BEQ f02ColocarMinas_loop // Si ya hay mina, intentar otra posición
-        // Colocar mina
-        MOV w13, #1
-        STRB w13, [x12]
-        ADD x8, x8, #1
-        B f02ColocarMinas_loop
-f02ColocarMinas_fin:
-        ldp x29, x30, [sp], 16
-        RET
+        // ...sin lógica de minas...
 
 f04DescubrirCelda:
         stp x29, x30, [sp, -16]!
