@@ -327,6 +327,8 @@ BufferSimbolo:
         .extern Espacio, LargoEspacioVal
         .extern f01ImprimirCadena
         .extern f06CrearCadenaDinamica, f07ImprimirCadenaNVeces
+                .extern print_decimal
+                .extern print_hex_byte
 
 // -------------------------------------------------
 // f01InicializarTablero
