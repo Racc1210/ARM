@@ -171,50 +171,24 @@ print_decimal:
 f02BucleJuego:
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        // Depuración: INICIO JUEGO
-        ADR x1, inicio_juego_msg
-        MOV x2, #13
-        // Print de checkpoint antes de llamar a f03ImprimirTablero
-        ADR x1, debug_msg_checkpoint_tablero_1
-        // Print de checkpoint justo antes de f03ImprimirTablero
-        ADR x1, debug_msg_checkpoint_tablero_2
-        LDR x21, =ColumnasSel
-        LDR x1, [x21]      // x1 = columnas
-        BL f03ImprimirTablero
-        // Print de checkpoint justo después de f03ImprimirTablero
-        ADR x1, debug_msg_checkpoint_tablero_3
-        MOV x2, #42
-        // Depuración: valor de FilasSel después de imprimir tablero
-        ADR x1, debug_msg_filas_post_tablero
-
-        .section .rodata
-        .asciz "INICIO JUEGO\n"
-debug_msg_filas_pre_tablero:
-        .asciz "[PRE TABLERO] FilasSel antes de imprimir tablero: "
-debug_msg_checkpoint_tablero_1:
-        .asciz "[CHECKPOINT 1] FilasSel antes de f03ImprimirTablero: "
-        .asciz "[CHECKPOINT 2] FilasSel justo antes de f03ImprimirTablero: "
-        .asciz "[CHECKPOINT 3] FilasSel justo después de f03ImprimirTablero: "
-        .asciz "[POST TABLERO] FilasSel después de imprimir tablero: "
         LDR x20, =FilasSel
+        LDR x20, [x20]
         LDR x21, =ColumnasSel
-
+        LDR x21, [x21]
         BL f03ImprimirTablero
-
         LDR x1, =MenuAccion
         LDR x2, =LargoMenuAccionVal
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
         MOV x9, x0
-
         CMP x9, #1
-        BEQ f03AccionDescubrir   
+        BEQ f03AccionDescubrir
         CMP x9, #2
-        BEQ f04AccionBandera     
+        BEQ f04AccionBandera
         CMP x9, #3
         ldp x29, x30, [sp], 16
-        RET                      
+        RET
         B f02BucleJuego
 
 
