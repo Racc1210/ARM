@@ -117,7 +117,7 @@ f03ImprimirTablero:
         LDR x12, =SimboloVacio
         LDRB w13, [x12]    // w13 = símbolo vacío
         MOV x2, x1         // cantidad de columnas
-        MOV x1, w13        // carácter a repetir
+        MOV w1, w13        // carácter a repetir
         BL f06CrearCadenaDinamica
         // x3 = dirección de la cadena, x2 = longitud
         MOV x4, x0         // cantidad de filas
