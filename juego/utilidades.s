@@ -114,18 +114,26 @@ f06CrearCadenaDinamica:
         ADD x0, x0, #1    // x0 = base + cantidad + 1
         MOV x8, #214      // syscall brk
         SVC #0
-        // Rellenar la cadena
-        MOV x4, #0        // f06CrearCadenaDinamica_loop: índice de la cadena
+        // Rellenar la cadena con símbolo y dos espacios
+        MOV x4, #0        // índice de columna
+        MOV x5, #0        // índice en cadena
 f06CrearCadenaDinamica_loop:
         CMP x4, x2
         B.GE f06CrearCadenaDinamica_fin
-        STRB w1, [x3, x4] // Guardar carácter
+        STRB w1, [x3, x5] // Guardar símbolo
+        ADD x5, x5, #1
+        MOV w6, #' '
+        STRB w6, [x3, x5] // Primer espacio
+        ADD x5, x5, #1
+        STRB w6, [x3, x5] // Segundo espacio
+        ADD x5, x5, #1
         ADD x4, x4, #1
         B f06CrearCadenaDinamica_loop
 f06CrearCadenaDinamica_fin:
-        MOV w5, #10       // Salto de línea '\n'
-        STRB w5, [x3, x2] // Añadir salto de línea
-        ADD x2, x2, #1    // Longitud total (columnas + salto de línea)
+        MOV w7, #10       // Salto de línea '\n'
+        STRB w7, [x3, x5] // Añadir salto de línea
+        ADD x5, x5, #1    // Longitud total
+        MOV x2, x5        // x2 = longitud total
         ldp x29, x30, [sp], 16
         RET
 
