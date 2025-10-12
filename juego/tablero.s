@@ -112,11 +112,11 @@ f03ImprimirTablero:
         LDR x11, =ColumnasSel
         LDR x1, [x11]      // x1 = columnas
         LDR x12, =Tablero
-        MOV x20, #0        // indice fila
+        MOV x20, #0        // fila actual
 print_tablero_filas:
         CMP x20, x0
         B.GE print_tablero_fin_directo
-        MOV x21, #0        // indice columna
+        MOV x21, #0        // columna actual
 print_tablero_columnas:
         CMP x21, x1
         B.GE print_tablero_fin_fila
@@ -129,11 +129,6 @@ print_tablero_columnas:
         LDRB w7, [x6]      // mina
         LDRB w8, [x6, #1]  // estado
         // Seleccionar símbolo a imprimir
-        // estado = 0: oculta -> SimboloVacio
-        // estado = 1: descubierta
-        //    mina = 1 -> SimboloMina
-        //    mina = 0 -> ' '
-        // estado = 2: bandera -> SimboloBandera
         CMP w8, #0
         BEQ print_simbolo_vacio
         CMP w8, #1
@@ -177,13 +172,10 @@ print_simbolo_bandera:
         B print_tablero_columnas
 print_tablero_fin_fila:
         // Imprimir salto de línea
-        MOV w9, #10
-        SUB sp, sp, #8
-        STRB w9, [sp]
-        MOV x1, sp
-        MOV x2, #1
+        LDR x1, =NuevaLinea
+        LDR x2, =LargoNuevaLineaVal
+        LDR x2, [x2]
         BL f01ImprimirCadena
-        ADD sp, sp, #8
         ADD x20, x20, #1
         B print_tablero_filas
 print_tablero_fin_directo:
