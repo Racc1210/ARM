@@ -406,10 +406,10 @@ diag_tablero_columna_loop:
         MOV x0, x6
         BL print_decimal
         // Imprimir mina
-        MOV x0, w15
+        uxtb x0, w15
         BL print_hex_byte
         // Imprimir estado
-        MOV x0, w16
+        uxtb x0, w16
         BL print_hex_byte
         // Imprimir espacio
         MOV w23, #' '
