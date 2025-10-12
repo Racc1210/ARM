@@ -121,6 +121,6 @@ f03ImprimirTablero:
         BL f06CrearCadenaDinamica
         // x3 = dirección de la cadena, x2 = longitud
         MOV x4, x0         // cantidad de filas
-        BL f06ImprimirCadenaNVeces
+        BL f07ImprimirCadenaNVeces
         ldp x29, x30, [sp], 16
         RET

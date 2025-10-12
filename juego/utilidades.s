@@ -130,7 +130,6 @@ f06CrearCadenaDinamica_fin:
         RET
 
 
-.global f07ImprimirCadenaNVeces
 f07ImprimirCadenaNVeces:
         stp x29, x30, [sp, -16]!
         mov x29, sp
