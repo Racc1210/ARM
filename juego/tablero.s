@@ -16,7 +16,8 @@ f08DescubrirCelda:
         LDR x10, [x10]
         LDR x11, =ColumnasSel
         LDR x11, [x11]
-        LDR x12, =Tablero
+        LDR x12, =TableroPtr
+        LDR x12, [x12]
         // Calcular offset base: offset = 2 * (fila * columnas + columna)
         MUL x13, x0, x11
         ADD x13, x13, x1
@@ -55,7 +56,8 @@ f11DescubrirCascada:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         // Obtener fila y columna desde dirección de celda
-        LDR x12, =Tablero
+        LDR x12, =TableroPtr
+        LDR x12, [x12]
         SUB x13, x0, x12
         LSR x13, x13, #1
         LDR x10, =FilasSel
@@ -121,7 +123,8 @@ f12ContarMinasCercanas:
         LDR x10, [x10]
         LDR x11, =ColumnasSel
         LDR x11, [x11]
-        LDR x12, =Tablero
+        LDR x12, =TableroPtr
+        LDR x12, [x12]
         MOV x2, #0 // contador de minas
         MOV x13, #-1
 f12MinasCercanas_fila_loop:
@@ -180,7 +183,8 @@ f09ColocarBandera:
         LDR x10, [x10]
         LDR x11, =ColumnasSel
         LDR x11, [x11]
-        LDR x12, =Tablero
+        LDR x12, =TableroPtr
+        LDR x12, [x12]
         MUL x13, x0, x11
         ADD x13, x13, x1
         LSL x13, x13, #1
@@ -239,10 +243,9 @@ f07ColocarBandera:
 // =====================================
 
         .section .bss
-        .global Tablero
-// Cada celda: 2 bytes (mina, estado)
-Tablero:
-        .skip 30*24*2   // Tamaño máximo: 30 filas x 24 columnas (2 bytes por celda)
+        .global TableroPtr
+// TableroPtr: dirección dinámica del tablero
+TableroPtr: .skip 8
 
         .section .bss
         .global BufferSimbolo
@@ -273,27 +276,43 @@ f01InicializarTablero:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         LDR x10, =FilasSel
-        LDR x0, [x10]      // x0 = filas
+        LDR x10, [x10]      // x10 = filas
         LDR x11, =ColumnasSel
-        LDR x1, [x11]      // x1 = columnas
-        LDR x12, =Tablero
+        LDR x11, [x11]      // x11 = columnas
+        // Calcular tamaño: filas * columnas * 2
+        MUL x12, x10, x11
+        LSL x12, x12, #1
+        // Reservar memoria dinámica con brk
+        MOV x8, #214      // syscall brk
+        MOV x0, #0        // obtener heap actual
+        SVC #0
+        MOV x13, x0       // base actual del heap
+        ADD x0, x13, x12  // nueva base = base + tamaño
+        MOV x8, #214      // syscall brk
+        SVC #0
+        // Guardar dirección base en TableroPtr
+        LDR x14, =TableroPtr
+        STR x13, [x14]
+        // Inicializar tablero dinámico
         MOV x3, #0         // fila
 init_tablero_filas:
-        CMP x3, x0
+        CMP x3, x10
         B.GE init_tablero_fin
         MOV x4, #0         // columna
 init_tablero_columnas:
-        CMP x4, x1
+        CMP x4, x11
         B.GE init_tablero_nextfila
-        // Calcular offset base: offset = 2 * (fila * columnas + columna)
-        MUL x5, x3, x1
-        ADD x5, x5, x4
-        LSL x5, x5, #1     // x5 = x5 * 2
-        ADD x6, x12, x5    // dirección base de celda
-        MOV w7, #0         // mina = 0
-        STRB w7, [x6]
-        MOV w7, #0         // estado = 0
-        STRB w7, [x6, #1]
+        // Calcular offset: 2 * (fila * columnas + columna)
+        MUL x15, x3, x11
+        ADD x15, x15, x4
+        LSL x15, x15, #1
+        LDR x16, =TableroPtr
+        LDR x16, [x16]
+        ADD x17, x16, x15
+        MOV w18, #0        // mina=0
+        STRB w18, [x17]
+        MOV w18, #0        // estado=0
+        STRB w18, [x17, #1]
         ADD x4, x4, #1
         B init_tablero_columnas
 init_tablero_nextfila:
@@ -375,7 +394,8 @@ f03ImprimirTablero_columna_loop:
         CMP x6, x21
         B.GE f03ImprimirTablero_cadena_fin
         // Calcular offset de celda
-        LDR x12, =Tablero
+        LDR x12, =TableroPtr
+        LDR x12, [x12]
         MUL x13, x4, x21
         ADD x13, x13, x6
         LSL x13, x13, #1

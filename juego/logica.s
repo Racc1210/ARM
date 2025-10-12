@@ -9,13 +9,11 @@
 
         // Dependencias de tablero
         .extern f01InicializarTablero
-        // ...sin lógica de minas...
         .extern f03ImprimirTablero
         .extern f04DescubrirCelda
         .extern f05Derrota
         .extern f06Victoria
         .extern f07ColocarBandera
-        // ...sin diagnóstico...
 
         // Variables globales de configuración
         .extern FilasSel
