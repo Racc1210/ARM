@@ -82,9 +82,33 @@ _start:
     MOV x1, #'R'      // Carácter a repetir
     MOV x2, #5        // Cantidad de repeticiones
     BL repetir_caracter_n_veces
+    // x3 = dirección, x2 = longitud
+    MOV x4, #3        // Cantidad de impresiones
+    BL imprimir_cadena_n_veces
     // Fin del programa
     MOV x8, #93
     SVC #0
+// --- Rutina: imprimir_cadena_n_veces ---
+// x3: dirección de la cadena
+// x2: longitud de la cadena
+// x4: cantidad de impresiones
+imprimir_cadena_n_veces:
+    stp x29, x30, [sp, -16]!
+    mov x29, sp
+    MOV x5, #0        // contador
+imprimir_bucle:
+    CMP x5, x4
+    B.GE imprimir_fin
+    MOV x8, #64       // syscall: write
+    MOV x0, #1        // fd: stdout
+    MOV x1, x3        // buffer
+    MOV x2, x2        // longitud
+    SVC #0
+    ADD x5, x5, #1
+    B imprimir_bucle
+imprimir_fin:
+    ldp x29, x30, [sp], 16
+    RET
 // --- FIN TEST CON IDENTIFICADORES ---
 
 // --- Rutina: repetir_caracter_n_veces ---
@@ -146,7 +170,4 @@ msgSimboloBandera:    .asciz "SimboloBandera: "
 msgNuevaLinea:        .asciz "NuevaLinea: "
 
 // Definición local para pruebas unitarias
-.section .data
-.global NuevaLinea
-NuevaLinea:
-    .asciz "\n"
+
