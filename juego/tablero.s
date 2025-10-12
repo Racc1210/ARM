@@ -110,9 +110,9 @@ f03ImprimirTablero:
         mov x29, sp
         // Obtener cantidad de filas y columnas
         LDR x10, =FilasSel
-        LDR x0, [x10]      // x0 = filas
+        LDR x0, [x20]      // x0 = filas
         LDR x11, =ColumnasSel
-        LDR x1, [x11]      // x1 = columnas
+        LDR x1, [x21]      // x1 = columnas
         // Crear cadena de una fila con símbolo vacío
         LDR x12, =SimboloVacio
         LDRB w13, [x12]    // w13 = símbolo vacío
