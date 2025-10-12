@@ -120,6 +120,17 @@ f03ImprimirTablero:
         MOV w1, w13        // carácter a repetir
         BL f06CrearCadenaDinamica
         // x3 = dirección de la cadena, x2 = longitud
+        // Depuración: imprimir valor de x0 (filas)
+        LDR x1, =debug_msg_filas_tablero
+        MOV x2, #16
+        BL f01ImprimirCadena
+        MOV x1, sp
+        STR x0, [x1]
+        MOV x0, x0
+        BL print_decimal
+        .section .rodata
+debug_msg_filas_tablero:
+        .asciz "FilasTablero: "
         MOV x4, #0         // índice de fila
         B f03ImprimirTablero_check
 f03ImprimirTablero_next:
