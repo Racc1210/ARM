@@ -42,6 +42,10 @@ f07ColocarBandera:
 Tablero:
         .skip 30*24   // Tamaño máximo: 30 filas x 24 columnas (1 byte por celda)
 
+        .section .bss
+        .global BufferSimbolo
+BufferSimbolo:
+        .skip 8
         .section .text
         .global f01InicializarTablero
         .global f03ImprimirTablero
@@ -105,6 +109,7 @@ f03ImprimirTablero:
         LDR x11, =ColumnasSel
         LDR x1, [x11]      // x1 = columnas
         LDR x12, =Tablero
+        LDR x13, =BufferSimbolo
         MOV x3, #0         // fila
 print_tablero_filas_directo:
         CMP x3, x0
@@ -116,11 +121,14 @@ print_tablero_columnas_directo:
         // Calcular offset: offset = fila * columnas + columna
         MUL x5, x3, x1
         ADD x5, x5, x4
+        // Validar que offset < 30*24
+        CMP x5, #(30*24)
+        B.GE print_tablero_error
         ADD x5, x12, x5
         LDRB w6, [x5]      // símbolo de la celda
-        // Imprimir el símbolo
-        MOV x1, sp
-        STRB w6, [x1]
+        // Imprimir el símbolo usando buffer fijo
+        STRB w6, [x13]
+        MOV x1, x13
         MOV x2, #1
         BL f01ImprimirCadena
         ADD x4, x4, #1
@@ -134,5 +142,9 @@ print_tablero_nuevaLinea_directo:
         ADD x3, x3, #1
         B print_tablero_filas_directo
 print_tablero_fin_directo:
+        ldp x29, x30, [sp], 16
+        RET
+print_tablero_error:
+        // Error: offset fuera de rango
         ldp x29, x30, [sp], 16
         RET
