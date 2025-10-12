@@ -125,7 +125,7 @@ f03ImprimirTablero:
 f03ImprimirTablero_next:
         ADD x4, x4, #1     // incrementar índice de fila
 f03ImprimirTablero_check:
-        CMP x4, x0         // ¿imprimimos todas las filas?
+        CMP x4, x20        // ¿imprimimos todas las filas?
         B.GE f03ImprimirTablero_fin
         // Imprimir la cadena dinámica (una fila)
         MOV x1, x3         // buffer
