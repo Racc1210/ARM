@@ -106,7 +106,7 @@ f03ImprimirTablero:
         LDR x1, [x11]      // x1 = columnas
         LDR x12, =Tablero
         MOV x3, #0         // fila
-        SUB sp, sp, #256   // buffer temporal para una fila (máx 256 columnas)
+        SUB sp, sp, #64    // buffer temporal para una fila (máx 64 columnas)
 print_tablero_filas:
         CMP x3, x0
         B.GE print_tablero_fin
@@ -120,12 +120,13 @@ print_tablero_columnas:
         ADD x6, x6, x4
         ADD x6, x12, x6
         LDRB w7, [x6]      // símbolo de la celda
-        STRB w7, [x5, x4]  // guardar en buffer
+        STRB w7, [x5, x4, LSL #0]  // guardar en buffer
         ADD x4, x4, #1
         B print_tablero_columnas
 print_tablero_imprimirFila:
         MOV x1, sp         // buffer de la fila
-        MOV x2, x11        // x2 = columnas
+        MOV x2, x1         // x2 = columnas (incorrecto)
+        MOV x2, x11        // x2 = columnas (corregido)
         BL f01ImprimirCadena
         // Imprimir salto de línea
         SUB sp, sp, #8
@@ -138,6 +139,6 @@ print_tablero_imprimirFila:
         ADD x3, x3, #1
         B print_tablero_filas
 print_tablero_fin:
-        ADD sp, sp, #256   // liberar buffer
+        ADD sp, sp, #64    // liberar buffer
         ldp x29, x30, [sp], 16
         RET
