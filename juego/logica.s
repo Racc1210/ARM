@@ -46,7 +46,7 @@ f01ConfigurarYJugar:
         LDR x0, [x13]
         BL f02ColocarMinas
         // Diagnóstico: imprimir buffer del tablero
-        BL f9DiagnosticoTablero
+        BL f99DiagnosticoTablero
         LDR x13, =FilasSel
         LDR x0, [x13]
         BL f02BucleJuego
