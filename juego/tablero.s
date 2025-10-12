@@ -1,3 +1,4 @@
+        .global f11DescubrirCascada
         .global f08DescubrirCelda
         .global f09ColocarBandera
         .global f10HayMina
@@ -29,7 +30,137 @@ f08DescubrirCelda:
         LDR x17, =ESTADO_DESCUBIERTA
         LDR w17, [x17]
         STRB w17, [x14, #1] // Marcar como descubierta
+        // Calcular minas cercanas
+        MOV x0, x0 // fila
+        MOV x1, x1 // columna
+        BL f12ContarMinasCercanas
+        CMP x0, #0
+        BNE f08DescubrirCelda_fin
+        // Si no hay minas cercanas, descubrir en cascada
+        MOV x0, x14 // dirección de celda actual
+        BL f11DescubrirCascada
 f08DescubrirCelda_fin:
+        ldp x29, x30, [sp], 16
+        RET
+
+// -------------------------------------------------
+// f11DescubrirCascada
+// Descubre en cascada celdas vacías y con número
+// Entrada: x0 = dirección de celda actual
+// -------------------------------------------------
+f11DescubrirCascada:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        // Obtener fila y columna desde dirección de celda
+        LDR x12, =Tablero
+        SUB x13, x0, x12
+        LSR x13, x13, #1
+        LDR x10, =FilasSel
+        LDR x10, [x10]
+        LDR x11, =ColumnasSel
+        LDR x11, [x11]
+        UDIV x14, x13, x11 // fila
+        MSUB x15, x14, x11, x13 // columna
+        // Recorrer vecinos (-1,0,+1 en fila y columna)
+        MOV x16, #-1
+f11Cascada_fila_loop:
+        CMP x16, #2
+        B.GE f11DescubrirCascada_fin
+        ADD x17, x14, x16 // fila vecina
+        CMP x17, #0
+        BLT f11Cascada_next_fila
+        CMP x17, x10
+        BGE f11Cascada_next_fila
+        MOV x18, #-1
+f11Cascada_columna_loop:
+        CMP x18, #2
+        B.GE f11Cascada_next_fila
+        ADD x19, x15, x18 // columna vecina
+        CMP x19, #0
+        BLT f11Cascada_next_columna
+        CMP x19, x11
+        BGE f11Cascada_next_columna
+        // Calcular dirección de celda vecina
+        MUL x20, x17, x11
+        ADD x20, x20, x19
+        LSL x20, x20, #1
+        ADD x21, x12, x20
+        // Leer estado
+        LDRB w22, [x21, #1]
+        LDR x23, =ESTADO_OCULTA
+        LDR w23, [x23]
+        CMP w22, w23
+        BNE f11Cascada_next_columna // Solo descubrir si está oculta
+        // Descubrir celda vecina
+        MOV x0, x17
+        MOV x1, x19
+        BL f08DescubrirCelda
+f11Cascada_next_columna:
+        ADD x18, x18, #1
+        B f11Cascada_columna_loop
+f11Cascada_next_fila:
+        ADD x16, x16, #1
+        B f11Cascada_fila_loop
+f11DescubrirCascada_fin:
+        ldp x29, x30, [sp], 16
+        RET
+
+// -------------------------------------------------
+// f12ContarMinasCercanas
+// Cuenta minas cercanas a una celda
+// Entrada: x0 = fila, x1 = columna
+// Salida: x0 = cantidad de minas cercanas
+// -------------------------------------------------
+f12ContarMinasCercanas:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        LDR x10, =FilasSel
+        LDR x10, [x10]
+        LDR x11, =ColumnasSel
+        LDR x11, [x11]
+        LDR x12, =Tablero
+        MOV x2, #0 // contador de minas
+        MOV x13, #-1
+f12MinasCercanas_fila_loop:
+        CMP x13, #2
+        B.GE f12ContarMinasCercanas_fin
+        ADD x14, x0, x13 // fila vecina
+        CMP x14, #0
+        BLT f12MinasCercanas_next_fila
+        CMP x14, x10
+        BGE f12MinasCercanas_next_fila
+        MOV x15, #-1
+f12MinasCercanas_columna_loop:
+        CMP x15, #2
+        B.GE f12MinasCercanas_next_fila
+        ADD x16, x1, x15 // columna vecina
+        CMP x16, #0
+        BLT f12MinasCercanas_next_columna
+        CMP x16, x11
+        BGE f12MinasCercanas_next_columna
+        // Saltar la celda central
+        CMP x13, #0
+        CBNZ x13, f12MinasCercanas_check
+        CMP x15, #0
+        CBNZ x15, f12MinasCercanas_check
+        B f12MinasCercanas_next_columna
+f12MinasCercanas_check:
+        MUL x17, x14, x11
+        ADD x17, x17, x16
+        LSL x17, x17, #1
+        ADD x18, x12, x17
+        LDRB w19, [x18] // mina
+        CMP w19, #1
+        BNE f12MinasCercanas_next_columna
+        ADD x2, x2, #1
+f12MinasCercanas_next_columna:
+        ADD x15, x15, #1
+        B f12MinasCercanas_columna_loop
+f12MinasCercanas_next_fila:
+        ADD x13, x13, #1
+        B f12MinasCercanas_fila_loop
+f12ContarMinasCercanas_fin:
+        MOV x0, x2
         ldp x29, x30, [sp], 16
         RET
 
@@ -210,25 +341,98 @@ f03ImprimirTablero:
         LDR x20, [x10]      // x20 = filas
         LDR x11, =ColumnasSel
         LDR x21, [x11]      // x21 = columnas
-        // Crear cadena de una fila con símbolo vacío
-        LDR x12, =SimboloVacio
-        LDRB w13, [x12]    // w13 = símbolo vacío
-        MOV x2, x21         // cantidad de columnas
-        MOV w1, w13        // carácter a repetir
-        BL f06CrearCadenaDinamica
-        // x3 = dirección de la cadena, x2 = longitud
-        MOV x4, #1         // índice de fila
-        B f03ImprimirTablero_check
-f03ImprimirTablero_next:
-        ADD x4, x4, #1     // incrementar índice de fila
-f03ImprimirTablero_check:
-        CMP x4, x20        // ¿imprimimos todas las filas?
+        // Recorrer filas
+        MOV x4, #0         // fila actual
+f03ImprimirTablero_fila_loop:
+        CMP x4, x20
         B.GE f03ImprimirTablero_fin
-        // Imprimir la cadena dinámica (una fila)
+        // Crear cadena dinámica para la fila
+        // Obtener heap actual
+        MOV x8, #214      // syscall brk
+        MOV x0, #0
+        SVC #0
+        MOV x3, x0        // x3 = base heap
+        // Reservar espacio: columnas*3 + 1 (símbolo + 2 espacios por celda + salto de línea)
+        MOV x5, x21
+        MUL x5, x5, #3
+        ADD x5, x5, #1
+        ADD x0, x3, x5
+        MOV x8, #214
+        SVC #0
+        // Recorrer columnas
+        MOV x6, #0        // columna actual
+        MOV x7, #0        // índice en cadena
+f03ImprimirTablero_columna_loop:
+        CMP x6, x21
+        B.GE f03ImprimirTablero_cadena_fin
+        // Calcular offset de celda
+        LDR x12, =Tablero
+        MUL x13, x4, x21
+        ADD x13, x13, x6
+        LSL x13, x13, #1
+        ADD x14, x12, x13
+        // Leer mina y estado
+        LDRB w15, [x14]      // mina
+        LDRB w16, [x14, #1]  // estado
+        // Determinar símbolo
+        LDR x17, =ESTADO_DESCUBIERTA
+        LDR w17, [x17]
+        LDR x18, =ESTADO_BANDERA
+        LDR w18, [x18]
+        LDR x19, =SimboloVacio
+        LDRB w19, [x19]
+        LDR x20a, =SimboloMina
+        LDRB w20a, [x20a]
+        LDR x21a, =SimboloBandera
+        LDRB w21a, [x21a]
+        MOV w22, w19        // por defecto: vacío
+        CMP w16, w18        // ¿bandera?
+        BEQ f03ImprimirTablero_bandera
+        CMP w16, w17        // ¿descubierta?
+        BEQ f03ImprimirTablero_descubierta
+        B f03ImprimirTablero_simbolo
+f03ImprimirTablero_bandera:
+        MOV w22, w21a      // símbolo bandera
+        B f03ImprimirTablero_simbolo
+f03ImprimirTablero_descubierta:
+        CMP w15, #1        // ¿mina?
+        BEQ f03ImprimirTablero_mina
+        // Calcular número de minas cercanas
+        MOV x25, x4        // fila
+        MOV x26, x6        // columna
+        MOV x0, x25
+        MOV x1, x26
+        BL f12ContarMinasCercanas
+        CMP x0, #0
+        BEQ f03ImprimirTablero_vacia
+        // Convertir número a carácter ASCII ('1'..'8')
+        ADD w22, w0, #'0'
+        B f03ImprimirTablero_simbolo
+f03ImprimirTablero_vacia:
+        MOV w22, w19       // símbolo vacío
+        B f03ImprimirTablero_simbolo
+f03ImprimirTablero_mina:
+        MOV w22, w20a      // símbolo mina
+        B f03ImprimirTablero_simbolo
+f03ImprimirTablero_simbolo:
+        STRB w22, [x3, x7] // símbolo
+        ADD x7, x7, #1
+        MOV w23, #' '
+        STRB w23, [x3, x7] // espacio
+        ADD x7, x7, #1
+        STRB w23, [x3, x7] // segundo espacio
+        ADD x7, x7, #1
+        ADD x6, x6, #1
+        B f03ImprimirTablero_columna_loop
+f03ImprimirTablero_cadena_fin:
+        MOV w24, #10       // salto de línea
+        STRB w24, [x3, x7]
+        ADD x7, x7, #1
         MOV x1, x3         // buffer
-        MOV x2, x2         // longitud
+        MOV x2, x7         // longitud
         BL f01ImprimirCadena
-        B f03ImprimirTablero_next
+        ADD x4, x4, #1
+        B f03ImprimirTablero_fila_loop
 f03ImprimirTablero_fin:
         ldp x29, x30, [sp], 16
         RET
