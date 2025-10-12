@@ -108,7 +108,7 @@ LargoMensajeVictoriaVal: .quad 56
         .global SimboloMina, LargoSimboloMinaVal
         .global SimboloBandera, LargoSimboloBanderaVal
         .global NuevaLinea, LargoNuevaLineaVal
-        .global espacio, LargoEspacioVal
+        .global Espacio, LargoEspacioVal
 
 SimboloVacio:
     .asciz "#"
