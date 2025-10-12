@@ -111,48 +111,16 @@ f03ImprimirTablero:
         // Obtener cantidad de filas y columnas
         LDR x10, =FilasSel
         LDR x20, [x10]      // x20 = filas
-        // Print depuración: valor de filas justo después de cargar FilasSel
-        LDR x1, =debug_msg_tablero_1
-        MOV x2, #44
-        BL f01ImprimirCadena
-        MOV x0, x20
-        BL print_decimal
         LDR x11, =ColumnasSel
         LDR x21, [x11]      // x21 = columnas
-        // Print depuración: valor de filas después de cargar ColumnasSel
-        LDR x1, =debug_msg_tablero_2
-        MOV x2, #45
-        BL f01ImprimirCadena
-        MOV x0, x20
-        BL print_decimal
         // Crear cadena de una fila con símbolo vacío
         LDR x12, =SimboloVacio
         LDRB w13, [x12]    // w13 = símbolo vacío
         MOV x2, x21         // cantidad de columnas
         MOV w1, w13        // carácter a repetir
         BL f06CrearCadenaDinamica
-        // Print depuración: valor de filas después de crear cadena dinámica
-        LDR x1, =debug_msg_tablero_3
-        MOV x2, #49
-        BL f01ImprimirCadena
-        MOV x0, x20
-        BL print_decimal
         // x3 = dirección de la cadena, x2 = longitud
-        // Depuración: imprimir valor de filas
-        LDR x1, =debug_msg_filas_tablero
-        MOV x2, #16
-        BL f01ImprimirCadena
-        MOV x0, x20
-        BL print_decimal
         .section .rodata
-debug_msg_tablero_1:
-        .asciz "[TABLERO 1] x0 tras cargar FilasSel: "
-debug_msg_tablero_2:
-        .asciz "[TABLERO 2] x0 tras cargar ColumnasSel: "
-debug_msg_tablero_3:
-        .asciz "[TABLERO 3] x0 tras crear cadena dinámica: "
-debug_msg_filas_tablero:
-        .asciz "FilasTablero: "
         MOV x4, #0         // índice de fila
         B f03ImprimirTablero_check
 f03ImprimirTablero_next:
