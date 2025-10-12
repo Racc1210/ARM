@@ -258,10 +258,31 @@ f02BucleJuego:
         LDR x20, =FilasSel
         LDR x0, [x20]      // x0 = filas
         BL print_long
+        // Print de checkpoint antes de llamar a f03ImprimirTablero
+        ADR x1, debug_msg_checkpoint_tablero_1
+        MOV x2, #38
+        BL f01ImprimirCadena
+        LDR x20, =FilasSel
+        LDR x0, [x20]
+        BL print_long
+        // Print de checkpoint justo antes de f03ImprimirTablero
+        ADR x1, debug_msg_checkpoint_tablero_2
+        MOV x2, #41
+        BL f01ImprimirCadena
+        LDR x20, =FilasSel
+        LDR x0, [x20]
+        BL print_long
         LDR x21, =ColumnasSel
         LDR x1, [x21]      // x1 = columnas
         // Imprimir tablero
         BL f03ImprimirTablero
+        // Print de checkpoint justo después de f03ImprimirTablero
+        ADR x1, debug_msg_checkpoint_tablero_3
+        MOV x2, #42
+        BL f01ImprimirCadena
+        LDR x20, =FilasSel
+        LDR x0, [x20]
+        BL print_long
         // Depuración: valor de FilasSel después de imprimir tablero
         ADR x1, debug_msg_filas_post_tablero
         MOV x2, #37
@@ -275,6 +296,12 @@ inicio_juego_msg:
         .asciz "INICIO JUEGO\n"
 debug_msg_filas_pre_tablero:
         .asciz "[PRE TABLERO] FilasSel antes de imprimir tablero: "
+debug_msg_checkpoint_tablero_1:
+        .asciz "[CHECKPOINT 1] FilasSel antes de f03ImprimirTablero: "
+debug_msg_checkpoint_tablero_2:
+        .asciz "[CHECKPOINT 2] FilasSel justo antes de f03ImprimirTablero: "
+debug_msg_checkpoint_tablero_3:
+        .asciz "[CHECKPOINT 3] FilasSel justo después de f03ImprimirTablero: "
 debug_msg_filas_post_tablero:
         .asciz "[POST TABLERO] FilasSel después de imprimir tablero: "
         .section .text
