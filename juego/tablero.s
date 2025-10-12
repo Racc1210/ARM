@@ -120,7 +120,7 @@ f03ImprimirTablero:
         MOV w1, w13        // carácter a repetir
         BL f06CrearCadenaDinamica
         // x3 = dirección de la cadena, x2 = longitud
-        MOV x4, #0         // índice de fila
+        MOV x4, #1         // índice de fila
         B f03ImprimirTablero_check
 f03ImprimirTablero_next:
         ADD x4, x4, #1     // incrementar índice de fila
