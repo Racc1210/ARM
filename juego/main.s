@@ -45,6 +45,25 @@ OpcionSel:      .skip 8
 _start:
         stp x29, x30, [sp, -16]!
         mov x29, sp
+        // Inicializar temporales y configuración a cero
+        LDR x1, =TmpFilas
+        MOV x0, #0
+        STR x0, [x1]
+        LDR x1, =TmpColumnas
+        MOV x0, #0
+        STR x0, [x1]
+        LDR x1, =TmpMinas
+        MOV x0, #0
+        STR x0, [x1]
+        LDR x1, =FilasSel
+        MOV x0, #0
+        STR x0, [x1]
+        LDR x1, =ColumnasSel
+        MOV x0, #0
+        STR x0, [x1]
+        LDR x1, =MinasSel
+        MOV x0, #0
+        STR x0, [x1]
         BL f01IniciarPrograma
         BL f02MenuPrincipal
         ldp x29, x30, [sp], 16
@@ -218,12 +237,12 @@ f10MinasError:
         B f10LeerMinas
 
 f11MinasOK:
-        LDR x0, =TmpFilas
-        LDR x0, [x0]
-        LDR x1, =TmpColumnas
-        LDR x1, [x1]
-        LDR x2, =TmpMinas
-        LDR x2, [x2]
+        LDR x13, =TmpFilas
+        LDR x0, [x13]
+        LDR x14, =TmpColumnas
+        LDR x1, [x14]
+        LDR x15, =TmpMinas
+        LDR x2, [x15]
         BL f12GuardarConfig
 
 f12GuardarConfig:
