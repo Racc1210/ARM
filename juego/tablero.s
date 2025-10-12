@@ -39,9 +39,8 @@ f07ColocarBandera:
 
         .section .bss
         .global Tablero
-// Cada celda: 2 bytes (mina, estado)
 Tablero:
-        .skip 30*24*2   // Tamaño máximo: 30 filas x 24 columnas (2 bytes por celda)
+        .skip 30*24   // Tamaño máximo: 30 filas x 24 columnas (1 byte por celda)
 
         .section .bss
         .global BufferSimbolo
@@ -59,11 +58,10 @@ BufferSimbolo:
         .extern NuevaLinea, LargoNuevaLineaVal
         .extern Espacio, LargoEspacioVal
         .extern f01ImprimirCadena
-        .extern f06CrearCadenaDinamica, f07ImprimirCadenaNVeces
 
 // -------------------------------------------------
 // f01InicializarTablero
-// Inicializa todas las celdas: mina=0, estado=0
+// Limpia el tablero: pone todas las celdas como vacías ('#')
 // Usa FilasSel y ColumnasSel
 // -------------------------------------------------
 f01InicializarTablero:
@@ -82,15 +80,14 @@ init_tablero_filas:
 init_tablero_columnas:
         CMP x4, x1
         B.GE init_tablero_nextfila
-        // Calcular offset base: offset = 2 * (fila * columnas + columna)
+        // Calcular offset: offset = fila * columnas + columna
         MUL x5, x3, x1
         ADD x5, x5, x4
-        LSL x5, x5, #1     // x5 = x5 * 2
-        ADD x6, x12, x5    // dirección base de celda
-        MOV w7, #0         // mina = 0
-        STRB w7, [x6]
-        MOV w7, #0         // estado = 0
-        STRB w7, [x6, #1]
+        ADD x5, x12, x5
+        // Escribir símbolo vacío ('#')
+        LDR x6, =SimboloVacio
+        LDRB w7, [x6]
+        STRB w7, [x5]
         ADD x4, x4, #1
         B init_tablero_columnas
 init_tablero_nextfila:
@@ -102,34 +99,55 @@ init_tablero_fin:
 
 // -------------------------------------------------
 // f03ImprimirTablero
-// Imprime el estado actual del tablero como matriz de sublistas
+// Imprime el estado actual del tablero
 // Usa FilasSel y ColumnasSel
 // -------------------------------------------------
 f03ImprimirTablero:
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        // Obtener cantidad de filas y columnas
         LDR x10, =FilasSel
         LDR x0, [x10]      // x0 = filas
         LDR x11, =ColumnasSel
         LDR x1, [x11]      // x1 = columnas
-        // Crear cadena de una fila con símbolo vacío
-        LDR x12, =SimboloVacio
-        LDRB w13, [x12]    // w13 = símbolo vacío
-        MOV x2, x1         // cantidad de columnas
-        MOV w1, w13        // carácter a repetir
-        BL f06CrearCadenaDinamica
-        // x3 = dirección de la cadena, x2 = longitud
-        MOV x4, #0         // índice de fila
-f03ImprimirTablero_filas_loop:
-        CMP x4, x0         // ¿imprimimos todas las filas?
-        B.GE f03ImprimirTablero_fin
-        // Imprimir la cadena dinámica (una fila)
-        MOV x1, x3         // buffer
-        MOV x2, x2         // longitud
+        LDR x12, =Tablero
+        LDR x13, =BufferSimbolo
+        MOV x3, #0         // fila
+print_tablero_filas_directo:
+        CMP x3, x0
+        B.GE print_tablero_fin_directo
+        MOV x4, #0         // columna
+print_tablero_columnas_directo:
+        CMP x4, x1
+        B.GE print_tablero_nuevaLinea_directo
+        // Calcular offset: offset = fila * columnas + columna
+        MUL x5, x3, x1
+        ADD x5, x5, x4
+        // Validar que offset < 30*24
+        CMP x5, #(30*24)
+        B.GE print_tablero_error
+        ADD x5, x12, x5
+        LDRB w6, [x5]      // símbolo de la celda
+        // Imprimir el símbolo usando buffer fijo
+        STRB w6, [x13]
+        MOV x1, x13
+        MOV x2, #1
         BL f01ImprimirCadena
-        ADD x4, x4, #1     // incrementar índice de fila
-        B f03ImprimirTablero_filas_loop
-f03ImprimirTablero_fin:
+        // No imprimir espacio entre símbolos
+        ADD x4, x4, #1
+        B print_tablero_columnas_directo
+print_tablero_nuevaLinea_directo:
+        // Imprimir salto de línea como carácter ASCII 0x0A usando buffer temporal
+        MOV x1, x13
+        MOV w7, #10        // 0x0A = 10 decimal
+        STRB w7, [x1]
+        MOV x2, #1
+        BL f01ImprimirCadena
+        ADD x3, x3, #1
+        B print_tablero_filas_directo
+print_tablero_fin_directo:
+        ldp x29, x30, [sp], 16
+        RET
+print_tablero_error:
+        // Error: offset fuera de rango
         ldp x29, x30, [sp], 16
         RET
