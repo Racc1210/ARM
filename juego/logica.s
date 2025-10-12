@@ -15,6 +15,7 @@
         .extern f05Derrota
         .extern f06Victoria
         .extern f07ColocarBandera
+        .extern f99DiagnosticoTablero
 
         // Variables globales de configuración
         .extern FilasSel
@@ -45,7 +46,7 @@ f01ConfigurarYJugar:
         LDR x0, [x13]
         BL f02ColocarMinas
         // Diagnóstico: imprimir buffer del tablero
-        BL f99DiagnosticoTablero
+        BL f9DiagnosticoTablero
         LDR x13, =FilasSel
         LDR x0, [x13]
         BL f02BucleJuego

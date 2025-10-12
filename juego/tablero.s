@@ -2,6 +2,7 @@
         .global f08DescubrirCelda
         .global f09ColocarBandera
         .global f10HayMina
+        .global f99DiagnosticoTablero
 // -------------------------------------------------
 // f08DescubrirCelda
 // Descubre la celda en (fila, columna)
