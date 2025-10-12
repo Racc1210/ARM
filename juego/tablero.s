@@ -125,7 +125,7 @@ print_tablero_columnas:
         B print_tablero_columnas
 print_tablero_imprimirFila:
         MOV x1, sp         // buffer de la fila
-        MOV x2, x1         // x2 = columnas
+        MOV x2, x11        // x2 = columnas
         BL f01ImprimirCadena
         // Imprimir salto de línea
         SUB sp, sp, #8
