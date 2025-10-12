@@ -110,44 +110,40 @@ f03ImprimirTablero:
         mov x29, sp
         // Obtener cantidad de filas y columnas
         LDR x10, =FilasSel
-        LDR x0, [x10]      // x0 = filas
-        // Print depuración: valor de x0 justo después de cargar FilasSel
+        LDR x20, [x10]      // x20 = filas
+        // Print depuración: valor de filas justo después de cargar FilasSel
         LDR x1, =debug_msg_tablero_1
         MOV x2, #44
         BL f01ImprimirCadena
-        MOV x21, x0
+        MOV x0, x20
         BL print_decimal
         LDR x11, =ColumnasSel
-        LDR x1, [x11]      // x1 = columnas
-        // Print depuración: valor de x0 después de cargar ColumnasSel
+        LDR x21, [x11]      // x21 = columnas
+        // Print depuración: valor de filas después de cargar ColumnasSel
         LDR x1, =debug_msg_tablero_2
         MOV x2, #45
         BL f01ImprimirCadena
-        MOV x0, x21
+        MOV x0, x20
         BL print_decimal
         // Crear cadena de una fila con símbolo vacío
         LDR x12, =SimboloVacio
         LDRB w13, [x12]    // w13 = símbolo vacío
-        MOV x2, x1         // cantidad de columnas
+        MOV x2, x21         // cantidad de columnas
         MOV w1, w13        // carácter a repetir
         BL f06CrearCadenaDinamica
-        // Print depuración: valor de x0 después de crear cadena dinámica
+        // Print depuración: valor de filas después de crear cadena dinámica
         LDR x1, =debug_msg_tablero_3
         MOV x2, #49
         BL f01ImprimirCadena
-        MOV x0, x21
+        MOV x0, x20
         BL print_decimal
         // x3 = dirección de la cadena, x2 = longitud
-        // Depuración: imprimir valor de x0 (filas)
+        // Depuración: imprimir valor de filas
         LDR x1, =debug_msg_filas_tablero
         MOV x2, #16
         BL f01ImprimirCadena
-        MOV x20, x21        // Guardar valor original de x0 (filas)
-        MOV x1, sp
-        STR x21, [x1]
-        MOV x0, x20        // Usar valor original para print_decimal
+        MOV x0, x20
         BL print_decimal
-        MOV x0, x20        // Restaurar valor original de x0 (filas)
         .section .rodata
 debug_msg_tablero_1:
         .asciz "[TABLERO 1] x0 tras cargar FilasSel: "
