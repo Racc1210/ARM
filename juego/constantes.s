@@ -74,7 +74,7 @@ LargoMensajeErrorCantidadMinasVal: .quad 66
         .global MensajeColumna, LargoMensajeColumnaVal
 
 MenuAccion:
-    .asciz "\n1. Descubrir celda\n2. Colocar/Quitar bandera\n3. Volver al menu\nOpcion: "
+    .asciz "1. Descubrir celda 2. Colocar/Quitar bandera 3. Volver al menu Opcion: "
 LargoMenuAccionVal: .quad 71
 
 MensajeFila:
