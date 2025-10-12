@@ -132,15 +132,7 @@ print_tablero_columnas_directo:
         MOV x1, x13
         MOV x2, #1
         BL f01ImprimirCadena
-        // Imprimir espacio si no es el último símbolo de la fila
-        ADD x7, x4, #1
-        CMP x7, x1
-        B.EQ print_tablero_no_space
-        LDR x1, =Espacio
-        LDR x2, =LargoEspacioVal
-        LDR x2, [x2]
-        BL f01ImprimirCadena
-print_tablero_no_space:
+        // No imprimir espacio entre símbolos
         ADD x4, x4, #1
         B print_tablero_columnas_directo
 print_tablero_nuevaLinea_directo:
