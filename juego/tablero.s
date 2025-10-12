@@ -56,6 +56,7 @@ BufferSimbolo:
         .extern SimboloMina, LargoSimboloMinaVal
         .extern SimboloBandera, LargoSimboloBanderaVal
         .extern NuevaLinea, LargoNuevaLineaVal
+        .extern Espacio, LargoEspacioVal
         .extern f01ImprimirCadena
 
 // -------------------------------------------------
@@ -131,13 +132,23 @@ print_tablero_columnas_directo:
         MOV x1, x13
         MOV x2, #1
         BL f01ImprimirCadena
+        // Imprimir espacio si no es el último símbolo de la fila
+        ADD x7, x4, #1
+        CMP x7, x1
+        B.EQ print_tablero_no_space
+        LDR x1, =Espacio
+        LDR x2, =LargoEspacioVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
+print_tablero_no_space:
         ADD x4, x4, #1
         B print_tablero_columnas_directo
 print_tablero_nuevaLinea_directo:
-        // Imprimir salto de línea usando la cadena global
-        LDR x1, =NuevaLinea
-        LDR x2, =LargoNuevaLineaVal
-        LDR x2, [x2]
+        // Imprimir salto de línea como carácter ASCII 0x0A
+        MOV x1, x13
+        MOV w7, #0x0A
+        STRB w7, [x1]
+        MOV x2, #1
         BL f01ImprimirCadena
         ADD x3, x3, #1
         B print_tablero_filas_directo
