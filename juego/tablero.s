@@ -111,32 +111,26 @@ f03ImprimirTablero:
         LDR x1, [x11]      // x1 = columnas
         LDR x12, =Tablero
         LDR x13, =BufferSimbolo
-        MOV x3, #0         // fila
-print_tablero_filas_directo:
-        CMP x3, x0
+        MOV x20, #0        // indice fila
+        MOV x21, #0        // indice columna
+print_tablero_loop:
+        CMP x20, x0
         B.GE print_tablero_fin_directo
-        MOV x4, #0         // columna
-print_tablero_columnas_directo:
-        CMP x4, x1
-        B.GE print_tablero_nuevaLinea_directo
         // Calcular offset: offset = fila * columnas + columna
-        MUL x5, x3, x1
-        ADD x5, x5, x4
-        // Validar que offset < 30*24
+        MUL x5, x20, x1
+        ADD x5, x5, x21
         CMP x5, #(30*24)
         B.GE print_tablero_error
         ADD x5, x12, x5
         LDRB w6, [x5]      // símbolo de la celda
-        // Imprimir el símbolo usando buffer fijo
         STRB w6, [x13]
         MOV x1, x13
         MOV x2, #1
         BL f01ImprimirCadena
-        // No imprimir espacio entre símbolos
-        ADD x4, x4, #1
-        B print_tablero_columnas_directo
-print_tablero_nuevaLinea_directo:
-        // Imprimir salto de línea usando un buffer local
+        ADD x21, x21, #1
+        CMP x21, x1
+        B.LT print_tablero_loop
+        // Si columna llegó al límite, imprimir salto de línea y resetear columna
         SUB sp, sp, #8
         MOV w7, #10        // 0x0A = 10 decimal
         STRB w7, [sp]
@@ -144,12 +138,12 @@ print_tablero_nuevaLinea_directo:
         MOV x2, #1
         BL f01ImprimirCadena
         ADD sp, sp, #8
-        ADD x3, x3, #1
-        B print_tablero_filas_directo
+        MOV x21, #0
+        ADD x20, x20, #1
+        B print_tablero_loop
 print_tablero_fin_directo:
         ldp x29, x30, [sp], 16
         RET
 print_tablero_error:
-        // Error: offset fuera de rango
         ldp x29, x30, [sp], 16
         RET
