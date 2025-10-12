@@ -2,7 +2,7 @@
         .global f08DescubrirCelda
         .global f09ColocarBandera
         // ...sin lógica de minas...
-        .global f99DiagnosticoTablero
+        // ...sin diagnóstico...
 // -------------------------------------------------
 // f08DescubrirCelda
 // Descubre la celda en (fila, columna)
@@ -308,77 +308,6 @@ init_tablero_fin:
 // Imprime el estado actual del tablero como matriz de sublistas
 // Usa FilasSel y ColumnasSel
 // -------------------------------------------------
-// -------------------------------------------------
-// f99DiagnosticoTablero
-// Imprime el buffer del tablero en formato hexadecimal (mina, estado)
-// -------------------------------------------------
-f99DiagnosticoTablero:
-        // Imprimir encabezado de diagnóstico
-        LDR x1, =diag_tablero_msg
-        MOV x2, #20
-        MOV x8, #64
-        MOV x0, #1
-        SVC #0
-
-        .section .rodata
-diag_tablero_msg: .asciz "DIAGNOSTICO TABLERO\n"
-        stp x29, x30, [sp, -16]!
-        mov x29, sp
-        LDR x10, =FilasSel
-        LDR x20, [x10]      // x20 = filas
-        LDR x11, =ColumnasSel
-        LDR x21, [x11]      // x21 = columnas
-        LDR x12, =Tablero
-        MOV x4, #0         // fila actual
-diag_tablero_fila_loop:
-        CMP x4, x20
-        B.GE diag_tablero_fin
-        MOV x6, #0        // columna actual
-diag_tablero_columna_loop:
-        CMP x6, x21
-        B.GE diag_tablero_nextfila
-        MUL x13, x4, x21
-        ADD x13, x13, x6
-        LSL x13, x13, #1
-        ADD x14, x12, x13
-        LDRB w15, [x14]      // mina
-        LDRB w16, [x14, #1]  // estado
-        // Imprimir fila, columna, mina, estado
-        // Formato: [F:x][C:y] M:0x.. E:0x..
-        // Imprimir fila
-        MOV x0, x4
-        BL print_decimal
-        // Imprimir columna
-        MOV x0, x6
-        BL print_decimal
-        // Imprimir mina
-        uxtb x0, w15
-        BL print_hex_byte
-        // Imprimir estado
-        uxtb x0, w16
-        BL print_hex_byte
-        // Imprimir espacio
-        MOV w23, #' '
-        MOV x8, #64
-        MOV x0, #1
-        LDR x1, =Espacio
-        MOV x2, #1
-        SVC #0
-        ADD x6, x6, #1
-        B diag_tablero_columna_loop
-diag_tablero_nextfila:
-        // Imprimir salto de línea
-        MOV w24, #10
-        MOV x8, #64
-        MOV x0, #1
-        LDR x1, =NuevaLinea
-        MOV x2, #1
-        SVC #0
-        ADD x4, x4, #1
-        B diag_tablero_fila_loop
-diag_tablero_fin:
-        ldp x29, x30, [sp], 16
-        RET
 
 // Rutina auxiliar para imprimir byte en hexadecimal
 // x0 = byte
