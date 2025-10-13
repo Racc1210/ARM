@@ -966,9 +966,7 @@ f03ImprimirTablero_fin:
         ldp x29, x30, [sp], 16
         RET
 
-// NUEVA VERSION SIMPLE DE f03ImprimirTablero
-// Imprime el tablero carácter por carácter usando solo el stack
-// Con alineación correcta de memoria para ARM64
+
 f03ImprimirTablero_NUEVA:
         stp x29, x30, [sp, -64]!  // Alineación a 16 bytes
         mov x29, sp

@@ -100,6 +100,7 @@ f02MenuPrincipal:
         LDR x2, [x2]
         BL f01ImprimirCadena
 
+f02MenuPrincipal_leer_opcion:
         // Inicializar OpcionSel a cero antes de leer
         LDR x1, =OpcionSel
         MOV x0, #0
@@ -107,6 +108,15 @@ f02MenuPrincipal:
         BL f03LeerNumero
         MOV x9, x0
 
+        // Validar que la opción esté en el rango 1-5
+        MOV x0, x9
+        MOV x1, #1
+        MOV x2, #5
+        BL f04ValidarRango
+        CMP x0, #0
+        BEQ f02MenuPrincipal_opcion_invalida
+
+        // Procesar opciones válidas
         CMP x9, #5
         BEQ f03SalirPrograma
 
@@ -119,11 +129,16 @@ f02MenuPrincipal:
         CMP x9, #4
         BEQ f07Personalizada
 
+        // Por seguridad, volver a imprimir el menú
+        B f02MenuPrincipal
+
+f02MenuPrincipal_opcion_invalida:
         LDR x1, =MensajeErrorSeleccion
         LDR x2, =LargoMensajeErrorSeleccionVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        B f02MenuPrincipal
+        // Volver a pedir la opción sin reimprimir el menú
+        B f02MenuPrincipal_leer_opcion
 
 f03SalirPrograma:
         stp x29, x30, [sp, -16]!
