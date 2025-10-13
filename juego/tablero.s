@@ -342,9 +342,13 @@ f02ColocarMinasAleatorias:
         LDR x13, =TableroPtr
         LDR x13, [x13]      // x13 = base tablero
         MOV x14, #0         // contador de minas colocadas
+        MOV x20, #0         // contador de intentos
+        MOV x21, #10000     // máximo de intentos
 minas_loop:
         CMP x14, x12
         B.GE minas_fin
+        CMP x20, x21
+        B.GE minas_fin      // Si se exceden los intentos, salir
         // Generar fila aleatoria
         MOV x0, x10
         BL f02NumeroAleatorio
@@ -363,11 +367,13 @@ minas_loop:
         // Verificar si ya hay mina
         LDRB w19, [x18]
         CMP w19, #1
+        ADD x20, x20, #1   // incrementar intentos
         BEQ minas_loop // Si ya hay mina, repetir
         // Colocar mina
         MOV w19, #1
         STRB w19, [x18]
         ADD x14, x14, #1
+        ADD x20, x20, #1   // incrementar intentos
         B minas_loop
 minas_fin:
         ldp x29, x30, [sp], 16
