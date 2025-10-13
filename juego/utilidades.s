@@ -1,6 +1,9 @@
         .section .data
 Semilla: .quad 123456789
 
+        .section .bss
+BufferLectura: .skip 8    // Buffer temporal para f03LeerNumero
+
         .section .text
         .global f01AsciiANumero
         .global f02NumeroAleatorio
@@ -11,7 +14,6 @@ Semilla: .quad 123456789
 
         .extern f01ImprimirCadena
         .extern f02LeerCadena
-        .extern OpcionSel
 
         
 f01AsciiANumero:
@@ -66,10 +68,10 @@ f02NumeroAleatorio_error:
 f03LeerNumero:
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        LDR x1, =OpcionSel
+        LDR x1, =BufferLectura
         MOV x2, #4
         BL f02LeerCadena
-        LDR x1, =OpcionSel
+        LDR x1, =BufferLectura
         MOV x2, #4
         BL f01AsciiANumero
         ldp x29, x30, [sp], 16
@@ -174,10 +176,10 @@ f07ImprimirCadenaNVeces_fin:
 
 
 // -------------------------------------------------
-// f08LimpiarPantalla
+// f05LimpiarPantalla
 // Limpia la consola usando secuencias ANSI
 // -------------------------------------------------
-f08LimpiarPantalla:
+f05LimpiarPantalla:
         stp x29, x30, [sp, -32]!
         mov x29, sp
         
