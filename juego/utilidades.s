@@ -9,6 +9,7 @@ Semilla: .quad 123456789
         .global f05LongitudCadena
         .global f06CrearCadenaDinamica
         .global f07ImprimirCadenaNVeces
+        .global f08LimpiarPantalla
         .global Semilla
 
         .extern f01ImprimirCadena
@@ -169,3 +170,41 @@ f07ImprimirCadenaNVeces_loop:
 f07ImprimirCadenaNVeces_fin:
         ldp x29, x30, [sp], 16
         RET
+
+
+// -------------------------------------------------
+// f08LimpiarPantalla
+// Limpia la consola usando secuencias ANSI
+// -------------------------------------------------
+f08LimpiarPantalla:
+        stp x29, x30, [sp, -32]!
+        mov x29, sp
+        
+        // Secuencia ANSI para limpiar pantalla: \033[2J\033[H
+        // \033[2J = limpiar pantalla completa
+        // \033[H = mover cursor a posición 0,0
+        MOV w0, #27         // ESC
+        STRB w0, [sp, #16]
+        MOV w0, #'['
+        STRB w0, [sp, #17]
+        MOV w0, #'2'
+        STRB w0, [sp, #18]
+        MOV w0, #'J'
+        STRB w0, [sp, #19]
+        MOV w0, #27         // ESC
+        STRB w0, [sp, #20]
+        MOV w0, #'['
+        STRB w0, [sp, #21]
+        MOV w0, #'H'
+        STRB w0, [sp, #22]
+        
+        // Escribir secuencia a stdout
+        MOV x8, #64         // syscall write
+        MOV x0, #1          // stdout
+        ADD x1, sp, #16     // buffer
+        MOV x2, #7          // longitud
+        SVC #0
+        
+        ldp x29, x30, [sp], 32
+        RET
+

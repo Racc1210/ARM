@@ -28,6 +28,12 @@
         .extern LargoMensajeFilaVal
         .extern MensajeColumna
         .extern LargoMensajeColumnaVal
+        .extern MensajeErrorSeleccion
+        .extern LargoMensajeErrorSeleccionVal
+        .extern MensajeErrorFila
+        .extern LargoMensajeErrorFilaVal
+        .extern MensajeErrorColumna
+        .extern LargoMensajeErrorColumnaVal
 
 
 f01ConfigurarYJugar:
@@ -80,11 +86,20 @@ f02BucleJuego_loop:
         LDR x2, [x2]
         BL f01ImprimirCadena
         
+f02BucleJuego_leer_opcion:
         // Leer opción del usuario
         BL f03LeerNumero
         MOV x9, x0
         
-        // Procesar opción
+        // Validar opción
+        MOV x0, x9
+        MOV x1, #1
+        MOV x2, #3
+        BL f04ValidarRango
+        CMP x0, #0
+        BEQ f02BucleJuego_opcion_invalida   // Si inválida, mostrar error
+        
+        // Procesar opción válida
         CMP x9, #1
         BEQ f03AccionDescubrir
         CMP x9, #2
@@ -92,8 +107,17 @@ f02BucleJuego_loop:
         CMP x9, #3
         BEQ f02BucleJuego_salir
         
-        // Opción inválida, repetir
+        // Por seguridad, volver al loop principal
         B f02BucleJuego_loop
+
+f02BucleJuego_opcion_invalida:
+        // Mostrar mensaje de error
+        LDR x1, =MensajeErrorSeleccion
+        LDR x2, =LargoMensajeErrorSeleccionVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
+        // Volver a pedir la opción
+        B f02BucleJuego_leer_opcion
 
 f02BucleJuego_salir:
         ldp x29, x30, [sp], 16
@@ -119,8 +143,8 @@ f03AccionDescubrir_leer_fila:
         MOV x2, x20
         BL f04ValidarRango
         CMP x0, #0
-        BEQ f03AccionDescubrir_leer_fila   // Si inválida, repetir
-        SUB x10, x10, #1                   // Convertir a índice base 0
+        BEQ f03AccionDescubrir_fila_invalida   // Si inválida, mostrar error
+        SUB x10, x10, #1                       // Convertir a índice base 0
 
 f03AccionDescubrir_leer_columna:
         // Leer columna
@@ -137,8 +161,8 @@ f03AccionDescubrir_leer_columna:
         MOV x2, x21
         BL f04ValidarRango
         CMP x0, #0
-        BEQ f03AccionDescubrir_leer_columna  // Si inválida, repetir
-        SUB x11, x11, #1                     // Convertir a índice base 0
+        BEQ f03AccionDescubrir_columna_invalida  // Si inválida, mostrar error
+        SUB x11, x11, #1                         // Convertir a índice base 0
 
         // Descubrir celda
         MOV x0, x10
@@ -149,6 +173,24 @@ f03AccionDescubrir_leer_columna:
         
         ldp x29, x30, [sp], 16
         B f02BucleJuego_loop
+
+f03AccionDescubrir_fila_invalida:
+        // Mostrar mensaje de error
+        LDR x1, =MensajeErrorFila
+        LDR x2, =LargoMensajeErrorFilaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
+        // Volver a pedir la fila
+        B f03AccionDescubrir_leer_fila
+
+f03AccionDescubrir_columna_invalida:
+        // Mostrar mensaje de error
+        LDR x1, =MensajeErrorColumna
+        LDR x2, =LargoMensajeErrorColumnaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
+        // Volver a pedir la columna
+        B f03AccionDescubrir_leer_columna
 
 
 f04AccionBandera:
@@ -170,7 +212,7 @@ f04AccionBandera_leer_fila:
         MOV x2, x20
         BL f04ValidarRango
         CMP x0, #0
-        BEQ f04AccionBandera_leer_fila
+        BEQ f04AccionBandera_fila_invalida
         SUB x10, x10, #1
 
 f04AccionBandera_leer_columna:
@@ -188,7 +230,7 @@ f04AccionBandera_leer_columna:
         MOV x2, x21
         BL f04ValidarRango
         CMP x0, #0
-        BEQ f04AccionBandera_leer_columna
+        BEQ f04AccionBandera_columna_invalida
         SUB x11, x11, #1
 
         // Colocar/quitar bandera
@@ -198,3 +240,21 @@ f04AccionBandera_leer_columna:
 
         ldp x29, x30, [sp], 16
         B f02BucleJuego_loop
+
+f04AccionBandera_fila_invalida:
+        // Mostrar mensaje de error
+        LDR x1, =MensajeErrorFila
+        LDR x2, =LargoMensajeErrorFilaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
+        // Volver a pedir la fila
+        B f04AccionBandera_leer_fila
+
+f04AccionBandera_columna_invalida:
+        // Mostrar mensaje de error
+        LDR x1, =MensajeErrorColumna
+        LDR x2, =LargoMensajeErrorColumnaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
+        // Volver a pedir la columna
+        B f04AccionBandera_leer_columna

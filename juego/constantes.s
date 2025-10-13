@@ -79,9 +79,11 @@ LargoMensajeErrorCantidadMinasVal: .quad 66
         .global MenuAccion, LargoMenuAccionVal
         .global MensajeFila, LargoMensajeFilaVal
         .global MensajeColumna, LargoMensajeColumnaVal
+        .global MensajeErrorFila, LargoMensajeErrorFilaVal
+        .global MensajeErrorColumna, LargoMensajeErrorColumnaVal
 
 MenuAccion:
-    .asciz "\n1. Descubrir celda\n2. Colocar/Quitar bandera\n3. Volver al menu Opcion: "
+    .asciz "\n1. Descubrir celda\n2. Colocar/Quitar bandera\n3. Volver al menu\nOpcion: "
 LargoMenuAccionVal: .quad 72
 
 MensajeFila:
@@ -91,6 +93,14 @@ LargoMensajeFilaVal: .quad 6
 MensajeColumna:
     .asciz "Columna: "
 LargoMensajeColumnaVal: .quad 9
+
+MensajeErrorFila:
+    .asciz "Fila invalida. Intente de nuevo.\n"
+LargoMensajeErrorFilaVal: .quad 34
+
+MensajeErrorColumna:
+    .asciz "Columna invalida. Intente de nuevo.\n"
+LargoMensajeErrorColumnaVal: .quad 37
 
 // ============================
 // Mensajes de fin de juego

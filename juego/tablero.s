@@ -25,6 +25,8 @@ f05Derrota:
         .global f09ColocarBandera
         .global f03ImprimirTablero_NUEVA
         .global f12ContarMinasCercanas
+        
+        .extern f08LimpiarPantalla
         // ...sin lógica de minas...
         // ...sin diagnóstico...
 // -------------------------------------------------
@@ -972,7 +974,7 @@ f03ImprimirTablero_NUEVA:
         mov x29, sp
         
         // Limpiar pantalla antes de imprimir
-        BL f13LimpiarPantalla
+        BL f08LimpiarPantalla
         
         // Obtener cantidad de filas y columnas
         LDR x10, =FilasSel
@@ -1107,41 +1109,4 @@ nueva_print_end_row:
 
 nueva_print_fin:
         ldp x29, x30, [sp], 64
-        RET
-
-// -------------------------------------------------
-// f13LimpiarPantalla
-// Limpia la consola usando secuencias ANSI
-// -------------------------------------------------
-        .global f13LimpiarPantalla
-f13LimpiarPantalla:
-        stp x29, x30, [sp, -32]!
-        mov x29, sp
-        
-        // Secuencia ANSI para limpiar pantalla: \033[2J\033[H
-        // \033[2J = limpiar pantalla completa
-        // \033[H = mover cursor a posición 0,0
-        MOV w0, #27         // ESC
-        STRB w0, [sp, #16]
-        MOV w0, #'['
-        STRB w0, [sp, #17]
-        MOV w0, #'2'
-        STRB w0, [sp, #18]
-        MOV w0, #'J'
-        STRB w0, [sp, #19]
-        MOV w0, #27         // ESC
-        STRB w0, [sp, #20]
-        MOV w0, #'['
-        STRB w0, [sp, #21]
-        MOV w0, #'H'
-        STRB w0, [sp, #22]
-        
-        // Escribir secuencia a stdout
-        MOV x8, #64         // syscall write
-        MOV x0, #1          // stdout
-        ADD x1, sp, #16     // buffer
-        MOV x2, #7          // longitud
-        SVC #0
-        
-        ldp x29, x30, [sp], 32
         RET

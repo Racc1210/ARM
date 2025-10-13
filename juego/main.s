@@ -18,6 +18,7 @@ OpcionSel:      .skip 8
         .extern f01ImprimirCadena
         .extern f03LeerNumero
         .extern f04ValidarRango
+        .extern f08LimpiarPantalla
 
         .extern f01ConfigurarYJugar  
 
@@ -46,6 +47,10 @@ OpcionSel:      .skip 8
 _start:
         stp x29, x30, [sp, -16]!
         mov x29, sp
+        
+        // Limpiar pantalla al inicio del programa
+        BL f08LimpiarPantalla
+        
         // Inicializar temporales y configuración a cero
         // Inicializar semilla aleatoria con el PID del proceso
         MOV x8, #172 // syscall getpid
