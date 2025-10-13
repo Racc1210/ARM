@@ -221,7 +221,8 @@ f09ColocarBandera_fin:
 f04DescubrirCelda:
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        // TODO: lógica de descubrir celda
+        // x0 = fila, x1 = columna
+        BL f08DescubrirCelda
         ldp x29, x30, [sp], 16
         RET
 
@@ -235,7 +236,8 @@ f06Victoria:
 f07ColocarBandera:
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        // TODO: lógica de colocar/quitar bandera
+        // x0 = fila, x1 = columna
+        BL f09ColocarBandera
         ldp x29, x30, [sp], 16
         RET
 // =====================================
