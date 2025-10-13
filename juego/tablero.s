@@ -53,12 +53,47 @@ f08DescubrirCelda_fin:
 
 // -------------------------------------------------
 // f11DescubrirCascada
-// Descubre en cascada usando recursión simple
+// Descubre en cascada usando recursión simple con debugging
 // Entrada: x0 = fila, x1 = columna
 // -------------------------------------------------
 f11DescubrirCascada:
         stp x29, x30, [sp, -16]!
         mov x29, sp
+        
+        // DEBUG: Imprimir coordenadas que estamos procesando
+        stp x0, x1, [sp, -16]!
+        
+        // Imprimir "Procesando fila: "
+        LDR x1, =debug_fila_msg
+        MOV x2, #17
+        MOV x8, #64
+        MOV x0, #1
+        SVC #0
+        
+        // Imprimir número de fila
+        LDP x0, x1, [sp]
+        BL print_number
+        
+        // Imprimir " columna: "
+        LDR x1, =debug_col_msg
+        MOV x2, #10
+        MOV x8, #64
+        MOV x0, #1
+        SVC #0
+        
+        // Imprimir número de columna
+        LDP x0, x1, [sp]
+        MOV x0, x1
+        BL print_number
+        
+        // Imprimir nueva línea
+        LDR x1, =debug_newline
+        MOV x2, #1
+        MOV x8, #64
+        MOV x0, #1
+        SVC #0
+        
+        LDP x0, x1, [sp], 16
         
         // Obtener configuración del tablero
         LDR x10, =FilasSel
@@ -70,13 +105,13 @@ f11DescubrirCascada:
         
         // Verificar límites
         CMP x0, #0
-        BLT f11DescubrirCascada_fin
+        BLT f11DescubrirCascada_fin_debug
         CMP x0, x10
-        BGE f11DescubrirCascada_fin
+        BGE f11DescubrirCascada_fin_debug
         CMP x1, #0
-        BLT f11DescubrirCascada_fin
+        BLT f11DescubrirCascada_fin_debug
         CMP x1, x11
-        BGE f11DescubrirCascada_fin
+        BGE f11DescubrirCascada_fin_debug
         
         // Calcular dirección de celda
         MUL x13, x0, x11
@@ -89,17 +124,26 @@ f11DescubrirCascada:
         LDR x16, =ESTADO_DESCUBIERTA
         LDR w16, [x16]
         CMP w15, w16
-        BEQ f11DescubrirCascada_fin // ya descubierta
+        BEQ f11DescubrirCascada_fin_debug // ya descubierta
         
         LDR x17, =ESTADO_BANDERA
         LDR w17, [x17]
         CMP w15, w17
-        BEQ f11DescubrirCascada_fin // bandera
+        BEQ f11DescubrirCascada_fin_debug // bandera
         
         LDR x18, =ESTADO_OCULTA
         LDR w18, [x18]
         CMP w15, w18
-        BNE f11DescubrirCascada_fin // solo procesar ocultas
+        BNE f11DescubrirCascada_fin_debug // solo procesar ocultas
+        
+        // DEBUG: Imprimir que marcamos como descubierta
+        stp x0, x1, [sp, -16]!
+        LDR x1, =debug_reveal_msg
+        MOV x2, #15
+        MOV x8, #64
+        MOV x0, #1
+        SVC #0
+        LDP x0, x1, [sp], 16
         
         // Marcar como descubierta
         STRB w16, [x14, #1]
@@ -110,9 +154,34 @@ f11DescubrirCascada:
         BL f12ContarMinasCercanas
         MOV x22, x0 // x22 = minas cercanas
         
+        // DEBUG: Imprimir minas cercanas
+        stp x20, x21, [sp, -16]!
+        LDR x1, =debug_mines_msg
+        MOV x2, #15
+        MOV x8, #64
+        MOV x0, #1
+        SVC #0
+        MOV x0, x22
+        BL print_number
+        LDR x1, =debug_newline
+        MOV x2, #1
+        MOV x8, #64
+        MOV x0, #1
+        SVC #0
+        LDP x20, x21, [sp], 16
+        
         // Si hay minas cercanas, no expandir
         CMP x22, #0
-        BNE f11DescubrirCascada_fin
+        BNE f11DescubrirCascada_fin_debug
+        
+        // DEBUG: Imprimir que expandimos
+        stp x20, x21, [sp, -16]!
+        LDR x1, =debug_expand_msg
+        MOV x2, #12
+        MOV x8, #64
+        MOV x0, #1
+        SVC #0
+        LDP x20, x21, [sp], 16
         
         // Si es vacío, expandir a todos los vecinos
         MOV x0, x20 // restaurar fila
@@ -153,9 +222,35 @@ f11DescubrirCascada:
         ADD x1, x21, #1 // columna+1
         BL f11DescubrirCascada // abajo-derecha
         
-f11DescubrirCascada_fin:
+f11DescubrirCascada_fin_debug:
         ldp x29, x30, [sp], 16
         RET
+
+// Función auxiliar para imprimir números
+print_number:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        // Convertir número a ASCII y imprimir
+        ADD w0, w0, #'0'
+        stp x0, x1, [sp, -16]!
+        MOV x1, sp
+        MOV x2, #1
+        MOV x8, #64
+        MOV x0, #1
+        SVC #0
+        LDP x0, x1, [sp], 16
+        ldp x29, x30, [sp], 16
+        RET
+
+// Mensajes de debug
+.section .rodata
+debug_fila_msg: .asciz "Procesando fila: "
+debug_col_msg: .asciz " columna: "
+debug_reveal_msg: .asciz "Revelando celda\n"
+debug_mines_msg: .asciz "Minas cercanas: "
+debug_expand_msg: .asciz "Expandiendo!\n"
+debug_newline: .asciz "\n"
+.section .text
 
 // -------------------------------------------------
 // f12ContarMinasCercanas
