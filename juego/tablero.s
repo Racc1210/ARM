@@ -443,7 +443,8 @@ f03ImprimirTablero_fila_loop:
         ADD w22, w0, #'0'
         B .add_symbol
 .set_vacia:
-        MOV w22, w19       // símbolo vacío
+        LDR x30, =Espacio
+        LDRB w22, [x30]    // símbolo espacio
         B .add_symbol
 .set_mina:
         MOV w22, w24      // símbolo mina
