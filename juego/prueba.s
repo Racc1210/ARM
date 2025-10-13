@@ -78,14 +78,11 @@ print_long:
 
 // --- INICIO TEST CON IDENTIFICADORES ---
 _start:
-    // Inicializar semilla con el tiempo del sistema
-    MOV x8, #169 // syscall gettimeofday
-    MOV x0, #0
-    MOV x1, sp
+    // Inicializar semilla con el PID del proceso
+    MOV x8, #172 // syscall getpid
     SVC #0
-    LDR x2, [sp] // segundos
     LDR x3, =Semilla
-    STR x2, [x3]
+    STR x0, [x3]
 
     // Llamar varias veces a f02NumeroAleatorio y mostrar el resultado
     MOV x4, #5 // cantidad de pruebas
