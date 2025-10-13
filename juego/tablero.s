@@ -387,12 +387,15 @@ f03ImprimirTablero_fila_loop:
         ADD x0, x3, x5
         MOV x8, #214
         SVC #0
-        // Recorrer columnas
+        // Recorrer columnas y construir la cadena dinámicamente
         MOV x6, #0        // columna actual
         MOV x7, #0        // índice en cadena
-f03ImprimirTablero_columna_loop:
+        B .col_loop_start
+.col_loop:
+        ADD x6, x6, #1
+.col_loop_start:
         CMP x6, x21
-        B.GE f03ImprimirTablero_cadena_fin
+        B.GE .cadena_fin
         // Calcular offset de celda
         LDR x12, =TableroPtr
         LDR x12, [x12]
@@ -416,16 +419,16 @@ f03ImprimirTablero_columna_loop:
         LDRB w26, [x25]
         MOV w22, w19        // por defecto: vacío
         CMP w16, w18        // ¿bandera?
-        BEQ f03ImprimirTablero_bandera
+        BEQ .set_bandera
         CMP w16, w17        // ¿descubierta?
-        BEQ f03ImprimirTablero_descubierta
-        B f03ImprimirTablero_simbolo
-f03ImprimirTablero_bandera:
+        BEQ .set_descubierta
+        B .add_symbol
+.set_bandera:
         MOV w22, w26      // símbolo bandera
-        B f03ImprimirTablero_simbolo
-f03ImprimirTablero_descubierta:
+        B .add_symbol
+.set_descubierta:
         CMP w15, #1        // ¿mina?
-        BEQ f03ImprimirTablero_mina
+        BEQ .set_mina
         // Calcular número de minas cercanas
         MOV x27, x4        // fila
         MOV x28, x6        // columna
@@ -433,17 +436,17 @@ f03ImprimirTablero_descubierta:
         MOV x1, x28
         BL f12ContarMinasCercanas
         CMP x0, #0
-        BEQ f03ImprimirTablero_vacia
+        BEQ .set_vacia
         // Convertir número a carácter ASCII ('1'..'8')
         ADD w22, w0, #'0'
-        B f03ImprimirTablero_simbolo
-f03ImprimirTablero_vacia:
+        B .add_symbol
+.set_vacia:
         MOV w22, w19       // símbolo vacío
-        B f03ImprimirTablero_simbolo
-f03ImprimirTablero_mina:
+        B .add_symbol
+.set_mina:
         MOV w22, w24      // símbolo mina
-        B f03ImprimirTablero_simbolo
-f03ImprimirTablero_simbolo:
+        B .add_symbol
+.add_symbol:
         STRB w22, [x3, x7] // símbolo
         ADD x7, x7, #1
         MOV w23, #' '
@@ -451,9 +454,8 @@ f03ImprimirTablero_simbolo:
         ADD x7, x7, #1
         STRB w23, [x3, x7] // segundo espacio
         ADD x7, x7, #1
-        ADD x6, x6, #1
-        B f03ImprimirTablero_columna_loop
-f03ImprimirTablero_cadena_fin:
+        B .col_loop
+.cadena_fin:
         MOV w24, #10       // salto de línea
         STRB w24, [x3, x7]
         ADD x7, x7, #1
