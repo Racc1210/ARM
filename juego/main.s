@@ -1,3 +1,4 @@
+        .extern Semilla
         .section .bss
 TmpFilas:    .skip 8
 TmpColumnas: .skip 8
