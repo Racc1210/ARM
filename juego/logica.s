@@ -199,7 +199,7 @@ f03AccionDescubrir:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        MOV x10, x0
+        SUB x10, x0, #1
 
         // validar fila
         MOV x0, x10
@@ -215,7 +215,7 @@ f03AccionDescubrir:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        MOV x11, x0
+        SUB x11, x0, #1
 
         // validar columna
         MOV x0, x11
@@ -249,7 +249,7 @@ f04AccionBandera:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        MOV x10, x0
+        SUB x10, x0, #1
 
         // validar fila
         MOV x0, x10
@@ -265,7 +265,7 @@ f04AccionBandera:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        MOV x11, x0
+        SUB x11, x0, #1
 
         // validar columna
         MOV x0, x11
