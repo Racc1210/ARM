@@ -80,19 +80,18 @@ f08DescubrirCelda_fin:
 
 // -------------------------------------------------
 // f11DescubrirCascada
-// ALGORITMO FLOOD FILL ITERATIVO - Como Minesweeper real
-// Usa stack para evitar recursión profunda
+// VERSION SIMPLIFICADA Y SEGURA - Solo revela vecinos inmediatos
 // Entrada: x0 = fila, x1 = columna
 // -------------------------------------------------
 f11DescubrirCascada:
-        stp x29, x30, [sp, -64]!
+        stp x29, x30, [sp, -16]!
         mov x29, sp
         
         // Verificar que TableroPtr no sea nulo
         LDR x12, =TableroPtr
         LDR x12, [x12]
         CMP x12, #0
-        BEQ f11_flood_fin
+        BEQ f11_fin
         
         // Obtener configuración del tablero
         LDR x10, =FilasSel
@@ -100,137 +99,70 @@ f11DescubrirCascada:
         LDR x11, =ColumnasSel
         LDR x11, [x11]      // x11 = columnas
         
-        // Crear stack simple en memoria local para coordenadas
-        // Usaremos el stack local para almacenar pares (fila, columna)
-        // Stack pointer: x13, Stack base: sp + 16
-        ADD x13, sp, #16    // x13 = stack pointer (empieza vacío)
-        ADD x14, sp, #16    // x14 = stack base
+        // Guardar coordenadas originales
+        MOV x20, x0  // fila original
+        MOV x21, x1  // columna original
         
-        // Agregar celda inicial al stack
-        STR x0, [x13]       // fila
-        STR x1, [x13, #8]   // columna
-        ADD x13, x13, #16   // incrementar stack pointer
+        // Verificar límites de la celda original
+        CMP x20, #0
+        BLT f11_fin
+        CMP x20, x10
+        BGE f11_fin
+        CMP x21, #0
+        BLT f11_fin
+        CMP x21, x11
+        BGE f11_fin
         
-f11_flood_loop:
-        // Verificar si el stack está vacío
-        CMP x13, x14
-        BEQ f11_flood_fin   // Stack vacío = terminar
+        // Revelar solo los 8 vecinos inmediatos sin recursión
+        // Llamar a función auxiliar para cada dirección
         
-        // Pop del stack
-        SUB x13, x13, #16
-        LDR x0, [x13]       // fila
-        LDR x1, [x13, #8]   // columna
-        
-        // Verificar límites
-        CMP x0, #0
-        BLT f11_flood_loop
-        CMP x0, x10
-        BGE f11_flood_loop
-        CMP x1, #0
-        BLT f11_flood_loop
-        CMP x1, x11
-        BGE f11_flood_loop
-        
-        // Calcular offset: 2 * (fila * columnas + columna)
-        MUL x2, x0, x11
-        ADD x2, x2, x1
-        LSL x2, x2, #1
-        ADD x3, x12, x2
-        
-        // Leer estado de la celda
-        LDRB w4, [x3, #1]
-        
-        // Solo procesar celdas ocultas (estado 0)
-        CMP w4, #0
-        BNE f11_flood_loop
-        
-        // Marcar como descubierta (estado 1)
-        MOV w5, #1
-        STRB w5, [x3, #1]
-        
-        // Contar minas cercanas
-        stp x0, x1, [sp, #48]
-        BL f12ContarMinasCercanas
-        ldp x0, x1, [sp, #48]
-        
-        // Si hay minas cercanas, no agregar vecinos al stack
-        CMP x0, #0
-        BNE f11_flood_loop
-        
-        // Agregar los 8 vecinos al stack
-        MOV x20, x0  // fila actual
-        MOV x21, x1  // columna actual
-        
-        // Verificar que tengamos espacio en el stack (máximo 400 bytes = 25 pares)
-        ADD x15, x14, #400
-        CMP x13, x15
-        BGE f11_flood_loop  // Si no hay espacio, continuar sin agregar
-        
-        // Agregar vecino: arriba-izquierda
-        SUB x22, x20, #1
-        SUB x23, x21, #1
-        STR x22, [x13]
-        STR x23, [x13, #8]
-        ADD x13, x13, #16
+        // Arriba-izquierda
+        SUB x0, x20, #1
+        SUB x1, x21, #1
+        BL f11_reveal_single_cell
         
         // Arriba
-        STR x20, [x13]
-        SUB x23, x21, #1
-        STR x23, [x13, #8]
-        ADD x13, x13, #16
+        MOV x0, x20
+        SUB x1, x21, #1
+        BL f11_reveal_single_cell
         
         // Arriba-derecha
-        ADD x22, x20, #1
-        SUB x23, x21, #1
-        STR x22, [x13]
-        STR x23, [x13, #8]
-        ADD x13, x13, #16
+        ADD x0, x20, #1
+        SUB x1, x21, #1
+        BL f11_reveal_single_cell
         
         // Izquierda
-        SUB x22, x20, #1
-        STR x22, [x13]
-        STR x21, [x13, #8]
-        ADD x13, x13, #16
+        SUB x0, x20, #1
+        MOV x1, x21
+        BL f11_reveal_single_cell
         
         // Derecha
-        ADD x22, x20, #1
-        STR x22, [x13]
-        STR x21, [x13, #8]
-        ADD x13, x13, #16
+        ADD x0, x20, #1
+        MOV x1, x21
+        BL f11_reveal_single_cell
         
         // Abajo-izquierda
-        SUB x22, x20, #1
-        ADD x23, x21, #1
-        STR x22, [x13]
-        STR x23, [x13, #8]
-        ADD x13, x13, #16
+        SUB x0, x20, #1
+        ADD x1, x21, #1
+        BL f11_reveal_single_cell
         
         // Abajo
-        STR x20, [x13]
-        ADD x23, x21, #1
-        STR x23, [x13, #8]
-        ADD x13, x13, #16
+        MOV x0, x20
+        ADD x1, x21, #1
+        BL f11_reveal_single_cell
         
         // Abajo-derecha
-        ADD x22, x20, #1
-        ADD x23, x21, #1
-        STR x22, [x13]
-        STR x23, [x13, #8]
-        ADD x13, x13, #16
+        ADD x0, x20, #1
+        ADD x1, x21, #1
+        BL f11_reveal_single_cell
         
-        B f11_flood_loop
-        
-f11_flood_fin:
-        ldp x29, x30, [sp], 64
+f11_fin:
+        ldp x29, x30, [sp], 16
         RET
 
 // Función auxiliar para revelar una sola celda
 // Entrada: x0=fila, x1=columna
-// Función auxiliar simple para revelar una sola celda (ya no usada para cascada)
 f11_reveal_single_cell:
-        stp x29, x30, [sp, -16]!
-        mov x29, sp
-        
         // Verificar límites
         CMP x0, #0
         BLT f11_reveal_end
@@ -250,16 +182,18 @@ f11_reveal_single_cell:
         // Leer estado
         LDRB w4, [x3, #1]
         
-        // Solo procesar celdas ocultas (estado 0)
-        CMP w4, #0
+        // Solo procesar celdas ocultas
+        LDR x5, =ESTADO_OCULTA
+        LDR w5, [x5]
+        CMP w4, w5
         BNE f11_reveal_end
         
-        // Marcar como descubierta (estado 1)
-        MOV w5, #1
-        STRB w5, [x3, #1]
+        // Marcar como descubierta
+        LDR x6, =ESTADO_DESCUBIERTA
+        LDR w6, [x6]
+        STRB w6, [x3, #1]
         
 f11_reveal_end:
-        ldp x29, x30, [sp], 16
         RET
 
 // -------------------------------------------------
