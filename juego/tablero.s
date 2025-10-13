@@ -31,7 +31,10 @@ f08DescubrirCelda:
         BEQ f08DescubrirCelda_fin // Si tiene bandera, no descubrir
         LDR x17, =ESTADO_DESCUBIERTA
         LDR w17, [x17]
-        STRB w17, [x14, #1] // Marcar como descubierta
+        CMP w15, w17
+        BEQ f08DescubrirCelda_fin // Si ya está descubierta, no hacer nada
+        // Marcar como descubierta
+        STRB w17, [x14, #1]
         // Calcular minas cercanas
         MOV x20, x0 // fila
         MOV x21, x1 // columna
