@@ -9,6 +9,7 @@ Semilla: .quad 123456789
         .global f05LongitudCadena
         .global f06CrearCadenaDinamica
         .global f07ImprimirCadenaNVeces
+        .global Semilla
 
         .extern f01ImprimirCadena
         .extern f02LeerCadena
