@@ -9,11 +9,11 @@
 
         // Dependencias de tablero
         .extern f01InicializarTablero
-        .extern f03ImprimirTablero_NUEVA
-        .extern f08DescubrirCelda
-        .extern f05Derrota
-        .extern f06Victoria
-        .extern f07ColocarBandera
+        .extern f03ImprimirTablero
+        .extern f04DescubrirCelda
+        .extern f05ColocarBandera
+        .extern f08Victoria
+        .extern f09Derrota
         .extern JuegoTerminado
 
         // Variables globales de configuración
@@ -78,7 +78,7 @@ f02BucleJuego_loop:
         BEQ f02BucleJuego_salir
         
         // Imprimir tablero
-        BL f03ImprimirTablero_NUEVA
+        BL f03ImprimirTablero
         
         // Mostrar menú de acciones
         LDR x1, =MenuAccion
@@ -167,9 +167,9 @@ f03AccionDescubrir_leer_columna:
         // Descubrir celda
         MOV x0, x10
         MOV x1, x11
-        BL f08DescubrirCelda
+        BL f04DescubrirCelda
         
-        // Verificar si el juego terminó (derrota o victoria se manejan en f08DescubrirCelda)
+        // Verificar si el juego terminó (derrota o victoria se manejan en f04DescubrirCelda)
         
         ldp x29, x30, [sp], 16
         B f02BucleJuego_loop
@@ -236,7 +236,7 @@ f04AccionBandera_leer_columna:
         // Colocar/quitar bandera
         MOV x0, x10
         MOV x1, x11
-        BL f07ColocarBandera
+        BL f05ColocarBandera
 
         ldp x29, x30, [sp], 16
         B f02BucleJuego_loop

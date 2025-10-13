@@ -6,10 +6,7 @@ Semilla: .quad 123456789
         .global f02NumeroAleatorio
         .global f03LeerNumero
         .global f04ValidarRango
-        .global f05LongitudCadena
-        .global f06CrearCadenaDinamica
-        .global f07ImprimirCadenaNVeces
-        .global f08LimpiarPantalla
+        .global f05LimpiarPantalla
         .global Semilla
 
         .extern f01ImprimirCadena
@@ -96,7 +93,11 @@ f04ValidarRango_invalido:
         RET
 
 
-f05LongitudCadena:
+// -------------------------------------------------
+// f05LimpiarPantalla
+// Limpia la consola usando secuencias ANSI
+// -------------------------------------------------
+f05LimpiarPantalla:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         MOV x0, #0
@@ -180,10 +181,10 @@ f08LimpiarPantalla:
         stp x29, x30, [sp, -32]!
         mov x29, sp
         
-        // Secuencia ANSI para limpiar pantalla: \033[2J\033[H
+        // Secuencia ANSI: \033[2J\033[H
         // \033[2J = limpiar pantalla completa
         // \033[H = mover cursor a posición 0,0
-        MOV w0, #27         // ESC
+        MOV w0, #27         // ESC (ASCII 27)
         STRB w0, [sp, #16]
         MOV w0, #'['
         STRB w0, [sp, #17]

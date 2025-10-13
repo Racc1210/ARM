@@ -1,57 +1,75 @@
-        .extern Semilla
-        .section .bss
-TmpFilas:    .skip 8
-TmpColumnas: .skip 8
-TmpMinas:    .skip 8
-        .global  FilasSel
-        .global  ColumnasSel
-        .global  MinasSel
-        .global  OpcionSel
-FilasSel:    .skip 8
-ColumnasSel: .skip 8
-MinasSel:    .skip 8
-OpcionSel:      .skip 8
+        // =====================================
+// main.s - Punto de entrada y menú principal del juego
+// =====================================
 
+// -------------------------------------------------
+// Sección de datos no inicializados (.bss)
+// -------------------------------------------------
+        .section .bss
+        
+        // Variables temporales de configuración
+TmpFilas:       .skip 8    // Filas temporales para modo personalizado
+TmpColumnas:    .skip 8    // Columnas temporales para modo personalizado
+TmpMinas:       .skip 8    // Minas temporales para modo personalizado
+
+        // Variables globales de configuración del juego
+        .global FilasSel
+        .global ColumnasSel
+        .global MinasSel
+        
+FilasSel:       .skip 8    // Cantidad de filas seleccionadas
+ColumnasSel:    .skip 8    // Cantidad de columnas seleccionadas
+MinasSel:       .skip 8    // Cantidad de minas seleccionadas
+
+// -------------------------------------------------
+// Sección de código (.text)
+// -------------------------------------------------
         .section .text
         .global _start
 
+// -------------------------------------------------
+// Dependencias externas - Funciones de utilidades
+// -------------------------------------------------
         .extern f01ImprimirCadena
         .extern f03LeerNumero
         .extern f04ValidarRango
-        .extern f08LimpiarPantalla
+        .extern f05LimpiarPantalla
 
-        .extern f01ConfigurarYJugar  
+// -------------------------------------------------
+// Dependencias externas - Funciones de lógica
+// -------------------------------------------------
+        .extern f01ConfigurarYJugar
 
-        // Mensajes y longitudes desde constantes.s
-        .extern Bienvenida
-        .extern LargoBienvenidaVal
-        .extern Menu
-        .extern LargoMenuVal
-        .extern MensajeSalir
-        .extern LargoMensajeSalirVal
-        .extern MensajeErrorSeleccion
-        .extern LargoMensajeErrorSeleccionVal
-        .extern MensajeFilas
-        .extern LargoMensajeFilasVal
-        .extern MensajeColumnas
-        .extern LargoMensajeColumnasVal
-        .extern MensajeMinas
-        .extern LargoMensajeMinasVal
-        .extern MensajeErrorCantidadFilas
-        .extern LargoMensajeErrorCantidadFilasVal
-        .extern MensajeErrorCantidadColumnas
-        .extern LargoMensajeErrorCantidadColumnasVal
-        .extern MensajeErrorCantidadMinas
-        .extern LargoMensajeErrorCantidadMinasVal
+// -------------------------------------------------
+// Dependencias externas - Variables
+// -------------------------------------------------
+        .extern Semilla
+
+// -------------------------------------------------
+// Dependencias externas - Mensajes y constantes
+// -------------------------------------------------
+        .extern Bienvenida, LargoBienvenidaVal
+        .extern Menu, LargoMenuVal
+        .extern MensajeSalir, LargoMensajeSalirVal
+        .extern MensajeErrorSeleccion, LargoMensajeErrorSeleccionVal
+        .extern MensajeFilas, LargoMensajeFilasVal
+        .extern MensajeColumnas, LargoMensajeColumnasVal
+        .extern MensajeMinas, LargoMensajeMinasVal
+        .extern MensajeErrorCantidadFilas, LargoMensajeErrorCantidadFilasVal
+        .extern MensajeErrorCantidadColumnas, LargoMensajeErrorCantidadColumnasVal
+        .extern MensajeErrorCantidadMinas, LargoMensajeErrorCantidadMinasVal
+
+// -------------------------------------------------
+// _start - Punto de entrada del programa
+// -------------------------------------------------
 
 _start:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         
         // Limpiar pantalla al inicio del programa
-        BL f08LimpiarPantalla
+        BL f05LimpiarPantalla
         
-        // Inicializar temporales y configuración a cero
         // Inicializar semilla aleatoria con el PID del proceso
         MOV x8, #172 // syscall getpid
         SVC #0
@@ -101,10 +119,6 @@ f02MenuPrincipal:
         BL f01ImprimirCadena
 
 f02MenuPrincipal_leer_opcion:
-        // Inicializar OpcionSel a cero antes de leer
-        LDR x1, =OpcionSel
-        MOV x0, #0
-        STR x0, [x1]
         BL f03LeerNumero
         MOV x9, x0
 
@@ -262,12 +276,6 @@ f10GuardarMinas:
         STR x12, [x13]
         B f11MinasOK
 f10MinasError:
-        LDR x1, =MensajeErrorCantidadMinas
-        LDR x2, =LargoMensajeErrorCantidadMinasVal
-        LDR x2, [x2]
-        BL f01ImprimirCadena
-        B f10LeerMinas
-
         LDR x1, =MensajeErrorCantidadMinas
         LDR x2, =LargoMensajeErrorCantidadMinasVal
         LDR x2, [x2]
