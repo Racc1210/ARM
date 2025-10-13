@@ -196,36 +196,36 @@ flood_fill_vec_col:
         CBNZ x30, .ff_check_vec
         B flood_fill_vec_col_next
 .ff_check_vec:
-        ADD x31, x14, x29
-        ADD x23, x15, x30
+        ADD x25, x14, x29 // fila vecina
+        ADD x26, x15, x30 // columna vecina
         // Verificar límites
-        CMP x31, #0
+        CMP x25, #0
         BLT flood_fill_vec_col_next
-        CMP x31, x10
+        CMP x25, x10
         BGE flood_fill_vec_col_next
-        CMP x23, #0
+        CMP x26, #0
         BLT flood_fill_vec_col_next
-        CMP x23, x11
+        CMP x26, x11
         BGE flood_fill_vec_col_next
         // Calcular dirección de celda vecina
-        MUL x26, x31, x11
-        ADD x26, x26, x23
-        LSL x26, x26, #1
-        ADD x27, x12, x26
+        MUL x27, x25, x11
+        ADD x27, x27, x26
+        LSL x27, x27, #1
+        ADD x28, x12, x27
         // Leer estado
-        LDRB w28, [x27, #1]
-        LDR x24, =ESTADO_DESCUBIERTA
-        LDR w24, [x24]
-        CMP w28, w24
+        LDRB w29, [x28, #1]
+        LDR x23, =ESTADO_DESCUBIERTA
+        LDR w23, [x23]
+        CMP w29, w23
         BEQ flood_fill_vec_col_next // ya descubierta
-        LDR x25, =ESTADO_BANDERA
-        LDR w25, [x25]
-        CMP w28, w25
+        LDR x24, =ESTADO_BANDERA
+        LDR w24, [x24]
+        CMP w29, w24
         BEQ flood_fill_vec_col_next // bandera
         // Encolar vecino
-        STR x31, [x20, x22, LSL #3]
+        STR x25, [x20, x22, LSL #3]
         ADD x22, x22, #1
-        STR x23, [x20, x22, LSL #3]
+        STR x26, [x20, x22, LSL #3]
         ADD x22, x22, #1
 flood_fill_vec_col_next:
         ADD x30, x30, #1
