@@ -33,17 +33,18 @@ f08DescubrirCelda:
         LDR w17, [x17]
         CMP w15, w17
         BEQ f08DescubrirCelda_fin // Si ya está descubierta, no hacer nada
-        // Marcar como descubierta
-        STRB w17, [x14, #1]
-        // Calcular minas cercanas
+        // Calcular minas cercanas ANTES de marcar como descubierta
         MOV x20, x0 // fila
         MOV x21, x1 // columna
         MOV x0, x20
         MOV x1, x21
         BL f12ContarMinasCercanas
-        CMP x0, #0
-        BNE f08DescubrirCelda_fin
+        MOV x22, x0 // guardar minas cercanas
+        // Marcar como descubierta
+        STRB w17, [x14, #1]
         // Si no hay minas cercanas, descubrir en cascada
+        CMP x22, #0
+        BNE f08DescubrirCelda_fin
         MOV x0, x20 // fila
         MOV x1, x21 // columna
         BL f11DescubrirCascada
