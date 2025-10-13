@@ -9,7 +9,7 @@
 
         // Dependencias de tablero
         .extern f01InicializarTablero
-        .extern f03ImprimirTablero
+        .extern f03ImprimirTablero_NUEVA
         .extern f08DescubrirCelda
         .extern f05Derrota
         .extern f06Victoria
@@ -60,7 +60,7 @@ f02BucleJuego:
 
 f02BucleJuego_loop:
         // Imprimir tablero
-        BL f03ImprimirTablero
+        BL f03ImprimirTablero_NUEVA
         
         // Mostrar menú de acciones
         LDR x1, =MenuAccion
