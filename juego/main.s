@@ -139,8 +139,11 @@ f04Principiante:
         MOV x1, #8
         MOV x2, #10
         BL f12GuardarConfig
-        ldp x29, x30, [sp], 16
-        RET
+        
+        // Después del juego, salir del programa
+        MOV x0, #0
+        MOV x8, #93     // syscall exit
+        SVC #0
 
 f05Intermedio:
         stp x29, x30, [sp, -16]!
@@ -149,8 +152,11 @@ f05Intermedio:
         MOV x1, #16
         MOV x2, #40
         BL f12GuardarConfig
-        ldp x29, x30, [sp], 16
-        RET
+        
+        // Después del juego, salir del programa
+        MOV x0, #0
+        MOV x8, #93     // syscall exit
+        SVC #0
 
 f06Experto:
         stp x29, x30, [sp, -16]!
@@ -159,8 +165,11 @@ f06Experto:
         MOV x1, #16
         MOV x2, #99
         BL f12GuardarConfig
-        ldp x29, x30, [sp], 16
-        RET
+        
+        // Después del juego, salir del programa
+        MOV x0, #0
+        MOV x8, #93     // syscall exit
+        SVC #0
 f07Personalizada:
         stp x29, x30, [sp, -16]!
         mov x29, sp
@@ -255,8 +264,11 @@ f11MinasOK:
         LDR x15, =TmpMinas
         LDR x2, [x15]
         BL f12GuardarConfig
-        ldp x29, x30, [sp], 16
-        RET
+        
+        // Después del juego personalizado, salir del programa
+        MOV x0, #0
+        MOV x8, #93     // syscall exit
+        SVC #0
 
 f12GuardarConfig:
         stp x29, x30, [sp, -16]!
@@ -269,5 +281,8 @@ f12GuardarConfig:
         STR x2, [x15]
 
         BL f01ConfigurarYJugar
-        ldp x29, x30, [sp], 16
-        RET
+        
+        // Después del juego, salir del programa
+        MOV x0, #0
+        MOV x8, #93     // syscall exit
+        SVC #0
