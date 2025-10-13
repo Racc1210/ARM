@@ -134,5 +134,5 @@ NuevaLinea:
 LargoNuevaLineaVal: .quad 1
 
 Espacio:
-    .asciz " "
+    .asciz "-"
 LargoEspacioVal: .quad 1
