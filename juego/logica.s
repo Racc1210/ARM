@@ -226,8 +226,6 @@ f03AccionDescubrir:
         // descubrir celda
         MOV x0, x10
         MOV x1, x11
-        MOV x2, x20
-        MOV x3, x21
         BL f04DescubrirCelda
 
         // verificar victoria
@@ -278,8 +276,6 @@ f04AccionBandera:
         // colocar bandera
         MOV x0, x10
         MOV x1, x11
-        MOV x2, x20
-        MOV x3, x21
         BL f07ColocarBandera
 
         B f02BucleJuego

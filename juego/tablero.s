@@ -338,6 +338,9 @@ f01InicializarTablero:
         ADD x0, x13, x12  // nueva base = base + tamaño
         MOV x8, #214      // syscall brk
         SVC #0
+        // Verificar que brk fue exitoso
+        CMP x0, x13       // ¿la nueva dirección es >= la antigua?
+        BLT init_tablero_error  // si es menor, falló
         // Guardar dirección base en TableroPtr
         LDR x14, =TableroPtr
         STR x13, [x14]
@@ -371,6 +374,12 @@ init_tablero_fin:
          BL f02ColocarMinasAleatorias
         ldp x29, x30, [sp], 16
         RET
+
+init_tablero_error:
+        // Error en reserva de memoria - salir del programa
+        MOV x0, #1        // código de error
+        MOV x8, #93       // syscall exit
+        SVC #0
 // -------------------------------------------------
 // f02ColocarMinasAleatorias
 // Coloca MinasSel minas en posiciones aleatorias del tablero
