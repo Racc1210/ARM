@@ -118,63 +118,127 @@ f11Cascada_columna_loop:
         // Si no hay minas cercanas, expandir cascada
         CMP x22, #0
         BNE f11Cascada_next_columna // Si hay número, solo revelar
-        // Expandir a todos los vecinos (vacíos y números)
-        MOV x28, #-1 // fila offset
-f11Cascada_expand_fila:
-        CMP x28, #2
-        B.GE f11Cascada_next_columna
-        ADD x29, x17, x28 // fila vecina
-        CMP x29, #0
-        BLT f11Cascada_expand_next_fila
-        CMP x29, x10
-        BGE f11Cascada_expand_next_fila
-        MOV x30, #-1 // columna offset
-f11Cascada_expand_columna:
-        CMP x30, #2
-        B.GE f11Cascada_expand_next_fila
-        ADD x27, x19, x30 // columna vecina
-        CMP x27, #0
-        BLT f11Cascada_expand_next_columna
-        CMP x27, x11
-        BGE f11Cascada_expand_next_columna
-        // Saltar la celda central
-        CMP x28, #0
-        CBNZ x28, .expand_check_celda
-        CMP x30, #0
-        CBNZ x30, .expand_check_celda
-        B f11Cascada_expand_next_columna
-.expand_check_celda:
-        MUL x26, x29, x11
-        ADD x26, x26, x27
-        LSL x26, x26, #1
-        ADD x25, x12, x26
+        // --- Flood fill (cola en stack) ---
+        // Reservar espacio para cola: máximo filas*columnas
+        // x10 = filas, x11 = columnas
+        // x12 = TableroPtr
+        // x14 = fila actual, x15 = columna actual
+        // x20 = puntero cola, x21 = head, x22 = tail
+        SUB sp, sp, #1024 // espacio para hasta 128 posiciones (64*2)
+        MOV x20, sp // base de la cola
+        MOV x21, #0 // head
+        MOV x22, #0 // tail
+        // Obtener fila y columna desde dirección de celda
+        SUB x13, x0, x12
+        LSR x13, x13, #1
+        UDIV x14, x13, x11 // fila
+        MSUB x15, x14, x11, x13 // columna
+        // Encolar posición inicial
+        STR x14, [x20, x22, LSL #3]
+        ADD x22, x22, #1
+        STR x15, [x20, x22, LSL #3]
+        ADD x22, x22, #1
+flood_fill_loop:
+        CMP x21, x22
+        B.GE flood_fill_end
+        // Desencolar fila y columna
+        LDR x14, [x20, x21, LSL #3]
+        ADD x21, x21, #1
+        LDR x15, [x20, x21, LSL #3]
+        ADD x21, x21, #1
+        // Verificar límites
+        CMP x14, #0
+        BLT flood_fill_next
+        CMP x14, x10
+        BGE flood_fill_next
+        CMP x15, #0
+        BLT flood_fill_next
+        CMP x15, x11
+        BGE flood_fill_next
+        // Calcular dirección de celda
+        MUL x23, x14, x11
+        ADD x23, x23, x15
+        LSL x23, x23, #1
+        ADD x24, x12, x23
         // Leer estado
-        LDRB w24, [x25, #1]
-        LDR x23, =ESTADO_OCULTA
-        LDR w23, [x23]
-        CMP w24, w23
-        BNE f11Cascada_expand_next_columna // Solo procesar si está oculta
-        // Contar minas cercanas
-        MOV x0, x29
-        MOV x1, x27
-        BL f12ContarMinasCercanas
-        MOV x21, x0 // guardar cantidad de minas cercanas
+        LDRB w25, [x24, #1]
+        LDR x26, =ESTADO_DESCUBIERTA
+        LDR w26, [x26]
+        CMP w25, w26
+        BEQ flood_fill_next // ya descubierta
+        LDR x27, =ESTADO_BANDERA
+        LDR w27, [x27]
+        CMP w25, w27
+        BEQ flood_fill_next // bandera, no descubrir
         // Marcar como descubierta
+        STRB w26, [x24, #1]
+        // Contar minas cercanas
+        MOV x0, x14
+        MOV x1, x15
+        BL f12ContarMinasCercanas
+        MOV x28, x0 // minas cercanas
+        // Si es vacío, encolar vecinos
+        CMP x28, #0
+        BNE flood_fill_next // si hay número, no expandir
+        // Encolar vecinos (8 direcciones)
+        MOV x29, #-1
+flood_fill_vec_fila:
+        CMP x29, #2
+        B.GE flood_fill_next
+        MOV x30, #-1
+flood_fill_vec_col:
+        CMP x30, #2
+        B.GE flood_fill_vec_fila_end
+        // Saltar la celda central
+        CMP x29, #0
+        CBNZ x29, .ff_check_vec
+        CMP x30, #0
+        CBNZ x30, .ff_check_vec
+        B flood_fill_vec_col_next
+.ff_check_vec:
+        ADD x31, x14, x29
+        ADD x23, x15, x30
+        // Verificar límites
+        CMP x31, #0
+        BLT flood_fill_vec_col_next
+        CMP x31, x10
+        BGE flood_fill_vec_col_next
+        CMP x23, #0
+        BLT flood_fill_vec_col_next
+        CMP x23, x11
+        BGE flood_fill_vec_col_next
+        // Calcular dirección de celda vecina
+        MUL x26, x31, x11
+        ADD x26, x26, x23
+        LSL x26, x26, #1
+        ADD x27, x12, x26
+        // Leer estado
+        LDRB w28, [x27, #1]
         LDR x24, =ESTADO_DESCUBIERTA
         LDR w24, [x24]
-        STRB w24, [x25, #1]
-        // Si no hay minas cercanas, expandir recursivamente
-        CMP x21, #0
-        BNE f11Cascada_expand_next_columna
-        MOV x0, x25
-        BL f11DescubrirCascada
-f11Cascada_expand_next_columna:
+        CMP w28, w24
+        BEQ flood_fill_vec_col_next // ya descubierta
+        LDR x25, =ESTADO_BANDERA
+        LDR w25, [x25]
+        CMP w28, w25
+        BEQ flood_fill_vec_col_next // bandera
+        // Encolar vecino
+        STR x31, [x20, x22, LSL #3]
+        ADD x22, x22, #1
+        STR x23, [x20, x22, LSL #3]
+        ADD x22, x22, #1
+flood_fill_vec_col_next:
         ADD x30, x30, #1
-        B f11Cascada_expand_columna
-f11Cascada_expand_next_fila:
-        ADD x28, x28, #1
-        B f11Cascada_expand_fila
-        B f11Cascada_next_columna
+        B flood_fill_vec_col
+flood_fill_vec_fila_end:
+        ADD x29, x29, #1
+        B flood_fill_vec_fila
+flood_fill_next:
+        B flood_fill_loop
+flood_fill_end:
+        ADD sp, sp, #1024 // liberar stack
+        ldp x29, x30, [sp], 16
+        RET
 f11Cascada_next_columna:
         ADD x18, x18, #1
         B f11Cascada_columna_loop
