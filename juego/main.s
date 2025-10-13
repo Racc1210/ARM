@@ -1,77 +1,65 @@
-        // =====================================
-// main.s - Punto de entrada y menú principal del juego
-// =====================================
 
-// -------------------------------------------------
+
+
 // Sección de datos no inicializados (.bss)
-// -------------------------------------------------
-        .section .bss
+.section .bss
         
-        // Variables temporales de configuración
+// Variables temporales de configuración
 TmpFilas:       .skip 8    // Filas temporales para modo personalizado
 TmpColumnas:    .skip 8    // Columnas temporales para modo personalizado
 TmpMinas:       .skip 8    // Minas temporales para modo personalizado
 
-        // Variables globales de configuración del juego
-        .global FilasSel
-        .global ColumnasSel
-        .global MinasSel
+// Variables globales de configuración del juego
+.global FilasSel
+.global ColumnasSel
+.global MinasSel
         
 FilasSel:       .skip 8    // Cantidad de filas seleccionadas
 ColumnasSel:    .skip 8    // Cantidad de columnas seleccionadas
 MinasSel:       .skip 8    // Cantidad de minas seleccionadas
 
-// -------------------------------------------------
+
 // Sección de código (.text)
-// -------------------------------------------------
-        .section .text
-        .global _start
+.section .text
+.global _start
 
-// -------------------------------------------------
+
 // Dependencias externas - Funciones de utilidades
-// -------------------------------------------------
-        .extern f01ImprimirCadena
-        .extern f03LeerNumero
-        .extern f04ValidarRango
-        .extern f05LimpiarPantalla
+.extern f01ImprimirCadena
+.extern f03LeerNumero
+.extern f04ValidarRango
+.extern f05LimpiarPantalla
 
-// -------------------------------------------------
+
 // Dependencias externas - Funciones de lógica
-// -------------------------------------------------
-        .extern f01ConfigurarYJugar
 
-// -------------------------------------------------
+.extern f01ConfigurarYJugar
+
+
 // Dependencias externas - Variables
-// -------------------------------------------------
-        .extern Semilla
+.extern Semilla
 
-// -------------------------------------------------
+
 // Dependencias externas - Mensajes y constantes
-// -------------------------------------------------
-        .extern Bienvenida, LargoBienvenidaVal
-        .extern Menu, LargoMenuVal
-        .extern MensajeSalir, LargoMensajeSalirVal
-        .extern MensajeErrorSeleccion, LargoMensajeErrorSeleccionVal
-        .extern MensajeFilas, LargoMensajeFilasVal
-        .extern MensajeColumnas, LargoMensajeColumnasVal
-        .extern MensajeMinas, LargoMensajeMinasVal
-        .extern MensajeErrorCantidadFilas, LargoMensajeErrorCantidadFilasVal
-        .extern MensajeErrorCantidadColumnas, LargoMensajeErrorCantidadColumnasVal
-        .extern MensajeErrorCantidadMinas, LargoMensajeErrorCantidadMinasVal
+.extern Bienvenida, LargoBienvenidaVal
+.extern Menu, LargoMenuVal
+.extern MensajeSalir, LargoMensajeSalirVal
+.extern MensajeErrorSeleccion, LargoMensajeErrorSeleccionVal
+.extern MensajeFilas, LargoMensajeFilasVal
+.extern MensajeColumnas, LargoMensajeColumnasVal
+.extern MensajeMinas, LargoMensajeMinasVal
+.extern MensajeErrorCantidadFilas, LargoMensajeErrorCantidadFilasVal
+.extern MensajeErrorCantidadColumnas, LargoMensajeErrorCantidadColumnasVal
+.extern MensajeErrorCantidadMinas, LargoMensajeErrorCantidadMinasVal
 
-// -------------------------------------------------
-// _start - Punto de entrada del programa
-// -------------------------------------------------
 
 _start:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         
-        // Limpiar pantalla al inicio del programa
         BL f05LimpiarPantalla
         
-        // Inicializar semilla aleatoria con el PID del proceso
-        MOV x8, #172 // syscall getpid
+        MOV x8, #172 
         SVC #0
         LDR x3, =Semilla
         STR x0, [x3]
@@ -95,9 +83,8 @@ _start:
         STR x0, [x1]
         BL f01IniciarPrograma
         BL f02MenuPrincipal
-        // Salir correctamente del programa
         MOV x0, #0
-        MOV x8, #93     // syscall exit
+        MOV x8, #93    
         SVC #0
 
 f01IniciarPrograma:
@@ -118,19 +105,17 @@ f02MenuPrincipal:
         LDR x2, [x2]
         BL f01ImprimirCadena
 
-f02MenuPrincipal_leer_opcion:
+f02leer_opcion:
         BL f03LeerNumero
         MOV x9, x0
 
-        // Validar que la opción esté en el rango 1-5
         MOV x0, x9
         MOV x1, #1
         MOV x2, #5
         BL f04ValidarRango
         CMP x0, #0
-        BEQ f02MenuPrincipal_opcion_invalida
+        BEQ f02opcion_invalida
 
-        // Procesar opciones válidas
         CMP x9, #5
         BEQ f03SalirPrograma
 
@@ -143,16 +128,14 @@ f02MenuPrincipal_leer_opcion:
         CMP x9, #4
         BEQ f07Personalizada
 
-        // Por seguridad, volver a imprimir el menú
         B f02MenuPrincipal
 
-f02MenuPrincipal_opcion_invalida:
+f02opcion_invalida:
         LDR x1, =MensajeErrorSeleccion
         LDR x2, =LargoMensajeErrorSeleccionVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        // Volver a pedir la opción sin reimprimir el menú
-        B f02MenuPrincipal_leer_opcion
+        B f02leer_opcion
 
 f03SalirPrograma:
         stp x29, x30, [sp, -16]!
@@ -174,7 +157,6 @@ f04Principiante:
         MOV x2, #10
         BL f12GuardarConfig
         
-        // Después del juego, volver al menú principal
         ldp x29, x30, [sp], 16
         B f02MenuPrincipal
 
@@ -186,7 +168,6 @@ f05Intermedio:
         MOV x2, #40
         BL f12GuardarConfig
         
-        // Después del juego, volver al menú principal
         ldp x29, x30, [sp], 16
         B f02MenuPrincipal
 
@@ -198,7 +179,6 @@ f06Experto:
         MOV x2, #99
         BL f12GuardarConfig
         
-        // Después del juego, volver al menú principal
         ldp x29, x30, [sp], 16
         B f02MenuPrincipal
 
@@ -206,7 +186,7 @@ f07Personalizada:
         stp x29, x30, [sp, -16]!
         mov x29, sp
 
-f08LeerFilas:
+f08leer_filas:
         LDR x1, =MensajeFilas
         LDR x2, =LargoMensajeFilasVal
         LDR x2, [x2]
@@ -218,20 +198,19 @@ f08LeerFilas:
         MOV x2, #30
         BL f04ValidarRango
         CMP x0, #0
-        BEQ f08ErrorFilas
-        // Si válido, guardar
+        BEQ f08error_filas
         LDR x13, =TmpFilas
         STR x10, [x13]
-        B f09LeerColumnas
+        B f09leer_columnas
 
-f08ErrorFilas:
+f08error_filas:
         LDR x1, =MensajeErrorCantidadFilas
         LDR x2, =LargoMensajeErrorCantidadFilasVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        B f08LeerFilas
+        B f08leer_filas
 
-f09LeerColumnas:
+f09leer_columnas:
         LDR x1, =MensajeColumnas
         LDR x2, =LargoMensajeColumnasVal
         LDR x2, [x2]
@@ -243,19 +222,18 @@ f09LeerColumnas:
         MOV x2, #24
         BL f04ValidarRango
         CMP x0, #0
-        BEQ f09ErrorColumnas
-        // Si válido, guardar
+        BEQ f09error_columnas
         LDR x13, =TmpColumnas
         STR x11, [x13]
-        B f10LeerMinas
+        B f10leer_minas
 
-f09ErrorColumnas:
+f09error_columnas:
         LDR x1, =MensajeErrorCantidadColumnas
         LDR x2, =LargoMensajeErrorCantidadColumnasVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        B f09LeerColumnas
-f10LeerMinas:
+        B f09leer_columnas
+f10leer_minas:
 
         LDR x1, =MensajeMinas
         LDR x2, =LargoMensajeMinasVal
@@ -269,20 +247,20 @@ f10LeerMinas:
         SUB x2, x2, #1
         BL f04ValidarRango
         CMP x0, #0
-        BEQ f10MinasError
-        B f10GuardarMinas
-f10GuardarMinas:
+        BEQ f10error_minas
+        B f10guardar_minas
+f10guardar_minas:
         LDR x13, =TmpMinas
         STR x12, [x13]
-        B f11MinasOK
-f10MinasError:
+        B f11configuracion_completa
+f10error_minas:
         LDR x1, =MensajeErrorCantidadMinas
         LDR x2, =LargoMensajeErrorCantidadMinasVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        B f10LeerMinas
+        B f10leer_minas
 
-f11MinasOK:
+f11configuracion_completa:
         LDR x13, =TmpFilas
         LDR x0, [x13]
         LDR x14, =TmpColumnas
@@ -290,8 +268,7 @@ f11MinasOK:
         LDR x15, =TmpMinas
         LDR x2, [x15]
         BL f12GuardarConfig
-        
-        // Después del juego personalizado, volver al menú principal
+
         ldp x29, x30, [sp], 16
         B f02MenuPrincipal
 
@@ -306,7 +283,6 @@ f12GuardarConfig:
         STR x2, [x15]
 
         BL f01ConfigurarYJugar
-        
-        // Retornar después del juego
+
         ldp x29, x30, [sp], 16
         RET

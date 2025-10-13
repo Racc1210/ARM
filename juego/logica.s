@@ -40,12 +40,11 @@ f01ConfigurarYJugar:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         
-        // Inicializar bandera de juego terminado
+        
         LDR x0, =JuegoTerminado
         MOV x1, #0
         STR x1, [x0]
         
-        // Los parámetros x0, x1, x2 ya están configurados en main.s
         LDR x13, =FilasSel
         LDR x0, [x13]
         LDR x14, =ColumnasSel
@@ -64,62 +63,53 @@ f02BucleJuego:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         
-        // Cargar dimensiones del tablero
         LDR x20, =FilasSel
         LDR x20, [x20]
         LDR x21, =ColumnasSel
         LDR x21, [x21]
 
-f02BucleJuego_loop:
-        // Verificar si el juego terminó
+f02bucle_juego:
         LDR x0, =JuegoTerminado
         LDR x1, [x0]
         CMP x1, #1
-        BEQ f02BucleJuego_salir
+        BEQ f02salir
         
-        // Imprimir tablero
         BL f03ImprimirTablero
         
-        // Mostrar menú de acciones
         LDR x1, =MenuAccion
         LDR x2, =LargoMenuAccionVal
         LDR x2, [x2]
         BL f01ImprimirCadena
         
-f02BucleJuego_leer_opcion:
-        // Leer opción del usuario
+f02leer_opcion:
         BL f03LeerNumero
         MOV x9, x0
         
-        // Validar opción
         MOV x0, x9
         MOV x1, #1
         MOV x2, #3
         BL f04ValidarRango
         CMP x0, #0
-        BEQ f02BucleJuego_opcion_invalida   // Si inválida, mostrar error
+        BEQ f02opcion_invalida   
         
-        // Procesar opción válida
+       
         CMP x9, #1
         BEQ f03AccionDescubrir
         CMP x9, #2
         BEQ f04AccionBandera
         CMP x9, #3
-        BEQ f02BucleJuego_salir
+        BEQ f02salir
         
-        // Por seguridad, volver al loop principal
-        B f02BucleJuego_loop
+        B f02bucle_juego
 
-f02BucleJuego_opcion_invalida:
-        // Mostrar mensaje de error
+f02opcion_invalida:
         LDR x1, =MensajeErrorSeleccion
         LDR x2, =LargoMensajeErrorSeleccionVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        // Volver a pedir la opción
-        B f02BucleJuego_leer_opcion
+        B f02leer_opcion
 
-f02BucleJuego_salir:
+f02salir:
         ldp x29, x30, [sp], 16
         RET
 
@@ -128,8 +118,7 @@ f03AccionDescubrir:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         
-f03AccionDescubrir_leer_fila:
-        // Leer fila
+f03leer_fila:
         LDR x1, =MensajeFila
         LDR x2, =LargoMensajeFilaVal
         LDR x2, [x2]
@@ -137,17 +126,15 @@ f03AccionDescubrir_leer_fila:
         BL f03LeerNumero
         MOV x10, x0
 
-        // Validar fila
         MOV x0, x10
         MOV x1, #1
         MOV x2, x20
         BL f04ValidarRango
         CMP x0, #0
-        BEQ f03AccionDescubrir_fila_invalida   // Si inválida, mostrar error
-        SUB x10, x10, #1                       // Convertir a índice base 0
+        BEQ f03fila_invalida  
+        SUB x10, x10, #1                      
 
-f03AccionDescubrir_leer_columna:
-        // Leer columna
+f03leer_columna:
         LDR x1, =MensajeColumna
         LDR x2, =LargoMensajeColumnaVal
         LDR x2, [x2]
@@ -155,50 +142,46 @@ f03AccionDescubrir_leer_columna:
         BL f03LeerNumero
         MOV x11, x0
 
-        // Validar columna
         MOV x0, x11
         MOV x1, #1
         MOV x2, x21
         BL f04ValidarRango
         CMP x0, #0
-        BEQ f03AccionDescubrir_columna_invalida  // Si inválida, mostrar error
-        SUB x11, x11, #1                         // Convertir a índice base 0
+        BEQ f03columna_invalida  
+        SUB x11, x11, #1                         
 
-        // Descubrir celda
         MOV x0, x10
         MOV x1, x11
         BL f04DescubrirCelda
-        
-        // Verificar si el juego terminó (derrota o victoria se manejan en f04DescubrirCelda)
-        
-        ldp x29, x30, [sp], 16
-        B f02BucleJuego_loop
 
-f03AccionDescubrir_fila_invalida:
-        // Mostrar mensaje de error
+        LDR x0, =JuegoTerminado
+        LDR x1, [x0]
+        CMP x1, #1
+        BEQ f02salir
+
+        ldp x29, x30, [sp], 16
+        B f02bucle_juego
+
+f03fila_invalida:
         LDR x1, =MensajeErrorFila
         LDR x2, =LargoMensajeErrorFilaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        // Volver a pedir la fila
-        B f03AccionDescubrir_leer_fila
+        B f03leer_fila
 
-f03AccionDescubrir_columna_invalida:
-        // Mostrar mensaje de error
+f03columna_invalida:
         LDR x1, =MensajeErrorColumna
         LDR x2, =LargoMensajeErrorColumnaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        // Volver a pedir la columna
-        B f03AccionDescubrir_leer_columna
+        B f03leer_columna
 
 
 f04AccionBandera:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         
-f04AccionBandera_leer_fila:
-        // Leer fila
+f04leer_fila:
         LDR x1, =MensajeFila
         LDR x2, =LargoMensajeFilaVal
         LDR x2, [x2]
@@ -206,17 +189,15 @@ f04AccionBandera_leer_fila:
         BL f03LeerNumero
         MOV x10, x0
 
-        // Validar fila
         MOV x0, x10
         MOV x1, #1
         MOV x2, x20
         BL f04ValidarRango
         CMP x0, #0
-        BEQ f04AccionBandera_fila_invalida
+        BEQ f04fila_invalida
         SUB x10, x10, #1
 
-f04AccionBandera_leer_columna:
-        // Leer columna
+f04leer_columna:
         LDR x1, =MensajeColumna
         LDR x2, =LargoMensajeColumnaVal
         LDR x2, [x2]
@@ -224,37 +205,31 @@ f04AccionBandera_leer_columna:
         BL f03LeerNumero
         MOV x11, x0
 
-        // Validar columna
         MOV x0, x11
         MOV x1, #1
         MOV x2, x21
         BL f04ValidarRango
         CMP x0, #0
-        BEQ f04AccionBandera_columna_invalida
+        BEQ f04columna_invalida
         SUB x11, x11, #1
 
-        // Colocar/quitar bandera
         MOV x0, x10
         MOV x1, x11
         BL f05ColocarBandera
 
         ldp x29, x30, [sp], 16
-        B f02BucleJuego_loop
+        B f02bucle_juego
 
-f04AccionBandera_fila_invalida:
-        // Mostrar mensaje de error
+f04fila_invalida:
         LDR x1, =MensajeErrorFila
         LDR x2, =LargoMensajeErrorFilaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        // Volver a pedir la fila
-        B f04AccionBandera_leer_fila
+        B f04leer_fila
 
-f04AccionBandera_columna_invalida:
-        // Mostrar mensaje de error
+f04columna_invalida:
         LDR x1, =MensajeErrorColumna
         LDR x2, =LargoMensajeErrorColumnaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        // Volver a pedir la columna
-        B f04AccionBandera_leer_columna
+        B f04leer_columna

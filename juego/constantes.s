@@ -1,18 +1,15 @@
-        .section .data
-// ============================
+.section .data
+
 // Estados de celda del tablero
-// ============================
     .global ESTADO_OCULTA, ESTADO_DESCUBIERTA, ESTADO_BANDERA
 ESTADO_OCULTA:      .quad 0
 ESTADO_DESCUBIERTA: .quad 1
 ESTADO_BANDERA:     .quad 2
 
-// ============================
-// Mensaje de bienvenida y salida
-// ============================
 
-        .global Bienvenida, LargoBienvenidaVal
-        .global MensajeSalir, LargoMensajeSalirVal
+// Mensaje de bienvenida y salida
+.global Bienvenida, LargoBienvenidaVal
+.global MensajeSalir, LargoMensajeSalirVal
 
 Bienvenida:
     .asciz "==============================\nBIENVENIDO A BUSCAMINAS ARM64\n==============================\n"
@@ -22,31 +19,26 @@ MensajeSalir:
     .asciz "\nSaliendo del juego...\n"
 LargoMensajeSalirVal: .quad 23
 
-// ============================
 // Menú principal
-// ============================
-
-        .global Menu, LargoMenuVal
-        .global MensajeErrorSeleccion, LargoMensajeErrorSeleccionVal
+.global Menu, LargoMenuVal
+.global MensajeErrorSeleccion, LargoMensajeErrorSeleccionVal
 
 Menu:
     .asciz "==============================\nSELECCIONE DIFICULTAD\n==============================\n1. Principiante (8x8, 10 minas)\n2. Intermedio   (16x16, 40 minas)\n3. Experto      (30x16, 99 minas)\n4. Personalizada\n5. Salir\n==============================\nOpción: "
 LargoMenuVal: .quad 249
 
 MensajeErrorSeleccion:
-    .asciz "\nOpcion invalida. Intente de nuevo.\n"
+    .asciz "\nOpcion invalida. Intente de nuevo: "
 LargoMensajeErrorSeleccionVal: .quad 36
 
-// ============================
 // Configuración personalizada
-// ============================
 
-        .global MensajeFilas, LargoMensajeFilasVal
-        .global MensajeColumnas, LargoMensajeColumnasVal
-        .global MensajeMinas, LargoMensajeMinasVal
-        .global MensajeErrorCantidadFilas, LargoMensajeErrorCantidadFilasVal
-        .global MensajeErrorCantidadColumnas, LargoMensajeErrorCantidadColumnasVal
-        .global MensajeErrorCantidadMinas, LargoMensajeErrorCantidadMinasVal
+.global MensajeFilas, LargoMensajeFilasVal
+.global MensajeColumnas, LargoMensajeColumnasVal
+.global MensajeMinas, LargoMensajeMinasVal
+.global MensajeErrorCantidadFilas, LargoMensajeErrorCantidadFilasVal
+.global MensajeErrorCantidadColumnas, LargoMensajeErrorCantidadColumnasVal
+.global MensajeErrorCantidadMinas, LargoMensajeErrorCantidadMinasVal
 
 MensajeFilas:
     .asciz "Ingrese filas (8-30): "
@@ -72,15 +64,13 @@ MensajeErrorCantidadMinas:
     .asciz "\nLa cantidad de minas no debe ser mayor a (filas-1 * columnas-1).\n"
 LargoMensajeErrorCantidadMinasVal: .quad 66
 
-// ============================
-// Menú de acciones en partida
-// ============================
 
-        .global MenuAccion, LargoMenuAccionVal
-        .global MensajeFila, LargoMensajeFilaVal
-        .global MensajeColumna, LargoMensajeColumnaVal
-        .global MensajeErrorFila, LargoMensajeErrorFilaVal
-        .global MensajeErrorColumna, LargoMensajeErrorColumnaVal
+// Menú de acciones en partida
+.global MenuAccion, LargoMenuAccionVal
+.global MensajeFila, LargoMensajeFilaVal
+.global MensajeColumna, LargoMensajeColumnaVal
+.global MensajeErrorFila, LargoMensajeErrorFilaVal
+.global MensajeErrorColumna, LargoMensajeErrorColumnaVal
 
 MenuAccion:
     .asciz "\n1. Descubrir celda\n2. Colocar/Quitar bandera\n3. Volver al menu\nOpcion: "
@@ -102,12 +92,10 @@ MensajeErrorColumna:
     .asciz "Columna invalida. Intente de nuevo.\n"
 LargoMensajeErrorColumnaVal: .quad 37
 
-// ============================
-// Mensajes de fin de juego
-// ============================
 
-        .global MensajeDerrota, LargoMensajeDerrotaVal
-        .global MensajeVictoria, LargoMensajeVictoriaVal
+// Mensajes de fin de juego
+.global MensajeDerrota, LargoMensajeDerrotaVal
+.global MensajeVictoria, LargoMensajeVictoriaVal
 
 MensajeDerrota:
     .asciz "\nBOOM! Has pisado una mina. Juego terminado.\n"
@@ -117,15 +105,13 @@ MensajeVictoria:
     .asciz "\nFelicidades, has despejado todo el tablero. ¡Victoria!\n"
 LargoMensajeVictoriaVal: .quad 57
 
-// ============================
-// Símbolos del tablero
-// ============================
 
-        .global SimboloVacio, LargoSimboloVacioVal
-        .global SimboloMina, LargoSimboloMinaVal
-        .global SimboloBandera, LargoSimboloBanderaVal
-        .global NuevaLinea, LargoNuevaLineaVal
-        .global Espacio, LargoEspacioVal
+// Símbolos del tablero
+.global SimboloVacio, LargoSimboloVacioVal
+.global SimboloMina, LargoSimboloMinaVal
+.global SimboloBandera, LargoSimboloBanderaVal
+.global NuevaLinea, LargoNuevaLineaVal
+.global Espacio, LargoEspacioVal
 
 SimboloVacio:
     .asciz "#"
