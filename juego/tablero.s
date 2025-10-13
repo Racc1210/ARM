@@ -315,7 +315,9 @@ f11_fin:
 
 // Función auxiliar RECURSIVA para revelar una sola celda
 // Entrada: x0=fila, x1=columna
-// CUIDADOSA con la memoria - previene bucles infinitos
+// LÓGICA CORRECTA DE CASCADA:
+// - Siempre revela la celda si está oculta y sin mina
+// - Solo continúa recursión si la celda tiene 0 minas cercanas
 f11_reveal_single_cell:
         stp x29, x30, [sp, -80]!  // Frame más grande para recursión
         mov x29, sp
@@ -346,10 +348,14 @@ f11_reveal_single_cell:
         LDRB w4, [x3, #1]
         
         // ⚠️ PREVENCIÓN DE BUCLE INFINITO:
-        // Solo procesar celdas que estén OCULTAS
+        // Solo procesar celdas que estén OCULTAS (o con bandera)
         CMP w4, #0              // ESTADO_OCULTA = 0
-        BNE f11_reveal_recursive_end
+        BEQ f11_process_cell
+        CMP w4, #2              // ESTADO_BANDERA = 2
+        BEQ f11_process_cell
+        B f11_reveal_recursive_end  // Ya está descubierta, salir
         
+f11_process_cell:
         // Leer si tiene mina
         LDRB w5, [x3]
         CMP w5, #1              // ¿Tiene mina?
@@ -370,7 +376,8 @@ f11_reveal_single_cell:
         // Restaurar coordenadas
         ldp x0, x1, [sp, #72]
         
-        // 🔄 RECURSIÓN: Solo si NO hay minas cercanas
+        // 🎯 CLAVE: Si tiene número (minas cercanas > 0), SOLO revelar, NO continuar recursión
+        // 🔄 RECURSIÓN: Solo si tiene 0 minas cercanas
         CMP x7, #0
         BNE f11_reveal_recursive_end
         

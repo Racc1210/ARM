@@ -105,7 +105,7 @@ LargoMensajeDerrotaVal: .quad 45
 
 MensajeVictoria:
     .asciz "\nFelicidades, has despejado todo el tablero. ¡Victoria!\n"
-LargoMensajeVictoriaVal: .quad 56
+LargoMensajeVictoriaVal: .quad 57
 
 // ============================
 // Símbolos del tablero
