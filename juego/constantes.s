@@ -34,7 +34,7 @@ Menu:
 LargoMenuVal: .quad 249
 
 MensajeErrorSeleccion:
-    .asciz "\nOpción inválida. Intente de nuevo.\n"
+    .asciz "\nOpcion invalida. Intente de nuevo.\n"
 LargoMensajeErrorSeleccionVal: .quad 36
 
 // ============================
@@ -81,8 +81,8 @@ LargoMensajeErrorCantidadMinasVal: .quad 66
         .global MensajeColumna, LargoMensajeColumnaVal
 
 MenuAccion:
-    .asciz "1. Descubrir celda 2. Colocar/Quitar bandera 3. Volver al menu Opcion: "
-LargoMenuAccionVal: .quad 71
+    .asciz "\n1. Descubrir celda\n2. Colocar/Quitar bandera\n3. Volver al menu Opcion: "
+LargoMenuAccionVal: .quad 72
 
 MensajeFila:
     .asciz "Fila: "
