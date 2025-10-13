@@ -1,6 +1,6 @@
 // -------------------------------------------------
 // f05Derrota
-// Muestra mensaje de derrota y termina el juego
+// Muestra mensaje de derrota y retorna al menú principal
 // -------------------------------------------------
         .extern MensajeDerrota
         .extern LargoMensajeDerrotaVal
@@ -13,11 +13,13 @@ f05Derrota:
         LDR x2, =LargoMensajeDerrotaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        // Salir del juego
-        MOV x0, #0
-        MOV x8, #93     // syscall exit
+        // Establecer bandera de juego terminado
+        LDR x0, =JuegoTerminado
+        MOV x1, #1
+        STR x1, [x0]
+        // Retornar (el flujo continuará en main.s y volverá al menú)
         ldp x29, x30, [sp], 16
-        SVC #0
+        RET
         .global f11DescubrirCascada
         .global f08DescubrirCelda
         .global f09ColocarBandera
@@ -646,11 +648,13 @@ f06Victoria:
         LDR x2, =LargoMensajeVictoriaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        // Salir del juego
-        MOV x0, #0
-        MOV x8, #93     // syscall exit
+        // Establecer bandera de juego terminado
+        LDR x0, =JuegoTerminado
+        MOV x1, #1
+        STR x1, [x0]
+        // Retornar (el flujo continuará en main.s y volverá al menú)
         ldp x29, x30, [sp], 16
-        SVC #0
+        RET
 
 f07ColocarBandera:
         stp x29, x30, [sp, -16]!
@@ -670,7 +674,10 @@ TableroPtr: .skip 8
 
         .section .bss
         .global BufferSimbolo
+        .global JuegoTerminado
 BufferSimbolo:
+        .skip 8
+JuegoTerminado:
         .skip 8
         .section .text
         .global f01InicializarTablero
@@ -964,6 +971,9 @@ f03ImprimirTablero_NUEVA:
         stp x29, x30, [sp, -64]!  // Alineación a 16 bytes
         mov x29, sp
         
+        // Limpiar pantalla antes de imprimir
+        BL f13LimpiarPantalla
+        
         // Obtener cantidad de filas y columnas
         LDR x10, =FilasSel
         LDR x20, [x10]      // x20 = filas
@@ -1097,4 +1107,41 @@ nueva_print_end_row:
 
 nueva_print_fin:
         ldp x29, x30, [sp], 64
+        RET
+
+// -------------------------------------------------
+// f13LimpiarPantalla
+// Limpia la consola usando secuencias ANSI
+// -------------------------------------------------
+        .global f13LimpiarPantalla
+f13LimpiarPantalla:
+        stp x29, x30, [sp, -32]!
+        mov x29, sp
+        
+        // Secuencia ANSI para limpiar pantalla: \033[2J\033[H
+        // \033[2J = limpiar pantalla completa
+        // \033[H = mover cursor a posición 0,0
+        MOV w0, #27         // ESC
+        STRB w0, [sp, #16]
+        MOV w0, #'['
+        STRB w0, [sp, #17]
+        MOV w0, #'2'
+        STRB w0, [sp, #18]
+        MOV w0, #'J'
+        STRB w0, [sp, #19]
+        MOV w0, #27         // ESC
+        STRB w0, [sp, #20]
+        MOV w0, #'['
+        STRB w0, [sp, #21]
+        MOV w0, #'H'
+        STRB w0, [sp, #22]
+        
+        // Escribir secuencia a stdout
+        MOV x8, #64         // syscall write
+        MOV x0, #1          // stdout
+        ADD x1, sp, #16     // buffer
+        MOV x2, #7          // longitud
+        SVC #0
+        
+        ldp x29, x30, [sp], 32
         RET

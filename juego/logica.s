@@ -14,6 +14,7 @@
         .extern f05Derrota
         .extern f06Victoria
         .extern f07ColocarBandera
+        .extern JuegoTerminado
 
         // Variables globales de configuración
         .extern FilasSel
@@ -32,6 +33,11 @@
 f01ConfigurarYJugar:
         stp x29, x30, [sp, -16]!
         mov x29, sp
+        
+        // Inicializar bandera de juego terminado
+        LDR x0, =JuegoTerminado
+        MOV x1, #0
+        STR x1, [x0]
         
         // Los parámetros x0, x1, x2 ya están configurados en main.s
         LDR x13, =FilasSel
@@ -59,6 +65,12 @@ f02BucleJuego:
         LDR x21, [x21]
 
 f02BucleJuego_loop:
+        // Verificar si el juego terminó
+        LDR x0, =JuegoTerminado
+        LDR x1, [x0]
+        CMP x1, #1
+        BEQ f02BucleJuego_salir
+        
         // Imprimir tablero
         BL f03ImprimirTablero_NUEVA
         
