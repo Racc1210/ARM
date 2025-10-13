@@ -85,6 +85,13 @@ f11Cascada_columna_loop:
         BLT f11Cascada_next_columna
         CMP x19, x11
         BGE f11Cascada_next_columna
+        // Saltar la celda central
+        CMP x16, #0
+        CBNZ x16, .check_celda
+        CMP x18, #0
+        CBNZ x18, .check_celda
+        B f11Cascada_next_columna
+.check_celda:
         // Calcular dirección de celda vecina
         MUL x20, x17, x11
         ADD x20, x20, x19
@@ -96,10 +103,27 @@ f11Cascada_columna_loop:
         LDR w23, [x23]
         CMP w22, w23
         BNE f11Cascada_next_columna // Solo descubrir si está oculta
-        // Descubrir celda vecina
+        // Contar minas cercanas
+        MOV x0, x17
+        MOV x1, x19
+        BL f12ContarMinasCercanas
+        CMP x0, #0
+        // Si no hay minas cercanas, expandir cascada
         MOV x0, x17
         MOV x1, x19
         BL f08DescubrirCelda
+        BEQ .expand_cascada
+        // Si hay minas cercanas, solo descubrir la celda
+        B f11Cascada_next_columna
+.expand_cascada:
+        // Llamar recursivamente para expandir desde celdas vacías
+        MUL x20, x17, x11
+        ADD x20, x20, x19
+        LSL x20, x20, #1
+        ADD x21, x12, x20
+        MOV x0, x21
+        BL f11DescubrirCascada
+        B f11Cascada_next_columna
 f11Cascada_next_columna:
         ADD x18, x18, #1
         B f11Cascada_columna_loop
