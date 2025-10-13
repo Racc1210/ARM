@@ -21,4 +21,11 @@ $(BIN): $(OBJ)
 clean:
 	rm -f $(OBJ) $(BIN)
 
-.PHONY: all clean
+rebuild: clean all
+
+run: $(BIN)
+	./$(BIN)
+
+play: rebuild run
+
+.PHONY: all clean rebuild run play
