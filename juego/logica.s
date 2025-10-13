@@ -122,7 +122,7 @@ f03leer_fila:
         LDR x0, =JuegoTerminado
         LDR x1, [x0]
         CMP x1, #1
-        BEQ f02salir
+        BEQ f03salir_con_limpieza
         
         LDR x1, =MensajeFila
         LDR x2, =LargoMensajeFilaVal
@@ -143,7 +143,7 @@ f03leer_columna:
         LDR x0, =JuegoTerminado
         LDR x1, [x0]
         CMP x1, #1
-        BEQ f02salir
+        BEQ f03salir_con_limpieza
         
         LDR x1, =MensajeColumna
         LDR x2, =LargoMensajeColumnaVal
@@ -167,7 +167,7 @@ f03leer_columna:
         LDR x0, =JuegoTerminado
         LDR x1, [x0]
         CMP x1, #1
-        BEQ f02salir
+        BEQ f03salir_con_limpieza
 
         ldp x29, x30, [sp], 16
         B f02bucle_juego
@@ -176,7 +176,7 @@ f03fila_invalida:
         LDR x0, =JuegoTerminado
         LDR x1, [x0]
         CMP x1, #1
-        BEQ f02salir
+        BEQ f03salir_con_limpieza
         
         LDR x1, =MensajeErrorFila
         LDR x2, =LargoMensajeErrorFilaVal
@@ -188,13 +188,17 @@ f03columna_invalida:
         LDR x0, =JuegoTerminado
         LDR x1, [x0]
         CMP x1, #1
-        BEQ f02salir
+        BEQ f03salir_con_limpieza
         
         LDR x1, =MensajeErrorColumna
         LDR x2, =LargoMensajeErrorColumnaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
         B f03leer_columna
+
+f03salir_con_limpieza:
+        ldp x29, x30, [sp], 16
+        B f02salir
 
 
 f04AccionBandera:
@@ -205,7 +209,7 @@ f04leer_fila:
         LDR x0, =JuegoTerminado
         LDR x1, [x0]
         CMP x1, #1
-        BEQ f02salir
+        BEQ f04salir_con_limpieza
         
         LDR x1, =MensajeFila
         LDR x2, =LargoMensajeFilaVal
@@ -226,7 +230,7 @@ f04leer_columna:
         LDR x0, =JuegoTerminado
         LDR x1, [x0]
         CMP x1, #1
-        BEQ f02salir
+        BEQ f04salir_con_limpieza
         
         LDR x1, =MensajeColumna
         LDR x2, =LargoMensajeColumnaVal
@@ -254,7 +258,7 @@ f04fila_invalida:
         LDR x0, =JuegoTerminado
         LDR x1, [x0]
         CMP x1, #1
-        BEQ f02salir
+        BEQ f04salir_con_limpieza
         
         LDR x1, =MensajeErrorFila
         LDR x2, =LargoMensajeErrorFilaVal
@@ -266,10 +270,14 @@ f04columna_invalida:
         LDR x0, =JuegoTerminado
         LDR x1, [x0]
         CMP x1, #1
-        BEQ f02salir
+        BEQ f04salir_con_limpieza
         
         LDR x1, =MensajeErrorColumna
         LDR x2, =LargoMensajeErrorColumnaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
         B f04leer_columna
+
+f04salir_con_limpieza:
+        ldp x29, x30, [sp], 16
+        B f02salir
