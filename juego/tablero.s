@@ -321,6 +321,55 @@ init_tablero_nextfila:
         ADD x3, x3, #1
         B init_tablero_filas
 init_tablero_fin:
+         // Colocar minas aleatorias
+         BL f02ColocarMinasAleatorias
+        ldp x29, x30, [sp], 16
+        RET
+// -------------------------------------------------
+// f02ColocarMinasAleatorias
+// Coloca MinasSel minas en posiciones aleatorias del tablero
+// Usa f02NumeroAleatorio de utilidades.s
+// -------------------------------------------------
+f02ColocarMinasAleatorias:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        LDR x10, =FilasSel
+        LDR x10, [x10]      // x10 = filas
+        LDR x11, =ColumnasSel
+        LDR x11, [x11]      // x11 = columnas
+        LDR x12, =MinasSel
+        LDR x12, [x12]      // x12 = minas
+        LDR x13, =TableroPtr
+        LDR x13, [x13]      // x13 = base tablero
+        MOV x14, #0         // contador de minas colocadas
+minas_loop:
+        CMP x14, x12
+        B.GE minas_fin
+        // Generar fila aleatoria
+        MOV x0, x10
+        BL f02NumeroAleatorio
+        UDIV x15, x0, x10
+        MSUB x15, x15, x10, x0
+        // Generar columna aleatoria
+        MOV x0, x11
+        BL f02NumeroAleatorio
+        UDIV x16, x0, x11
+        MSUB x16, x16, x11, x0
+        // Calcular offset: 2 * (fila * columnas + columna)
+        MUL x17, x15, x11
+        ADD x17, x17, x16
+        LSL x17, x17, #1
+        ADD x18, x13, x17
+        // Verificar si ya hay mina
+        LDRB w19, [x18]
+        CMP w19, #1
+        BEQ minas_loop // Si ya hay mina, repetir
+        // Colocar mina
+        MOV w19, #1
+        STRB w19, [x18]
+        ADD x14, x14, #1
+        B minas_loop
+minas_fin:
         ldp x29, x30, [sp], 16
         RET
 
