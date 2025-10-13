@@ -107,15 +107,14 @@ f11Cascada_columna_loop:
         MOV x0, x17
         MOV x1, x19
         BL f12ContarMinasCercanas
-        CMP x0, #0
-        // Si no hay minas cercanas, expandir cascada
+        MOV x22, x0 // guardar cantidad de minas cercanas
+        // Descubrir celda vecina
         MOV x0, x17
         MOV x1, x19
         BL f08DescubrirCelda
-        BEQ .expand_cascada
-        // Si hay minas cercanas, solo descubrir la celda
-        B f11Cascada_next_columna
-.expand_cascada:
+        // Si no hay minas cercanas, expandir cascada
+        CMP x22, #0
+        BNE f11Cascada_next_columna
         // Llamar recursivamente para expandir desde celdas vacías
         MUL x20, x17, x11
         ADD x20, x20, x19
