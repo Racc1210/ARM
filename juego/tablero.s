@@ -52,8 +52,25 @@ f08DescubrirCelda:
         CMP w15, w17
         BEQ f08DescubrirCelda_fin // Si ya está descubierta, no hacer nada
         
-        // Marcar como descubierta (SIN cascada por ahora)
+        // Guardar coordenadas para usar después
+        MOV x20, x0  // fila
+        MOV x21, x1  // columna
+        
+        // Contar minas cercanas
+        BL f12ContarMinasCercanas
+        MOV x22, x0  // guardar cantidad de minas cercanas
+        
+        // Marcar como descubierta
         STRB w17, [x14, #1]
+        
+        // Si no hay minas cercanas, activar cascada
+        CMP x22, #0
+        BNE f08DescubrirCelda_fin
+        
+        // Llamar a cascada
+        MOV x0, x20  // restaurar fila
+        MOV x1, x21  // restaurar columna
+        BL f11DescubrirCascada
         
 f08DescubrirCelda_fin:
         ldp x29, x30, [sp], 16
@@ -61,26 +78,165 @@ f08DescubrirCelda_fin:
 
 // -------------------------------------------------
 // f11DescubrirCascada
-// VERSION SIMPLIFICADA - Solo revela la celda actual
+// Descubre en cascada usando algoritmo iterativo simple
 // Entrada: x0 = fila, x1 = columna
 // -------------------------------------------------
 f11DescubrirCascada:
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        // Por ahora, solo marcar la celda como descubierta sin recursión
+        
+        // Obtener configuración del tablero
+        LDR x10, =FilasSel
+        LDR x10, [x10]      // x10 = filas
+        LDR x11, =ColumnasSel
+        LDR x11, [x11]      // x11 = columnas
+        LDR x12, =TableroPtr
+        LDR x12, [x12]      // x12 = base tablero
+        
+        // Solo procesar los 8 vecinos inmediatos (sin recursión)
+        MOV x20, x0  // fila original
+        MOV x21, x1  // columna original
+        
+        MOV x13, #-1  // offset fila inicial
+f11_loop_fila:
+        CMP x13, #2   // hasta fila+1
+        BGE f11_fin
+        
+        MOV x14, #-1  // offset columna inicial
+f11_loop_columna:
+        CMP x14, #2   // hasta columna+1
+        BGE f11_next_fila
+        
+        // Saltar la celda central (0,0)
+        CMP x13, #0
+        BNE f11_process_vecino
+        CMP x14, #0
+        BEQ f11_next_columna
+        
+f11_process_vecino:
+        // Calcular coordenadas del vecino
+        ADD x15, x20, x13  // fila vecina
+        ADD x16, x21, x14  // columna vecina
+        
+        // Verificar límites
+        CMP x15, #0
+        BLT f11_next_columna
+        CMP x15, x10
+        BGE f11_next_columna
+        CMP x16, #0
+        BLT f11_next_columna
+        CMP x16, x11
+        BGE f11_next_columna
+        
+        // Calcular offset y verificar estado
+        MUL x17, x15, x11
+        ADD x17, x17, x16
+        LSL x17, x17, #1
+        ADD x18, x12, x17
+        
+        // Leer estado
+        LDRB w19, [x18, #1]
+        
+        // Solo procesar celdas ocultas
+        LDR x25, =ESTADO_OCULTA
+        LDR w25, [x25]
+        CMP w19, w25
+        BNE f11_next_columna
+        
+        // Marcar como descubierta
+        LDR x26, =ESTADO_DESCUBIERTA
+        LDR w26, [x26]
+        STRB w26, [x18, #1]
+        
+f11_next_columna:
+        ADD x14, x14, #1
+        B f11_loop_columna
+        
+f11_next_fila:
+        ADD x13, x13, #1
+        B f11_loop_fila
+        
+f11_fin:
         ldp x29, x30, [sp], 16
         RET
 
 // -------------------------------------------------
 // f12ContarMinasCercanas
-// VERSION SIMPLIFICADA - Siempre devuelve 0
+// Cuenta minas cercanas a una celda
 // Entrada: x0 = fila, x1 = columna
 // Salida: x0 = cantidad de minas cercanas
 // -------------------------------------------------
 f12ContarMinasCercanas:
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        MOV x0, #0  // Siempre devolver 0 minas cercanas por ahora
+        
+        // Guardar parámetros originales
+        MOV x20, x0  // fila original
+        MOV x21, x1  // columna original
+        
+        LDR x10, =FilasSel
+        LDR x10, [x10]
+        LDR x11, =ColumnasSel
+        LDR x11, [x11]
+        LDR x12, =TableroPtr
+        LDR x12, [x12]
+        
+        MOV x22, #0 // contador de minas
+        
+        // Revisar las 8 direcciones alrededor de la celda
+        MOV x13, #-1  // offset fila inicial
+f12_loop_fila:
+        CMP x13, #2   // hasta fila+1
+        BGE f12_fin
+        
+        MOV x14, #-1  // offset columna inicial
+f12_loop_columna:
+        CMP x14, #2   // hasta columna+1
+        BGE f12_next_fila
+        
+        // Saltar la celda central (0,0)
+        CMP x13, #0
+        BNE f12_check_vecino
+        CMP x14, #0
+        BEQ f12_next_columna  // si ambos son 0, saltar
+        
+f12_check_vecino:
+        // Calcular coordenadas del vecino
+        ADD x15, x20, x13  // fila vecina
+        ADD x16, x21, x14  // columna vecina
+        
+        // Verificar límites
+        CMP x15, #0
+        BLT f12_next_columna
+        CMP x15, x10
+        BGE f12_next_columna
+        CMP x16, #0
+        BLT f12_next_columna
+        CMP x16, x11
+        BGE f12_next_columna
+        
+        // Calcular offset y leer mina
+        MUL x17, x15, x11
+        ADD x17, x17, x16
+        LSL x17, x17, #1
+        ADD x18, x12, x17
+        LDRB w19, [x18]  // leer byte de mina
+        
+        // Si hay mina, incrementar contador
+        CMP w19, #1
+        BNE f12_next_columna
+        ADD x22, x22, #1
+        
+f12_next_columna:
+        ADD x14, x14, #1
+        B f12_loop_columna
+        
+f12_next_fila:
+        ADD x13, x13, #1
+        B f12_loop_fila
+        
+f12_fin:
+        MOV x0, x22  // retornar contador
         ldp x29, x30, [sp], 16
         RET
 
