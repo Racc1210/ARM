@@ -89,8 +89,9 @@ f08DescubrirCelda:
         LDRB w23, [x14]      // leer byte de mina
         CMP w23, #1
         BNE f08_no_mina
-        // Si tiene mina, revelar todas las minas y mostrar derrota
+        // Si tiene mina, revelar todas las minas, imprimir tablero y mostrar derrota
         BL f08RevelarTodasMinas
+        BL f03ImprimirTablero_NUEVA
         BL f05Derrota
         B f08DescubrirCelda_fin
         f08_no_mina:
