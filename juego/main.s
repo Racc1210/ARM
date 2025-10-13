@@ -46,6 +46,14 @@ _start:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         // Inicializar temporales y configuración a cero
+                // Inicializar semilla aleatoria con el tiempo del sistema
+        MOV x8, #169 // syscall gettimeofday
+        MOV x0, #0
+        MOV x1, sp
+        SVC #0
+        LDR x2, [sp] // segundos
+        LDR x3, =Semilla
+        STR x2, [x3]
         LDR x1, =TmpFilas
         MOV x0, #0
         STR x0, [x1]
