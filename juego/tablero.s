@@ -80,18 +80,18 @@ f08DescubrirCelda_fin:
 
 // -------------------------------------------------
 // f11DescubrirCascada
-// VERSION SIMPLIFICADA Y SEGURA - Solo revela vecinos inmediatos
+// VERSION RECURSIVA COMPLETA - Revela areas conectadas completas
 // Entrada: x0 = fila, x1 = columna
 // -------------------------------------------------
 f11DescubrirCascada:
-        stp x29, x30, [sp, -16]!
+        stp x29, x30, [sp, -48]!
         mov x29, sp
         
         // Verificar que TableroPtr no sea nulo
         LDR x12, =TableroPtr
         LDR x12, [x12]
         CMP x12, #0
-        BEQ f11_fin
+        BEQ f11_cascade_fin
         
         // Obtener configuración del tablero
         LDR x10, =FilasSel
@@ -99,71 +99,115 @@ f11DescubrirCascada:
         LDR x11, =ColumnasSel
         LDR x11, [x11]      // x11 = columnas
         
-        // Guardar coordenadas originales
+        // Guardar registros globales en stack
+        stp x10, x11, [sp, #16]
+        str x12, [sp, #32]
+        
+        // Llamar a función recursiva de cascada
+        BL f11_cascade_recursive
+        
+        // Restaurar registros
+        ldp x10, x11, [sp, #16]
+        ldr x12, [sp, #32]
+        
+f11_cascade_fin:
+        ldp x29, x30, [sp], 48
+        RET
+
+// Función recursiva interna para cascada
+f11_cascade_recursive:
+        stp x29, x30, [sp, -32]!
+        mov x29, sp
+        
+        // Verificar límites
+        CMP x0, #0
+        BLT f11_cascade_end
+        CMP x0, x10
+        BGE f11_cascade_end
+        CMP x1, #0
+        BLT f11_cascade_end
+        CMP x1, x11
+        BGE f11_cascade_end
+        
+        // Calcular offset: 2 * (fila * columnas + columna)
+        MUL x2, x0, x11
+        ADD x2, x2, x1
+        LSL x2, x2, #1
+        ADD x3, x12, x2
+        
+        // Leer estado de la celda
+        LDRB w4, [x3, #1]
+        
+        // Solo procesar celdas ocultas (estado 0)
+        CMP w4, #0
+        BNE f11_cascade_end
+        
+        // Marcar como descubierta (estado 1)
+        MOV w5, #1
+        STRB w5, [x3, #1]
+        
+        // Contar minas cercanas
+        stp x0, x1, [sp, #16]
+        BL f12ContarMinasCercanas
+        ldp x0, x1, [sp, #16]
+        
+        // Si hay minas cercanas, no continuar cascada
+        CMP x0, #0
+        BNE f11_cascade_end
+        
+        // Cascada en las 8 direcciones - solo si no hay minas
         MOV x20, x0  // fila original
         MOV x21, x1  // columna original
-        
-        // Verificar límites de la celda original
-        CMP x20, #0
-        BLT f11_fin
-        CMP x20, x10
-        BGE f11_fin
-        CMP x21, #0
-        BLT f11_fin
-        CMP x21, x11
-        BGE f11_fin
-        
-        // Revelar solo los 8 vecinos inmediatos sin recursión
-        // Llamar a función auxiliar para cada dirección
         
         // Arriba-izquierda
         SUB x0, x20, #1
         SUB x1, x21, #1
-        BL f11_reveal_single_cell
+        BL f11_cascade_recursive
         
         // Arriba
         MOV x0, x20
         SUB x1, x21, #1
-        BL f11_reveal_single_cell
+        BL f11_cascade_recursive
         
         // Arriba-derecha
         ADD x0, x20, #1
         SUB x1, x21, #1
-        BL f11_reveal_single_cell
+        BL f11_cascade_recursive
         
         // Izquierda
         SUB x0, x20, #1
         MOV x1, x21
-        BL f11_reveal_single_cell
+        BL f11_cascade_recursive
         
         // Derecha
         ADD x0, x20, #1
         MOV x1, x21
-        BL f11_reveal_single_cell
+        BL f11_cascade_recursive
         
         // Abajo-izquierda
         SUB x0, x20, #1
         ADD x1, x21, #1
-        BL f11_reveal_single_cell
+        BL f11_cascade_recursive
         
         // Abajo
         MOV x0, x20
         ADD x1, x21, #1
-        BL f11_reveal_single_cell
+        BL f11_cascade_recursive
         
         // Abajo-derecha
         ADD x0, x20, #1
         ADD x1, x21, #1
-        BL f11_reveal_single_cell
+        BL f11_cascade_recursive
         
-f11_fin:
-        ldp x29, x30, [sp], 16
+f11_cascade_end:
+        ldp x29, x30, [sp], 32
         RET
 
 // Función auxiliar para revelar una sola celda
 // Entrada: x0=fila, x1=columna
+// Función auxiliar simple para revelar una sola celda (ya no usada para cascada)
 f11_reveal_single_cell:
-        stp x29, x30, [sp, -32]!
+        stp x29, x30, [sp, -16]!
         mov x29, sp
         
         // Verificar límites
@@ -185,75 +229,16 @@ f11_reveal_single_cell:
         // Leer estado
         LDRB w4, [x3, #1]
         
-        // Solo procesar celdas ocultas
-        LDR x5, =ESTADO_OCULTA
-        LDR w5, [x5]
-        CMP w4, w5
+        // Solo procesar celdas ocultas (estado 0)
+        CMP w4, #0
         BNE f11_reveal_end
         
-        // Marcar como descubierta
-        LDR x6, =ESTADO_DESCUBIERTA
-        LDR w6, [x6]
-        STRB w6, [x3, #1]
-        
-        // Contar minas cercanas para esta celda
-        stp x0, x1, [sp, #16]    // guardar coordenadas
-        stp x10, x11, [sp, #24]  // guardar límites
-        BL f12ContarMinasCercanas
-        ldp x10, x11, [sp, #24]  // restaurar límites
-        ldp x0, x1, [sp, #16]    // restaurar coordenadas
-        
-        // Si no hay minas cercanas (x0 = 0), continuar cascada
-        CMP x0, #0
-        BNE f11_reveal_end       // Si hay minas, detener cascada
-        
-        // Cascada recursiva en las 8 direcciones
-        // Guardar coordenadas actuales
-        MOV x22, x0  // fila actual
-        MOV x23, x1  // columna actual
-        
-        // Arriba-izquierda (-1, -1)
-        SUB x0, x22, #1
-        SUB x1, x23, #1
-        BL f11_reveal_single_cell
-        
-        // Arriba (0, -1)
-        MOV x0, x22
-        SUB x1, x23, #1
-        BL f11_reveal_single_cell
-        
-        // Arriba-derecha (+1, -1)
-        ADD x0, x22, #1
-        SUB x1, x23, #1
-        BL f11_reveal_single_cell
-        
-        // Izquierda (-1, 0)
-        SUB x0, x22, #1
-        MOV x1, x23
-        BL f11_reveal_single_cell
-        
-        // Derecha (+1, 0)
-        ADD x0, x22, #1
-        MOV x1, x23
-        BL f11_reveal_single_cell
-        
-        // Abajo-izquierda (-1, +1)
-        SUB x0, x22, #1
-        ADD x1, x23, #1
-        BL f11_reveal_single_cell
-        
-        // Abajo (0, +1)
-        MOV x0, x22
-        ADD x1, x23, #1
-        BL f11_reveal_single_cell
-        
-        // Abajo-derecha (+1, +1)
-        ADD x0, x22, #1
-        ADD x1, x23, #1
-        BL f11_reveal_single_cell
+        // Marcar como descubierta (estado 1)
+        MOV w5, #1
+        STRB w5, [x3, #1]
         
 f11_reveal_end:
-        ldp x29, x30, [sp], 32
+        ldp x29, x30, [sp], 16
         RET
 
 // -------------------------------------------------
