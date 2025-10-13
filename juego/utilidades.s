@@ -46,9 +46,11 @@ f02NumeroAleatorio:
         LDR     x2, =Semilla
         LDR     x3, [x2]
         LDR     x4, =6364136223846793005   
+        MUL     x3, x3, x4
+        EOR     x3, x3, x4
         ADD     x3, x3, #1
         STR     x3, [x2]
-        LSR     x0, x3, #33
+        LSR     x0, x3, #16   // Más bits significativos
         ldp x29, x30, [sp], 16
         RET
 
