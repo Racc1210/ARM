@@ -97,12 +97,21 @@ f08DescubrirCelda:
         f08_no_mina:
         // Si no hay minas cercanas, activar cascada
         CMP x22, #0
-        BNE f08DescubrirCelda_fin
+        BNE f08_check_victoria
         
         // Llamar a cascada
         MOV x0, x20  // restaurar fila
         MOV x1, x21  // restaurar columna
         BL f11DescubrirCascada
+        
+f08_check_victoria:
+        // Verificar si el jugador ganó
+        BL f10VerificarVictoria
+        CMP x0, #1
+        BNE f08DescubrirCelda_fin
+        // Si ganó, imprimir tablero y mostrar victoria
+        BL f03ImprimirTablero_NUEVA
+        BL f06Victoria
         
 f08DescubrirCelda_fin:
         ldp x29, x30, [sp], 16
@@ -154,6 +163,75 @@ f08DescubrirCelda_fin:
                 RET
 
 // -------------------------------------------------
+// f10VerificarVictoria
+// Verifica si todas las celdas sin mina están descubiertas
+// Salida: x0 = 1 si ganó, 0 si no
+// -------------------------------------------------
+f10VerificarVictoria:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        
+        LDR x12, =TableroPtr
+        LDR x12, [x12]
+        CMP x12, #0
+        BEQ f10_victoria_error
+        
+        LDR x10, =FilasSel
+        LDR x10, [x10]
+        LDR x11, =ColumnasSel
+        LDR x11, [x11]
+        
+        MOV x4, #0         // fila
+f10_victoria_fila_loop:
+        CMP x4, x10
+        B.GE f10_victoria_si
+        MOV x6, #0         // columna
+f10_victoria_col_loop:
+        CMP x6, x11
+        B.GE f10_victoria_nextfila
+        
+        // Calcular offset de celda
+        MUL x13, x4, x11
+        ADD x13, x13, x6
+        LSL x13, x13, #1
+        ADD x14, x12, x13
+        
+        // Leer mina y estado
+        LDRB w15, [x14]      // mina
+        LDRB w16, [x14, #1]  // estado
+        
+        // Si NO tiene mina Y NO está descubierta, no ha ganado
+        CMP w15, #1
+        BEQ f10_victoria_nextcol  // si tiene mina, saltarla
+        
+        // No tiene mina, verificar si está descubierta
+        CMP w16, #1  // ESTADO_DESCUBIERTA = 1
+        BNE f10_victoria_no  // si no está descubierta, no ganó
+        
+f10_victoria_nextcol:
+        ADD x6, x6, #1
+        B f10_victoria_col_loop
+        
+f10_victoria_nextfila:
+        ADD x4, x4, #1
+        B f10_victoria_fila_loop
+        
+f10_victoria_si:
+        MOV x0, #1  // ganó
+        ldp x29, x30, [sp], 16
+        RET
+        
+f10_victoria_no:
+        MOV x0, #0  // no ganó
+        ldp x29, x30, [sp], 16
+        RET
+        
+f10_victoria_error:
+        MOV x0, #0
+        ldp x29, x30, [sp], 16
+        RET
+
+// -------------------------------------------------
 // f11DescubrirCascada
 // VERSION SIMPLIFICADA Y SEGURA - Solo revela vecinos inmediatos
 // Entrada: x0 = fila, x1 = columna
@@ -188,45 +266,45 @@ f11DescubrirCascada:
         CMP x21, x11
         BGE f11_fin
         
-        // Revelar solo los 8 vecinos inmediatos sin recursión
+        // Revelar los 8 vecinos inmediatos con recursión
         // Llamar a función auxiliar para cada dirección
         
-        // Arriba-izquierda
+        // Arriba-izquierda (fila-1, col-1)
         SUB x0, x20, #1
         SUB x1, x21, #1
         BL f11_reveal_single_cell
         
-        // Arriba
-        MOV x0, x20
-        SUB x1, x21, #1
-        BL f11_reveal_single_cell
-        
-        // Arriba-derecha
-        ADD x0, x20, #1
-        SUB x1, x21, #1
-        BL f11_reveal_single_cell
-        
-        // Izquierda
+        // Arriba (fila-1, col)
         SUB x0, x20, #1
         MOV x1, x21
         BL f11_reveal_single_cell
         
-        // Derecha
-        ADD x0, x20, #1
-        MOV x1, x21
-        BL f11_reveal_single_cell
-        
-        // Abajo-izquierda
+        // Arriba-derecha (fila-1, col+1)
         SUB x0, x20, #1
         ADD x1, x21, #1
         BL f11_reveal_single_cell
         
-        // Abajo
+        // Izquierda (fila, col-1)
+        MOV x0, x20
+        SUB x1, x21, #1
+        BL f11_reveal_single_cell
+        
+        // Derecha (fila, col+1)
         MOV x0, x20
         ADD x1, x21, #1
         BL f11_reveal_single_cell
         
-        // Abajo-derecha
+        // Abajo-izquierda (fila+1, col-1)
+        ADD x0, x20, #1
+        SUB x1, x21, #1
+        BL f11_reveal_single_cell
+        
+        // Abajo (fila+1, col)
+        ADD x0, x20, #1
+        MOV x1, x21
+        BL f11_reveal_single_cell
+        
+        // Abajo-derecha (fila+1, col+1)
         ADD x0, x20, #1
         ADD x1, x21, #1
         BL f11_reveal_single_cell
@@ -300,42 +378,42 @@ f11_reveal_single_cell:
         MOV x8, x0  // fila actual
         MOV x9, x1  // columna actual
         
-        // Arriba-izquierda
+        // Arriba-izquierda (fila-1, col-1)
         SUB x0, x8, #1
         SUB x1, x9, #1
         BL f11_reveal_single_cell
         
-        // Arriba
-        MOV x0, x8
-        SUB x1, x9, #1
-        BL f11_reveal_single_cell
-        
-        // Arriba-derecha
-        ADD x0, x8, #1
-        SUB x1, x9, #1
-        BL f11_reveal_single_cell
-        
-        // Izquierda
+        // Arriba (fila-1, col)
         SUB x0, x8, #1
         MOV x1, x9
         BL f11_reveal_single_cell
         
-        // Derecha
-        ADD x0, x8, #1
-        MOV x1, x9
-        BL f11_reveal_single_cell
-        
-        // Abajo-izquierda
+        // Arriba-derecha (fila-1, col+1)
         SUB x0, x8, #1
         ADD x1, x9, #1
         BL f11_reveal_single_cell
         
-        // Abajo
+        // Izquierda (fila, col-1)
+        MOV x0, x8
+        SUB x1, x9, #1
+        BL f11_reveal_single_cell
+        
+        // Derecha (fila, col+1)
         MOV x0, x8
         ADD x1, x9, #1
         BL f11_reveal_single_cell
         
-        // Abajo-derecha
+        // Abajo-izquierda (fila+1, col-1)
+        ADD x0, x8, #1
+        SUB x1, x9, #1
+        BL f11_reveal_single_cell
+        
+        // Abajo (fila+1, col)
+        ADD x0, x8, #1
+        MOV x1, x9
+        BL f11_reveal_single_cell
+        
+        // Abajo-derecha (fila+1, col+1)
         ADD x0, x8, #1
         ADD x1, x9, #1
         BL f11_reveal_single_cell
