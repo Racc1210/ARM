@@ -106,18 +106,18 @@ f11Cascada_columna_loop:
         LDR w23, [x23]
         CMP w22, w23
         BNE f11Cascada_next_columna // Solo procesar si está oculta
-        // Marcar como descubierta antes de expandir
-        LDR x24, =ESTADO_DESCUBIERTA
-        LDR w24, [x24]
-        STRB w24, [x21, #1]
         // Contar minas cercanas
         MOV x0, x17
         MOV x1, x19
         BL f12ContarMinasCercanas
         MOV x22, x0 // guardar cantidad de minas cercanas
+        // Marcar como descubierta
+        LDR x24, =ESTADO_DESCUBIERTA
+        LDR w24, [x24]
+        STRB w24, [x21, #1]
         // Si no hay minas cercanas, expandir cascada
         CMP x22, #0
-        BNE f11Cascada_next_columna
+        BNE f11Cascada_next_columna // Si hay número, solo revelar
         // Llamar recursivamente para expandir desde celdas vacías
         MUL x20, x17, x11
         ADD x20, x20, x19
