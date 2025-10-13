@@ -65,6 +65,15 @@ f08DescubrirCelda:
         // Marcar como descubierta
         STRB w17, [x14, #1]
         
+        // Verificar si la celda tiene mina
+        LDRB w23, [x14]      // leer byte de mina
+        CMP w23, #1
+        BNE f08_no_mina
+        // Si tiene mina, revelar todas las minas y mostrar derrota
+        BL f08RevelarTodasMinas
+        BL f05Derrota
+        B f08DescubrirCelda_fin
+        f08_no_mina:
         // Si no hay minas cercanas, activar cascada
         CMP x22, #0
         BNE f08DescubrirCelda_fin
@@ -77,6 +86,51 @@ f08DescubrirCelda:
 f08DescubrirCelda_fin:
         ldp x29, x30, [sp], 16
         RET
+
+        // -------------------------------------------------
+        // f08RevelarTodasMinas
+        // Recorre el tablero y marca como descubiertas todas las minas
+        // -------------------------------------------------
+        f08RevelarTodasMinas:
+                stp x29, x30, [sp, -16]!
+                mov x29, sp
+                LDR x12, =TableroPtr
+                LDR x12, [x12]
+                CMP x12, #0
+                BEQ f08RevelarTodasMinas_fin
+                LDR x10, =FilasSel
+                LDR x10, [x10]
+                LDR x11, =ColumnasSel
+                LDR x11, [x11]
+                MOV x4, #0         // fila
+        f08RevelarMinas_fila_loop:
+                CMP x4, x10
+                B.GE f08RevelarTodasMinas_fin
+                MOV x6, #0         // columna
+        f08RevelarMinas_col_loop:
+                CMP x6, x11
+                B.GE f08RevelarMinas_nextfila
+                // Calcular offset de celda: 2 * (fila * columnas + columna)
+                MUL x13, x4, x11
+                ADD x13, x13, x6
+                LSL x13, x13, #1
+                ADD x14, x12, x13
+                LDRB w15, [x14]      // leer byte de mina
+                CMP w15, #1
+                BNE f08RevelarMinas_nextcol
+                // Si hay mina, marcar como descubierta
+                LDR x17, =ESTADO_DESCUBIERTA
+                LDR w17, [x17]
+                STRB w17, [x14, #1]
+        f08RevelarMinas_nextcol:
+                ADD x6, x6, #1
+                B f08RevelarMinas_col_loop
+        f08RevelarMinas_nextfila:
+                ADD x4, x4, #1
+                B f08RevelarMinas_fila_loop
+        f08RevelarTodasMinas_fin:
+                ldp x29, x30, [sp], 16
+                RET
 
 // -------------------------------------------------
 // f11DescubrirCascada
