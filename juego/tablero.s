@@ -2,6 +2,7 @@
         .global f08DescubrirCelda
         .global f09ColocarBandera
         .global f03ImprimirTablero_NUEVA
+        .global f12ContarMinasCercanas
         // ...sin lógica de minas...
         // ...sin diagnóstico...
 // -------------------------------------------------
@@ -753,12 +754,35 @@ nueva_print_descubierta:
         CMP w15, #1
         BEQ nueva_print_mina
         
-        // Si no tiene mina, mostrar espacio vacío por ahora
-        MOV w22, #'_'
+        // No tiene mina - contar minas cercanas
+        // Guardar registros antes de llamar función
+        stp x4, x6, [sp, #16]
+        stp x12, x20, [sp, #32]
+        str x21, [sp, #48]
+        
+        MOV x0, x4    // fila
+        MOV x1, x6    // columna
+        BL f12ContarMinasCercanas
+        
+        // Restaurar registros
+        ldp x4, x6, [sp, #16]
+        ldp x12, x20, [sp, #32]
+        ldr x21, [sp, #48]
+        
+        // Determinar símbolo según cantidad de minas
+        CMP x0, #0
+        BEQ nueva_print_vacia
+        
+        // Convertir número a carácter ASCII ('1'..'8')
+        ADD w22, w0, #'0'
         B nueva_print_char
         
 nueva_print_mina:
         MOV w22, #'@'
+        B nueva_print_char
+
+nueva_print_vacia:
+        MOV w22, #'_'
         
 nueva_print_char:
         // Guardar registros en posiciones alineadas
