@@ -68,9 +68,9 @@ f02BucleJuego_loop:
         LDR x2, [x2]
         BL f01ImprimirCadena
         
-        // Leer opción del usuario
-        BL f03LeerNumero
-        MOV x9, x0
+        // Leer opción del usuario - TEMPORALMENTE COMENTADO PARA DEBUGGING
+        // BL f03LeerNumero
+        MOV x9, #3  // Simular opción de salir para testing
         
         // Procesar opción
         CMP x9, #1

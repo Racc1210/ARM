@@ -693,9 +693,9 @@ f03ImprimirTablero_fin:
 
 // NUEVA VERSION SIMPLE DE f03ImprimirTablero
 // Imprime el tablero carácter por carácter usando solo el stack
-// No usa heap dinámico para evitar corrupción de memoria
+// Con alineación correcta de memoria para ARM64
 f03ImprimirTablero_NUEVA:
-        stp x29, x30, [sp, -48]!  // Más espacio en stack
+        stp x29, x30, [sp, -64]!  // Alineación a 16 bytes
         mov x29, sp
         
         // Obtener cantidad de filas y columnas
@@ -761,35 +761,32 @@ nueva_print_mina:
         MOV w22, #'@'
         
 nueva_print_char:
-        // Guardar registros que necesitamos preservar
-        STR x4, [sp, #16]
-        STR x6, [sp, #24] 
-        STR x12, [sp, #32]
-        STR x20, [sp, #40]
+        // Guardar registros en posiciones alineadas
+        stp x4, x6, [sp, #16]
+        stp x12, x20, [sp, #32]
+        str x21, [sp, #48]
         
-        // Imprimir símbolo usando stack temporal
-        STRB w22, [sp, #8]
+        // Imprimir símbolo usando posición alineada del stack
+        STRB w22, [sp, #56]
         MOV x8, #64          // syscall write
         MOV x0, #1           // stdout
-        ADD x1, sp, #8       // buffer en stack
+        ADD x1, sp, #56      // buffer alineado en stack
         MOV x2, #1           // 1 carácter
         SVC #0
         
         // Imprimir espacio
         MOV w23, #' '
-        STRB w23, [sp, #8]
+        STRB w23, [sp, #56]
         MOV x8, #64
         MOV x0, #1
-        ADD x1, sp, #8
+        ADD x1, sp, #56
         MOV x2, #1
         SVC #0
         
         // Restaurar registros
-        LDR x4, [sp, #16]
-        LDR x6, [sp, #24]
-        LDR x12, [sp, #32] 
-        LDR x20, [sp, #40]
-        LDR x21, [x11]      // recargar columnas
+        ldp x4, x6, [sp, #16]
+        ldp x12, x20, [sp, #32]
+        ldr x21, [sp, #48]
         
         // Siguiente columna
         ADD x6, x6, #1
@@ -798,10 +795,10 @@ nueva_print_char:
 nueva_print_end_row:
         // Imprimir nueva línea
         MOV w24, #10  // '\n'
-        STRB w24, [sp, #8]
+        STRB w24, [sp, #56]
         MOV x8, #64
         MOV x0, #1
-        ADD x1, sp, #8
+        ADD x1, sp, #56
         MOV x2, #1
         SVC #0
         
@@ -810,5 +807,5 @@ nueva_print_end_row:
         B nueva_print_fila_loop
 
 nueva_print_fin:
-        ldp x29, x30, [sp], 48
+        ldp x29, x30, [sp], 64
         RET
