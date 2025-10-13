@@ -1,3 +1,23 @@
+// -------------------------------------------------
+// f05Derrota
+// Muestra mensaje de derrota y termina el juego
+// -------------------------------------------------
+        .extern MensajeDerrota
+        .extern LargoMensajeDerrotaVal
+        .extern f01ImprimirCadena
+f05Derrota:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        // Imprimir mensaje de derrota
+        LDR x1, =MensajeDerrota
+        LDR x2, =LargoMensajeDerrotaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
+        // Salir del juego
+        MOV x0, #0
+        MOV x8, #93     // syscall exit
+        ldp x29, x30, [sp], 16
+        SVC #0
         .global f11DescubrirCascada
         .global f08DescubrirCelda
         .global f09ColocarBandera
@@ -514,11 +534,21 @@ f04DescubrirCelda:
         RET
 
 f06Victoria:
+        .extern MensajeVictoria
+        .extern LargoMensajeVictoriaVal
+        .extern f01ImprimirCadena
         stp x29, x30, [sp, -16]!
         mov x29, sp
-        // TODO: lógica de victoria
+        // Imprimir mensaje de victoria
+        LDR x1, =MensajeVictoria
+        LDR x2, =LargoMensajeVictoriaVal
+        LDR x2, [x2]
+        BL f01ImprimirCadena
+        // Salir del juego
+        MOV x0, #0
+        MOV x8, #93     // syscall exit
         ldp x29, x30, [sp], 16
-        RET
+        SVC #0
 
 f07ColocarBandera:
         stp x29, x30, [sp, -16]!
