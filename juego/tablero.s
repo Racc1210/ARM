@@ -319,14 +319,26 @@ f11_fin:
 // - Siempre revela la celda si está oculta y sin mina
 // - Solo continúa recursión si la celda tiene 0 minas cercanas
 f11_reveal_single_cell:
-        stp x29, x30, [sp, -80]!  // Frame más grande para recursión
+        stp x29, x30, [sp, -96]!  // Frame más grande para recursión
         mov x29, sp
         
-        // Guardar TODOS los registros que usamos para evitar corrupción
+        // Guardar coordenadas de entrada
         stp x0, x1, [sp, #16]      // fila, columna
-        stp x10, x11, [sp, #32]    // filas_max, columnas_max  
-        stp x12, x20, [sp, #48]    // TableroPtr, fila_orig
-        str x21, [sp, #64]         // columna_orig
+        
+        // Cargar configuración FRESCA del tablero (no confiar en registros)
+        LDR x10, =FilasSel
+        LDR x10, [x10]
+        LDR x11, =ColumnasSel
+        LDR x11, [x11]
+        LDR x12, =TableroPtr
+        LDR x12, [x12]
+        
+        // Guardar configuración
+        stp x10, x11, [sp, #32]
+        str x12, [sp, #48]
+        
+        // Restaurar coordenadas para verificar límites
+        ldp x0, x1, [sp, #16]
         
         // Verificar límites
         CMP x0, #0
@@ -348,43 +360,40 @@ f11_reveal_single_cell:
         LDRB w4, [x3, #1]
         
         // ⚠️ PREVENCIÓN DE BUCLE INFINITO:
-        // Solo procesar celdas que estén OCULTAS (o con bandera)
+        // Solo procesar celdas OCULTAS (estado = 0)
         CMP w4, #0              // ESTADO_OCULTA = 0
-        BEQ f11_process_cell
-        CMP w4, #2              // ESTADO_BANDERA = 2
-        BEQ f11_process_cell
-        B f11_reveal_recursive_end  // Ya está descubierta, salir
+        BNE f11_reveal_recursive_end  // Si ya está descubierta o tiene bandera, salir
         
-f11_process_cell:
         // Leer si tiene mina
         LDRB w5, [x3]
         CMP w5, #1              // ¿Tiene mina?
         BEQ f11_reveal_recursive_end  // Si tiene mina, NO revelar
         
-        // Marcar como descubierta ANTES de continuar
+        // ✅ Marcar como descubierta ANTES de continuar
         MOV w6, #1              // ESTADO_DESCUBIERTA = 1
         STRB w6, [x3, #1]
         
+        // Guardar dirección de celda para después
+        str x3, [sp, #56]
+        
         // Contar minas cercanas para decidir si continuar cascada
-        // Guardar coordenadas actuales
-        ldp x0, x1, [sp, #16]
-        stp x0, x1, [sp, #72]   // backup adicional
-        
+        ldp x0, x1, [sp, #16]   // restaurar coordenadas
         BL f12ContarMinasCercanas
-        MOV x7, x0              // guardar resultado
-        
-        // Restaurar coordenadas
-        ldp x0, x1, [sp, #72]
+        MOV x7, x0              // guardar resultado (cantidad de minas cercanas)
         
         // 🎯 CLAVE: Si tiene número (minas cercanas > 0), SOLO revelar, NO continuar recursión
-        // 🔄 RECURSIÓN: Solo si tiene 0 minas cercanas
         CMP x7, #0
-        BNE f11_reveal_recursive_end
+        BNE f11_reveal_recursive_end  // Si tiene minas cercanas, ya revelamos, no continuar
+        
+        // 🔄 RECURSIÓN: Solo si tiene 0 minas cercanas
+        // Restaurar coordenadas originales
+        ldp x8, x9, [sp, #16]  // fila, columna originales
         
         // ✨ CASCADA RECURSIVA - Llamar a los 8 vecinos
         MOV x8, x0  // fila actual
         MOV x9, x1  // columna actual
         
+        // ✨ CASCADA RECURSIVA - Llamar a los 8 vecinos
         // Arriba-izquierda (fila-1, col-1)
         SUB x0, x8, #1
         SUB x1, x9, #1
@@ -426,13 +435,7 @@ f11_process_cell:
         BL f11_reveal_single_cell
         
 f11_reveal_recursive_end:
-        // Restaurar TODOS los registros
-        ldp x0, x1, [sp, #16]
-        ldp x10, x11, [sp, #32]
-        ldp x12, x20, [sp, #48]
-        ldr x21, [sp, #64]
-        
-        ldp x29, x30, [sp], 80
+        ldp x29, x30, [sp], 96
         RET
 
 // -------------------------------------------------
