@@ -199,7 +199,7 @@ f03AccionDescubrir:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        SUB x10, x0, #1
+        MOV x10, x0
 
         // validar fila
         MOV x0, x10
@@ -208,6 +208,7 @@ f03AccionDescubrir:
         BL f04ValidarRango
         CMP x0, #0
         BEQ f03AccionDescubrir   
+        SUB x10, x10, #1
 
         // leer columna
         LDR x1, =MensajeColumna
@@ -215,7 +216,7 @@ f03AccionDescubrir:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        SUB x11, x0, #1
+        MOV x11, x0
 
         // validar columna
         MOV x0, x11
@@ -224,6 +225,7 @@ f03AccionDescubrir:
         BL f04ValidarRango
         CMP x0, #0
         BEQ f03AccionDescubrir  
+        SUB x11, x11, #1
 
         // descubrir celda
         MOV x0, x10
@@ -249,7 +251,7 @@ f04AccionBandera:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        SUB x10, x0, #1
+        MOV x10, x0
 
         // validar fila
         MOV x0, x10
@@ -258,6 +260,7 @@ f04AccionBandera:
         BL f04ValidarRango
         CMP x0, #0
         BEQ f04AccionBandera
+        SUB x10, x10, #1
 
         // leer columna
         LDR x1, =MensajeColumna
@@ -265,7 +268,7 @@ f04AccionBandera:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        SUB x11, x0, #1
+        MOV x11, x0
 
         // validar columna
         MOV x0, x11
@@ -274,6 +277,7 @@ f04AccionBandera:
         BL f04ValidarRango
         CMP x0, #0
         BEQ f04AccionBandera
+        SUB x11, x11, #1
 
         // colocar bandera
         MOV x0, x10
