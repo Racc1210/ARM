@@ -119,60 +119,60 @@ f11Cascada_columna_loop:
         CMP x22, #0
         BNE f11Cascada_next_columna // Si hay número, solo revelar
         // Expandir a todos los vecinos (vacíos y números)
-        MOV x30, #-1
+        MOV x28, #-1 // fila offset
 f11Cascada_expand_fila:
-        CMP x30, #2
-        B.GE f11Cascada_next_columna
-        ADD x31, x17, x30
-        CMP x31, #0
-        BLT f11Cascada_expand_next_fila
-        CMP x31, x10
-        BGE f11Cascada_expand_next_fila
-        MOV x28, #-1
-f11Cascada_expand_columna:
         CMP x28, #2
-        B.GE f11Cascada_expand_next_fila
-        ADD x29, x19, x28
+        B.GE f11Cascada_next_columna
+        ADD x29, x17, x28 // fila vecina
         CMP x29, #0
+        BLT f11Cascada_expand_next_fila
+        CMP x29, x10
+        BGE f11Cascada_expand_next_fila
+        MOV x30, #-1 // columna offset
+f11Cascada_expand_columna:
+        CMP x30, #2
+        B.GE f11Cascada_expand_next_fila
+        ADD x27, x19, x30 // columna vecina
+        CMP x27, #0
         BLT f11Cascada_expand_next_columna
-        CMP x29, x11
+        CMP x27, x11
         BGE f11Cascada_expand_next_columna
         // Saltar la celda central
-        CMP x30, #0
-        CBNZ x30, .expand_check_celda
         CMP x28, #0
         CBNZ x28, .expand_check_celda
+        CMP x30, #0
+        CBNZ x30, .expand_check_celda
         B f11Cascada_expand_next_columna
 .expand_check_celda:
-        MUL x27, x31, x11
-        ADD x27, x27, x29
-        LSL x27, x27, #1
-        ADD x26, x12, x27
+        MUL x26, x29, x11
+        ADD x26, x26, x27
+        LSL x26, x26, #1
+        ADD x25, x12, x26
         // Leer estado
-        LDRB w25, [x26, #1]
+        LDRB w24, [x25, #1]
         LDR x23, =ESTADO_OCULTA
         LDR w23, [x23]
-        CMP w25, w23
+        CMP w24, w23
         BNE f11Cascada_expand_next_columna // Solo procesar si está oculta
         // Contar minas cercanas
-        MOV x0, x31
-        MOV x1, x29
+        MOV x0, x29
+        MOV x1, x27
         BL f12ContarMinasCercanas
         MOV x21, x0 // guardar cantidad de minas cercanas
         // Marcar como descubierta
         LDR x24, =ESTADO_DESCUBIERTA
         LDR w24, [x24]
-        STRB w24, [x26, #1]
+        STRB w24, [x25, #1]
         // Si no hay minas cercanas, expandir recursivamente
         CMP x21, #0
         BNE f11Cascada_expand_next_columna
-        MOV x0, x26
+        MOV x0, x25
         BL f11DescubrirCascada
 f11Cascada_expand_next_columna:
-        ADD x28, x28, #1
+        ADD x30, x30, #1
         B f11Cascada_expand_columna
 f11Cascada_expand_next_fila:
-        ADD x30, x30, #1
+        ADD x28, x28, #1
         B f11Cascada_expand_fila
         B f11Cascada_next_columna
 f11Cascada_next_columna:
