@@ -30,9 +30,9 @@
 
 
 f01ConfigurarYJugar:
-        // Print valores de filas y columnas
-        MOV x10, x0       // guardar filas
-        MOV x11, x1       // guardar columnas
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        // Los parámetros x0, x1, x2 ya están configurados en main.s
         LDR x13, =FilasSel
         LDR x0, [x13]
         LDR x14, =ColumnasSel
@@ -40,12 +40,8 @@ f01ConfigurarYJugar:
         LDR x15, =MinasSel
         LDR x2, [x15]
         BL f01InicializarTablero
-        // ...sin lógica de minas...
-        // ...sin diagnóstico...
-        LDR x13, =FilasSel
-        LDR x0, [x13]
         BL f02BucleJuego
-                RET
+        ldp x29, x30, [sp], 16
         RET
         // ...existing code...
         // Rutina para imprimir número decimal en x0

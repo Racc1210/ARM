@@ -72,8 +72,10 @@ _start:
         STR x0, [x1]
         BL f01IniciarPrograma
         BL f02MenuPrincipal
-        ldp x29, x30, [sp], 16
-        RET
+        // Salir correctamente del programa
+        MOV x0, #0
+        MOV x8, #93     // syscall exit
+        SVC #0
 
 f01IniciarPrograma:
         stp x29, x30, [sp, -16]!
@@ -137,6 +139,8 @@ f04Principiante:
         MOV x1, #8
         MOV x2, #10
         BL f12GuardarConfig
+        ldp x29, x30, [sp], 16
+        RET
 
 f05Intermedio:
         stp x29, x30, [sp, -16]!
@@ -145,6 +149,8 @@ f05Intermedio:
         MOV x1, #16
         MOV x2, #40
         BL f12GuardarConfig
+        ldp x29, x30, [sp], 16
+        RET
 
 f06Experto:
         stp x29, x30, [sp, -16]!
@@ -153,7 +159,11 @@ f06Experto:
         MOV x1, #16
         MOV x2, #99
         BL f12GuardarConfig
+        ldp x29, x30, [sp], 16
+        RET
 f07Personalizada:
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
 
 f08LeerFilas:
         LDR x1, =MensajeFilas
@@ -167,23 +177,20 @@ f08LeerFilas:
         MOV x2, #30
         BL f04ValidarRango
         CMP x0, #0
-        BNE f08GuardarFila
-f08GuardarFila:
+        BEQ f08ErrorFilas
+        // Si válido, guardar
         LDR x13, =TmpFilas
         STR x10, [x13]
-        B f09FilasOK
+        B f09LeerColumnas
 
+f08ErrorFilas:
         LDR x1, =MensajeErrorCantidadFilas
         LDR x2, =LargoMensajeErrorCantidadFilasVal
         LDR x2, [x2]
         BL f01ImprimirCadena
         B f08LeerFilas
 
-f09FilasOK:
-        B f09LeerColumnas
-
 f09LeerColumnas:
-
         LDR x1, =MensajeColumnas
         LDR x2, =LargoMensajeColumnasVal
         LDR x2, [x2]
@@ -195,20 +202,18 @@ f09LeerColumnas:
         MOV x2, #24
         BL f04ValidarRango
         CMP x0, #0
-        BNE f09GuardarColumna
-f09GuardarColumna:
+        BEQ f09ErrorColumnas
+        // Si válido, guardar
         LDR x13, =TmpColumnas
         STR x11, [x13]
-        B f10ColumnasOK
+        B f10LeerMinas
 
+f09ErrorColumnas:
         LDR x1, =MensajeErrorCantidadColumnas
         LDR x2, =LargoMensajeErrorCantidadColumnasVal
         LDR x2, [x2]
         BL f01ImprimirCadena
         B f09LeerColumnas
-
-f10ColumnasOK:
-        // ...sin cierre de marco de pila...
 f10LeerMinas:
 
         LDR x1, =MensajeMinas
@@ -250,6 +255,8 @@ f11MinasOK:
         LDR x15, =TmpMinas
         LDR x2, [x15]
         BL f12GuardarConfig
+        ldp x29, x30, [sp], 16
+        RET
 
 f12GuardarConfig:
         stp x29, x30, [sp, -16]!
