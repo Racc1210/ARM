@@ -119,6 +119,11 @@ f03AccionDescubrir:
         mov x29, sp
         
 f03leer_fila:
+        LDR x0, =JuegoTerminado
+        LDR x1, [x0]
+        CMP x1, #1
+        BEQ f02salir
+        
         LDR x1, =MensajeFila
         LDR x2, =LargoMensajeFilaVal
         LDR x2, [x2]
@@ -135,6 +140,11 @@ f03leer_fila:
         SUB x10, x10, #1                      
 
 f03leer_columna:
+        LDR x0, =JuegoTerminado
+        LDR x1, [x0]
+        CMP x1, #1
+        BEQ f02salir
+        
         LDR x1, =MensajeColumna
         LDR x2, =LargoMensajeColumnaVal
         LDR x2, [x2]
@@ -163,6 +173,11 @@ f03leer_columna:
         B f02bucle_juego
 
 f03fila_invalida:
+        LDR x0, =JuegoTerminado
+        LDR x1, [x0]
+        CMP x1, #1
+        BEQ f02salir
+        
         LDR x1, =MensajeErrorFila
         LDR x2, =LargoMensajeErrorFilaVal
         LDR x2, [x2]
@@ -170,6 +185,11 @@ f03fila_invalida:
         B f03leer_fila
 
 f03columna_invalida:
+        LDR x0, =JuegoTerminado
+        LDR x1, [x0]
+        CMP x1, #1
+        BEQ f02salir
+        
         LDR x1, =MensajeErrorColumna
         LDR x2, =LargoMensajeErrorColumnaVal
         LDR x2, [x2]
@@ -182,6 +202,11 @@ f04AccionBandera:
         mov x29, sp
         
 f04leer_fila:
+        LDR x0, =JuegoTerminado
+        LDR x1, [x0]
+        CMP x1, #1
+        BEQ f02salir
+        
         LDR x1, =MensajeFila
         LDR x2, =LargoMensajeFilaVal
         LDR x2, [x2]
@@ -198,6 +223,11 @@ f04leer_fila:
         SUB x10, x10, #1
 
 f04leer_columna:
+        LDR x0, =JuegoTerminado
+        LDR x1, [x0]
+        CMP x1, #1
+        BEQ f02salir
+        
         LDR x1, =MensajeColumna
         LDR x2, =LargoMensajeColumnaVal
         LDR x2, [x2]
@@ -221,6 +251,11 @@ f04leer_columna:
         B f02bucle_juego
 
 f04fila_invalida:
+        LDR x0, =JuegoTerminado
+        LDR x1, [x0]
+        CMP x1, #1
+        BEQ f02salir
+        
         LDR x1, =MensajeErrorFila
         LDR x2, =LargoMensajeErrorFilaVal
         LDR x2, [x2]
@@ -228,6 +263,11 @@ f04fila_invalida:
         B f04leer_fila
 
 f04columna_invalida:
+        LDR x0, =JuegoTerminado
+        LDR x1, [x0]
+        CMP x1, #1
+        BEQ f02salir
+        
         LDR x1, =MensajeErrorColumna
         LDR x2, =LargoMensajeErrorColumnaVal
         LDR x2, [x2]

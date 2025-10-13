@@ -710,13 +710,13 @@ f07tiene_mina:
 f08Victoria:
         stp x29, x30, [sp, -16]!
         mov x29, sp
+        LDR x0, =JuegoTerminado
+        MOV x1, #1
+        STR x1, [x0]
         LDR x1, =MensajeVictoria
         LDR x2, =LargoMensajeVictoriaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        LDR x0, =JuegoTerminado
-        MOV x1, #1
-        STR x1, [x0]
         ldp x29, x30, [sp], 16
         RET
 
@@ -724,13 +724,13 @@ f08Victoria:
 f09Derrota:
         stp x29, x30, [sp, -16]!
         mov x29, sp
+        LDR x0, =JuegoTerminado
+        MOV x1, #1
+        STR x1, [x0]
         LDR x1, =MensajeDerrota
         LDR x2, =LargoMensajeDerrotaVal
         LDR x2, [x2]
         BL f01ImprimirCadena
-        LDR x0, =JuegoTerminado
-        MOV x1, #1
-        STR x1, [x0]
         ldp x29, x30, [sp], 16
         RET
 
