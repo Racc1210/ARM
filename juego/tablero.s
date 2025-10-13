@@ -44,7 +44,8 @@ f08DescubrirCelda:
         CMP x0, #0
         BNE f08DescubrirCelda_fin
         // Si no hay minas cercanas, descubrir en cascada
-        MOV x0, x14 // dirección de celda actual
+        MOV x0, x20 // fila
+        MOV x1, x21 // columna
         BL f11DescubrirCascada
 f08DescubrirCelda_fin:
         ldp x29, x30, [sp], 16
@@ -52,8 +53,8 @@ f08DescubrirCelda_fin:
 
 // -------------------------------------------------
 // f11DescubrirCascada
-// Descubre en cascada celdas vacías y con número usando flood fill
-// Entrada: x0 = dirección de celda actual
+// Descubre en cascada usando recursión simple
+// Entrada: x0 = fila, x1 = columna
 // -------------------------------------------------
 f11DescubrirCascada:
         stp x29, x30, [sp, -16]!
@@ -67,143 +68,92 @@ f11DescubrirCascada:
         LDR x12, =TableroPtr
         LDR x12, [x12]      // x12 = base tablero
         
-        // Obtener fila y columna desde dirección de celda
-        SUB x13, x0, x12
-        LSR x13, x13, #1
-        UDIV x14, x13, x11  // x14 = fila inicial
-        MSUB x15, x14, x11, x13 // x15 = columna inicial
-        
-        // --- Algoritmo Flood Fill con cola ---
-        // Reservar espacio para cola: máximo filas*columnas*2 posiciones
-        SUB sp, sp, #1024   // espacio para hasta 128 posiciones (64*2)
-        MOV x20, sp         // x20 = base de la cola
-        MOV x21, #0         // x21 = head (índice de lectura)
-        MOV x22, #0         // x22 = tail (índice de escritura)
-        
-        // Encolar posición inicial
-        STR x14, [x20, x22, LSL #3]
-        ADD x22, x22, #1
-        STR x15, [x20, x22, LSL #3]
-        ADD x22, x22, #1
-        
-flood_fill_loop:
-        // Verificar si la cola está vacía
-        CMP x21, x22
-        B.GE flood_fill_end
-        
-        // Desencolar fila y columna
-        LDR x14, [x20, x21, LSL #3]
-        ADD x21, x21, #1
-        LDR x15, [x20, x21, LSL #3]
-        ADD x21, x21, #1
-        
         // Verificar límites
-        CMP x14, #0
-        BLT flood_fill_loop
-        CMP x14, x10
-        BGE flood_fill_loop
-        CMP x15, #0
-        BLT flood_fill_loop
-        CMP x15, x11
-        BGE flood_fill_loop
+        CMP x0, #0
+        BLT f11DescubrirCascada_fin
+        CMP x0, x10
+        BGE f11DescubrirCascada_fin
+        CMP x1, #0
+        BLT f11DescubrirCascada_fin
+        CMP x1, x11
+        BGE f11DescubrirCascada_fin
         
         // Calcular dirección de celda
-        MUL x23, x14, x11
-        ADD x23, x23, x15
-        LSL x23, x23, #1
-        ADD x24, x12, x23
+        MUL x13, x0, x11
+        ADD x13, x13, x1
+        LSL x13, x13, #1
+        ADD x14, x12, x13
         
         // Leer estado
-        LDRB w25, [x24, #1]
-        LDR x26, =ESTADO_DESCUBIERTA
-        LDR w26, [x26]
-        CMP w25, w26
-        BEQ flood_fill_loop // ya descubierta, continuar
+        LDRB w15, [x14, #1]
+        LDR x16, =ESTADO_DESCUBIERTA
+        LDR w16, [x16]
+        CMP w15, w16
+        BEQ f11DescubrirCascada_fin // ya descubierta
         
-        LDR x27, =ESTADO_BANDERA
-        LDR w27, [x27]
-        CMP w25, w27
-        BEQ flood_fill_loop // bandera, no descubrir
+        LDR x17, =ESTADO_BANDERA
+        LDR w17, [x17]
+        CMP w15, w17
+        BEQ f11DescubrirCascada_fin // bandera
+        
+        LDR x18, =ESTADO_OCULTA
+        LDR w18, [x18]
+        CMP w15, w18
+        BNE f11DescubrirCascada_fin // solo procesar ocultas
+        
+        // Marcar como descubierta
+        STRB w16, [x14, #1]
         
         // Contar minas cercanas
-        MOV x0, x14
-        MOV x1, x15
+        MOV x20, x0 // guardar fila
+        MOV x21, x1 // guardar columna
         BL f12ContarMinasCercanas
-        MOV x28, x0         // x28 = minas cercanas
+        MOV x22, x0 // x22 = minas cercanas
         
-        // Marcar como descubierta SIEMPRE (vacía o número)
-        STRB w26, [x24, #1]
+        // Si hay minas cercanas, no expandir
+        CMP x22, #0
+        BNE f11DescubrirCascada_fin
         
-        // Solo expandir si es vacío (minas cercanas == 0)
-        CMP x28, #0
-        BNE flood_fill_loop // si hay número, no expandir
+        // Si es vacío, expandir a todos los vecinos
+        MOV x0, x20 // restaurar fila
+        MOV x1, x21 // restaurar columna
         
-        // Encolar vecinos (8 direcciones)
-        MOV x29, #-1        // offset fila
-flood_fill_vecinos_fila:
-        CMP x29, #2
-        B.GE flood_fill_loop
-        MOV x30, #-1        // offset columna
-flood_fill_vecinos_col:
-        CMP x30, #2
-        B.GE flood_fill_vecinos_fila_next
+        // Llamar recursivamente a los 8 vecinos
+        SUB x23, x0, #1 // fila-1
+        SUB x24, x1, #1 // columna-1
+        MOV x0, x23
+        MOV x1, x24
+        BL f11DescubrirCascada // arriba-izquierda
         
-        // Saltar la celda central
-        CMP x29, #0
-        CBNZ x29, .ff_check_vecino
-        CMP x30, #0
-        CBNZ x30, .ff_check_vecino
-        B flood_fill_vecinos_col_next
+        MOV x0, x20 // fila original
+        SUB x1, x21, #1 // columna-1
+        BL f11DescubrirCascada // izquierda
         
-.ff_check_vecino:
-        ADD x25, x14, x29   // fila vecina
-        ADD x26, x15, x30   // columna vecina
+        ADD x0, x20, #1 // fila+1
+        SUB x1, x21, #1 // columna-1
+        BL f11DescubrirCascada // abajo-izquierda
         
-        // Verificar límites del vecino
-        CMP x25, #0
-        BLT flood_fill_vecinos_col_next
-        CMP x25, x10
-        BGE flood_fill_vecinos_col_next
-        CMP x26, #0
-        BLT flood_fill_vecinos_col_next
-        CMP x26, x11
-        BGE flood_fill_vecinos_col_next
+        SUB x0, x20, #1 // fila-1
+        MOV x1, x21 // columna original
+        BL f11DescubrirCascada // arriba
         
-        // Calcular dirección de celda vecina
-        MUL x27, x25, x11
-        ADD x27, x27, x26
-        LSL x27, x27, #1
-        ADD x28, x12, x27
+        ADD x0, x20, #1 // fila+1
+        MOV x1, x21 // columna original
+        BL f11DescubrirCascada // abajo
         
-        // Leer estado del vecino
-        LDRB w16, [x28, #1]
-        LDR x17, =ESTADO_DESCUBIERTA
-        LDR w17, [x17]
-        CMP w16, w17
-        BEQ flood_fill_vecinos_col_next // ya descubierta
+        SUB x0, x20, #1 // fila-1
+        ADD x1, x21, #1 // columna+1
+        BL f11DescubrirCascada // arriba-derecha
         
-        LDR x18, =ESTADO_BANDERA
-        LDR w18, [x18]
-        CMP w16, w18
-        BEQ flood_fill_vecinos_col_next // bandera
+        MOV x0, x20 // fila original
+        ADD x1, x21, #1 // columna+1
+        BL f11DescubrirCascada // derecha
         
-        // Encolar vecino
-        STR x25, [x20, x22, LSL #3]
-        ADD x22, x22, #1
-        STR x26, [x20, x22, LSL #3]
-        ADD x22, x22, #1
+        ADD x0, x20, #1 // fila+1
+        ADD x1, x21, #1 // columna+1
+        BL f11DescubrirCascada // abajo-derecha
         
-flood_fill_vecinos_col_next:
-        ADD x30, x30, #1
-        B flood_fill_vecinos_col
-        
-flood_fill_vecinos_fila_next:
-        ADD x29, x29, #1
-        B flood_fill_vecinos_fila
-        
-flood_fill_end:
-        // Liberar espacio de la cola
-        ADD sp, sp, #1024
+f11DescubrirCascada_fin:
         ldp x29, x30, [sp], 16
         RET
 
