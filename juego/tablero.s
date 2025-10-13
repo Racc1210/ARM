@@ -116,9 +116,11 @@ f11DescubrirCascada:
         BGE f11_flood_fin
         
         // Pushear coordenada inicial al stack
-        STR w0, [x23, x22, lsl #3]      // fila
-        STR w1, [x23, x22, lsl #3, #4]  // columna
-        ADD x22, x22, #1                 // incrementar stack pointer
+        LSL x24, x22, #3            // x24 = stack_index * 8
+        STR w0, [x23, x24]          // fila
+        ADD x24, x24, #4
+        STR w1, [x23, x24]          // columna
+        ADD x22, x22, #1             // incrementar stack pointer
         
 f11_flood_loop:
         // Verificar si el stack está vacío
@@ -127,8 +129,10 @@ f11_flood_loop:
         
         // Pop coordenada del stack
         SUB x22, x22, #1
-        LDR w0, [x23, x22, lsl #3]      // fila
-        LDR w1, [x23, x22, lsl #3, #4]  // columna
+        LSL x24, x22, #3            // x24 = stack_index * 8
+        LDR w0, [x23, x24]          // fila
+        ADD x24, x24, #4
+        LDR w1, [x23, x24]          // columna
         
         // Verificar límites
         CMP x0, #0
@@ -252,8 +256,10 @@ f11_push_if_valid:
         BGE f11_push_end
         
         // Agregar al stack
-        STR w4, [x23, x22, lsl #3]      // fila
-        STR w5, [x23, x22, lsl #3, #4]  // columna
+        LSL x9, x22, #3             // x9 = stack_index * 8
+        STR w4, [x23, x9]           // fila
+        ADD x9, x9, #4
+        STR w5, [x23, x9]           // columna
         ADD x22, x22, #1
         
 f11_push_end:
