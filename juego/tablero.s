@@ -80,14 +80,184 @@ f08DescubrirCelda_fin:
 
 // -------------------------------------------------
 // f11DescubrirCascada
-// VERSION SIMPLIFICADA Y SEGURA - Solo revela vecinos inmediatos
-// Entrada: x0 = fila, x1 = columna
+// NUEVA VERSION CON FLOOD FILL COMPLETO
+// Implementa algoritmo iterativo usando stack local para evitar recursión profunda
 // -------------------------------------------------
 f11DescubrirCascada:
-        stp x29, x30, [sp, -16]!
+        stp x29, x30, [sp, -128]!  // Stack grande para flood fill
         mov x29, sp
         
         // Verificar que TableroPtr no sea nulo
+        LDR x12, =TableroPtr
+        LDR x12, [x12]
+        CMP x12, #0
+        BEQ f11_flood_fin
+        
+        // Obtener configuración del tablero
+        LDR x10, =FilasSel
+        LDR x10, [x10]      // x10 = filas
+        LDR x11, =ColumnasSel
+        LDR x11, [x11]      // x11 = columnas
+        
+        // Inicializar stack de coordenadas en memoria local
+        // Stack layout: [stack_ptr, coord_pairs...]
+        // Cada par ocupa 8 bytes (4 para fila, 4 para columna)
+        MOV x22, #0         // stack pointer (cantidad de elementos)
+        ADD x23, sp, #16    // base del stack de coordenadas
+        
+        // Verificar límites de la celda inicial
+        CMP x0, #0
+        BLT f11_flood_fin
+        CMP x0, x10
+        BGE f11_flood_fin
+        CMP x1, #0
+        BLT f11_flood_fin
+        CMP x1, x11
+        BGE f11_flood_fin
+        
+        // Pushear coordenada inicial al stack
+        STR w0, [x23, x22, lsl #3]      // fila
+        STR w1, [x23, x22, lsl #3, #4]  // columna
+        ADD x22, x22, #1                 // incrementar stack pointer
+        
+f11_flood_loop:
+        // Verificar si el stack está vacío
+        CMP x22, #0
+        BEQ f11_flood_fin
+        
+        // Pop coordenada del stack
+        SUB x22, x22, #1
+        LDR w0, [x23, x22, lsl #3]      // fila
+        LDR w1, [x23, x22, lsl #3, #4]  // columna
+        
+        // Verificar límites
+        CMP x0, #0
+        BLT f11_flood_loop
+        CMP x0, x10
+        BGE f11_flood_loop
+        CMP x1, #0
+        BLT f11_flood_loop
+        CMP x1, x11
+        BGE f11_flood_loop
+        
+        // Calcular offset de la celda
+        MUL x2, x0, x11
+        ADD x2, x2, x1
+        LSL x2, x2, #1
+        ADD x3, x12, x2
+        
+        // Leer estado actual
+        LDRB w4, [x3, #1]
+        
+        // Solo procesar celdas ocultas
+        CMP w4, #0  // ESTADO_OCULTA = 0
+        BNE f11_flood_loop
+        
+        // Marcar como descubierta
+        MOV w5, #1  // ESTADO_DESCUBIERTA = 1
+        STRB w5, [x3, #1]
+        
+        // Contar minas cercanas para decidir si continuar
+        stp x0, x1, [sp, #96]    // guardar coordenadas actuales
+        stp x10, x11, [sp, #104]
+        stp x12, x22, [sp, #112]
+        str x23, [sp, #120]
+        
+        BL f12ContarMinasCercanas
+        MOV x24, x0  // guardar resultado
+        
+        ldr x23, [sp, #120]
+        ldp x12, x22, [sp, #112]
+        ldp x10, x11, [sp, #104]
+        ldp x0, x1, [sp, #96]    // restaurar coordenadas
+        
+        // Si hay minas cercanas, no propagar más desde esta celda
+        CMP x24, #0
+        BNE f11_flood_loop
+        
+        // Si es celda vacía (0 minas), agregar los 8 vecinos al stack
+        // Verificar que no excedamos el límite del stack (máximo 10 elementos)
+        CMP x22, #10
+        BGE f11_flood_loop
+        
+        // Arriba-izquierda (-1, -1)
+        SUB x4, x0, #1
+        SUB x5, x1, #1
+        BL f11_push_if_valid
+        
+        // Arriba (0, -1)
+        MOV x4, x0
+        SUB x5, x1, #1
+        BL f11_push_if_valid
+        
+        // Arriba-derecha (+1, -1)
+        ADD x4, x0, #1
+        SUB x5, x1, #1
+        BL f11_push_if_valid
+        
+        // Izquierda (-1, 0)
+        SUB x4, x0, #1
+        MOV x5, x1
+        BL f11_push_if_valid
+        
+        // Derecha (+1, 0)
+        ADD x4, x0, #1
+        MOV x5, x1
+        BL f11_push_if_valid
+        
+        // Abajo-izquierda (-1, +1)
+        SUB x4, x0, #1
+        ADD x5, x1, #1
+        BL f11_push_if_valid
+        
+        // Abajo (0, +1)
+        MOV x4, x0
+        ADD x5, x1, #1
+        BL f11_push_if_valid
+        
+        // Abajo-derecha (+1, +1)
+        ADD x4, x0, #1
+        ADD x5, x1, #1
+        BL f11_push_if_valid
+        
+        B f11_flood_loop
+
+f11_flood_fin:
+        ldp x29, x30, [sp], 128
+        RET
+
+// Función auxiliar para agregar coordenada al stack si es válida y oculta
+f11_push_if_valid:
+        // Verificar límites
+        CMP x4, #0
+        BLT f11_push_end
+        CMP x4, x10
+        BGE f11_push_end
+        CMP x5, #0
+        BLT f11_push_end
+        CMP x5, x11
+        BGE f11_push_end
+        
+        // Verificar que la celda esté oculta
+        MUL x6, x4, x11
+        ADD x6, x6, x5
+        LSL x6, x6, #1
+        ADD x7, x12, x6
+        LDRB w8, [x7, #1]
+        CMP w8, #0  // ESTADO_OCULTA = 0
+        BNE f11_push_end
+        
+        // Verificar límite del stack
+        CMP x22, #10
+        BGE f11_push_end
+        
+        // Agregar al stack
+        STR w4, [x23, x22, lsl #3]      // fila
+        STR w5, [x23, x22, lsl #3, #4]  // columna
+        ADD x22, x22, #1
+        
+f11_push_end:
+        RET
         LDR x12, =TableroPtr
         LDR x12, [x12]
         CMP x12, #0
