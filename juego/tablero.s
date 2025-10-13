@@ -374,46 +374,11 @@ f11_reveal_single_cell:
         CMP x7, #0
         BNE f11_reveal_recursive_end
         
-        // ✨ PRIMERO: Revelar todos los vecinos inmediatos (incluyendo números)
-        // Esto asegura que el "borde" de números se revele correctamente
+        // ✨ CASCADA RECURSIVA - Llamar a los 8 vecinos
         MOV x8, x0  // fila actual
         MOV x9, x1  // columna actual
         
-        // Revelar vecinos sin recursión todavía
-        SUB x0, x8, #1
-        SUB x1, x9, #1
-        BL f11_reveal_no_recurse  // Arriba-izquierda
-        
-        SUB x0, x8, #1
-        MOV x1, x9
-        BL f11_reveal_no_recurse  // Arriba
-        
-        SUB x0, x8, #1
-        ADD x1, x9, #1
-        BL f11_reveal_no_recurse  // Arriba-derecha
-        
-        MOV x0, x8
-        SUB x1, x9, #1
-        BL f11_reveal_no_recurse  // Izquierda
-        
-        MOV x0, x8
-        ADD x1, x9, #1
-        BL f11_reveal_no_recurse  // Derecha
-        
-        ADD x0, x8, #1
-        SUB x1, x9, #1
-        BL f11_reveal_no_recurse  // Abajo-izquierda
-        
-        ADD x0, x8, #1
-        MOV x1, x9
-        BL f11_reveal_no_recurse  // Abajo
-        
-        ADD x0, x8, #1
-        ADD x1, x9, #1
-        BL f11_reveal_no_recurse  // Abajo-derecha
-        
-        // AHORA SÍ: Llamar recursivamente a los vecinos
-        // Esto propagará la cascada solo por celdas con 0 minas        // ✨ CASCADA RECURSIVA - Llamar a los 8 vecinos
+        // ✨ CASCADA RECURSIVA - Llamar a los 8 vecinos
         MOV x8, x0  // fila actual
         MOV x9, x1  // columna actual
         
@@ -469,51 +434,6 @@ f11_reveal_recursive_end:
         RET
 
 // -------------------------------------------------
-// f11_reveal_no_recurse
-// Función auxiliar que SOLO revela una celda sin recursión
-// Entrada: x0=fila, x1=columna
-// -------------------------------------------------
-f11_reveal_no_recurse:
-        stp x29, x30, [sp, -16]!
-        mov x29, sp
-        
-        // Verificar límites
-        CMP x0, #0
-        BLT f11_no_recurse_end
-        CMP x0, x10
-        BGE f11_no_recurse_end
-        CMP x1, #0
-        BLT f11_no_recurse_end
-        CMP x1, x11
-        BGE f11_no_recurse_end
-        
-        // Calcular offset
-        MUL x2, x0, x11
-        ADD x2, x2, x1
-        LSL x2, x2, #1
-        ADD x3, x12, x2
-        
-        // Leer estado actual
-        LDRB w4, [x3, #1]
-        
-        // Solo revelar si está oculta
-        CMP w4, #0
-        BNE f11_no_recurse_end
-        
-        // Leer si tiene mina
-        LDRB w5, [x3]
-        CMP w5, #1
-        BEQ f11_no_recurse_end  // Si tiene mina, no revelar
-        
-        // Marcar como descubierta
-        MOV w6, #1
-        STRB w6, [x3, #1]
-        
-f11_no_recurse_end:
-        ldp x29, x30, [sp], 16
-        RET
-
-// -------------------------------------------------
 // f12ContarMinasCercanas
 // VERSION SEGURA - Cuenta minas cercanas con verificaciones robustas
 // Entrada: x0 = fila, x1 = columna
@@ -550,50 +470,50 @@ f12ContarMinasCercanas:
         
         MOV x22, #0 // contador de minas
         
-        // Revisar solo las 8 direcciones válidas
-        // Arriba-izquierda (-1,-1)
+        // Revisar las 8 direcciones correctamente
+        // Arriba-izquierda (fila-1, col-1)
         SUB x0, x20, #1
         SUB x1, x21, #1
         BL f12_check_single_cell
         ADD x22, x22, x0
         
-        // Arriba (0,-1)
-        MOV x0, x20
-        SUB x1, x21, #1
-        BL f12_check_single_cell
-        ADD x22, x22, x0
-        
-        // Arriba-derecha (1,-1)
-        ADD x0, x20, #1
-        SUB x1, x21, #1
-        BL f12_check_single_cell
-        ADD x22, x22, x0
-        
-        // Izquierda (-1,0)
+        // Arriba (fila-1, col)
         SUB x0, x20, #1
         MOV x1, x21
         BL f12_check_single_cell
         ADD x22, x22, x0
         
-        // Derecha (1,0)
-        ADD x0, x20, #1
-        MOV x1, x21
-        BL f12_check_single_cell
-        ADD x22, x22, x0
-        
-        // Abajo-izquierda (-1,1)
+        // Arriba-derecha (fila-1, col+1)
         SUB x0, x20, #1
         ADD x1, x21, #1
         BL f12_check_single_cell
         ADD x22, x22, x0
         
-        // Abajo (0,1)
+        // Izquierda (fila, col-1)
+        MOV x0, x20
+        SUB x1, x21, #1
+        BL f12_check_single_cell
+        ADD x22, x22, x0
+        
+        // Derecha (fila, col+1)
         MOV x0, x20
         ADD x1, x21, #1
         BL f12_check_single_cell
         ADD x22, x22, x0
         
-        // Abajo-derecha (1,1)
+        // Abajo-izquierda (fila+1, col-1)
+        ADD x0, x20, #1
+        SUB x1, x21, #1
+        BL f12_check_single_cell
+        ADD x22, x22, x0
+        
+        // Abajo (fila+1, col)
+        ADD x0, x20, #1
+        MOV x1, x21
+        BL f12_check_single_cell
+        ADD x22, x22, x0
+        
+        // Abajo-derecha (fila+1, col+1)
         ADD x0, x20, #1
         ADD x1, x21, #1
         BL f12_check_single_cell
