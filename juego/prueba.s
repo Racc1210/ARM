@@ -78,16 +78,29 @@ print_long:
 
 // --- INICIO TEST CON IDENTIFICADORES ---
 _start:
-    // Prueba de cadena dinámica: repetir 'R' 5 veces y mostrar
-    MOV x1, #'R'      // Carácter a repetir
-    MOV x2, #5        // Cantidad de repeticiones
-    BL repetir_caracter_n_veces
-    // x3 = dirección, x2 = longitud
-    MOV x4, #3        // Cantidad de impresiones
-    BL imprimir_cadena_n_veces
-    // Fin del programa
+    // Inicializar semilla con el tiempo del sistema
+    MOV x8, #169 // syscall gettimeofday
+    MOV x0, #0
+    MOV x1, sp
+    SVC #0
+    LDR x2, [sp] // segundos
+    LDR x3, =Semilla
+    STR x2, [x3]
+
+    // Llamar varias veces a f02NumeroAleatorio y mostrar el resultado
+    MOV x4, #5 // cantidad de pruebas
+prueba_loop:
+    CMP x4, #0
+    BEQ prueba_fin
+    BL f02NumeroAleatorio
+    MOV x0, x0
+    BL print_long
+    SUB x4, x4, #1
+    B prueba_loop
+prueba_fin:
     MOV x8, #93
     SVC #0
+    // Fin del programa
 // --- Rutina: imprimir_cadena_n_veces ---
 // x3: dirección de la cadena
 // x2: longitud de la cadena
