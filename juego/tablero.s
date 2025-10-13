@@ -80,18 +80,19 @@ f08DescubrirCelda_fin:
 
 // -------------------------------------------------
 // f11DescubrirCascada
-// VERSION RECURSIVA COMPLETA - Revela areas conectadas completas
+// ALGORITMO FLOOD FILL ITERATIVO - Como Minesweeper real
+// Usa stack para evitar recursión profunda
 // Entrada: x0 = fila, x1 = columna
 // -------------------------------------------------
 f11DescubrirCascada:
-        stp x29, x30, [sp, -48]!
+        stp x29, x30, [sp, -64]!
         mov x29, sp
         
         // Verificar que TableroPtr no sea nulo
         LDR x12, =TableroPtr
         LDR x12, [x12]
         CMP x12, #0
-        BEQ f11_cascade_fin
+        BEQ f11_flood_fin
         
         // Obtener configuración del tablero
         LDR x10, =FilasSel
@@ -99,35 +100,36 @@ f11DescubrirCascada:
         LDR x11, =ColumnasSel
         LDR x11, [x11]      // x11 = columnas
         
-        // Guardar registros globales en stack
-        stp x10, x11, [sp, #16]
-        str x12, [sp, #32]
+        // Crear stack simple en memoria local para coordenadas
+        // Usaremos el stack local para almacenar pares (fila, columna)
+        // Stack pointer: x13, Stack base: sp + 16
+        ADD x13, sp, #16    // x13 = stack pointer (empieza vacío)
+        ADD x14, sp, #16    // x14 = stack base
         
-        // Llamar a función recursiva de cascada
-        BL f11_cascade_recursive
+        // Agregar celda inicial al stack
+        STR x0, [x13]       // fila
+        STR x1, [x13, #8]   // columna
+        ADD x13, x13, #16   // incrementar stack pointer
         
-        // Restaurar registros
-        ldp x10, x11, [sp, #16]
-        ldr x12, [sp, #32]
+f11_flood_loop:
+        // Verificar si el stack está vacío
+        CMP x13, x14
+        BEQ f11_flood_fin   // Stack vacío = terminar
         
-f11_cascade_fin:
-        ldp x29, x30, [sp], 48
-        RET
-
-// Función recursiva interna para cascada
-f11_cascade_recursive:
-        stp x29, x30, [sp, -32]!
-        mov x29, sp
+        // Pop del stack
+        SUB x13, x13, #16
+        LDR x0, [x13]       // fila
+        LDR x1, [x13, #8]   // columna
         
         // Verificar límites
         CMP x0, #0
-        BLT f11_cascade_end
+        BLT f11_flood_loop
         CMP x0, x10
-        BGE f11_cascade_end
+        BGE f11_flood_loop
         CMP x1, #0
-        BLT f11_cascade_end
+        BLT f11_flood_loop
         CMP x1, x11
-        BGE f11_cascade_end
+        BGE f11_flood_loop
         
         // Calcular offset: 2 * (fila * columnas + columna)
         MUL x2, x0, x11
@@ -140,67 +142,86 @@ f11_cascade_recursive:
         
         // Solo procesar celdas ocultas (estado 0)
         CMP w4, #0
-        BNE f11_cascade_end
+        BNE f11_flood_loop
         
         // Marcar como descubierta (estado 1)
         MOV w5, #1
         STRB w5, [x3, #1]
         
         // Contar minas cercanas
-        stp x0, x1, [sp, #16]
+        stp x0, x1, [sp, #48]
         BL f12ContarMinasCercanas
-        ldp x0, x1, [sp, #16]
+        ldp x0, x1, [sp, #48]
         
-        // Si hay minas cercanas, no continuar cascada
+        // Si hay minas cercanas, no agregar vecinos al stack
         CMP x0, #0
-        BNE f11_cascade_end
+        BNE f11_flood_loop
         
-        // Cascada en las 8 direcciones - solo si no hay minas
-        MOV x20, x0  // fila original
-        MOV x21, x1  // columna original
+        // Agregar los 8 vecinos al stack
+        MOV x20, x0  // fila actual
+        MOV x21, x1  // columna actual
         
-        // Arriba-izquierda
-        SUB x0, x20, #1
-        SUB x1, x21, #1
-        BL f11_cascade_recursive
+        // Verificar que tengamos espacio en el stack (máximo 400 bytes = 25 pares)
+        ADD x15, x14, #400
+        CMP x13, x15
+        BGE f11_flood_loop  // Si no hay espacio, continuar sin agregar
+        
+        // Agregar vecino: arriba-izquierda
+        SUB x22, x20, #1
+        SUB x23, x21, #1
+        STR x22, [x13]
+        STR x23, [x13, #8]
+        ADD x13, x13, #16
         
         // Arriba
-        MOV x0, x20
-        SUB x1, x21, #1
-        BL f11_cascade_recursive
+        STR x20, [x13]
+        SUB x23, x21, #1
+        STR x23, [x13, #8]
+        ADD x13, x13, #16
         
         // Arriba-derecha
-        ADD x0, x20, #1
-        SUB x1, x21, #1
-        BL f11_cascade_recursive
+        ADD x22, x20, #1
+        SUB x23, x21, #1
+        STR x22, [x13]
+        STR x23, [x13, #8]
+        ADD x13, x13, #16
         
         // Izquierda
-        SUB x0, x20, #1
-        MOV x1, x21
-        BL f11_cascade_recursive
+        SUB x22, x20, #1
+        STR x22, [x13]
+        STR x21, [x13, #8]
+        ADD x13, x13, #16
         
         // Derecha
-        ADD x0, x20, #1
-        MOV x1, x21
-        BL f11_cascade_recursive
+        ADD x22, x20, #1
+        STR x22, [x13]
+        STR x21, [x13, #8]
+        ADD x13, x13, #16
         
         // Abajo-izquierda
-        SUB x0, x20, #1
-        ADD x1, x21, #1
-        BL f11_cascade_recursive
+        SUB x22, x20, #1
+        ADD x23, x21, #1
+        STR x22, [x13]
+        STR x23, [x13, #8]
+        ADD x13, x13, #16
         
         // Abajo
-        MOV x0, x20
-        ADD x1, x21, #1
-        BL f11_cascade_recursive
+        STR x20, [x13]
+        ADD x23, x21, #1
+        STR x23, [x13, #8]
+        ADD x13, x13, #16
         
         // Abajo-derecha
-        ADD x0, x20, #1
-        ADD x1, x21, #1
-        BL f11_cascade_recursive
+        ADD x22, x20, #1
+        ADD x23, x21, #1
+        STR x22, [x13]
+        STR x23, [x13, #8]
+        ADD x13, x13, #16
         
-f11_cascade_end:
-        ldp x29, x30, [sp], 32
+        B f11_flood_loop
+        
+f11_flood_fin:
+        ldp x29, x30, [sp], 64
         RET
 
 // Función auxiliar para revelar una sola celda
