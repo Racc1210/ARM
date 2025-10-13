@@ -374,13 +374,12 @@ f11_reveal_single_cell:
         // Contar minas cercanas para decidir si continuar cascada
         // Guardar coordenadas actuales
         ldp x0, x1, [sp, #16]
-        stp x0, x1, [sp, #72]   // backup adicional
         
         BL f12ContarMinasCercanas
         MOV x7, x0              // guardar resultado
         
         // Restaurar coordenadas
-        ldp x0, x1, [sp, #72]
+        ldp x0, x1, [sp, #16]
         
         // 🎯 IMPORTANTE: Siempre continuamos si tenemos 0 minas
         // Si tenemos números (1-8), solo revelamos esta celda y paramos
@@ -389,48 +388,63 @@ f11_reveal_single_cell:
         
         // 🔄 Si llegamos aquí, tiene 0 minas cercanas
         // AHORA SÍ expandimos a los vecinos (que se revelarán automáticamente)
-        MOV x8, x0  // fila actual
-        MOV x9, x1  // columna actual
+        // Guardar coordenadas en posiciones seguras del stack
+        str x0, [sp, #56]  // fila actual
+        str x1, [sp, #64]  // columna actual
         
         // ✨ CASCADA RECURSIVA - Llamar a los 8 vecinos
+        // Recargar coordenadas antes de cada llamada
+        
         // Arriba-izquierda (fila-1, col-1)
-        SUB x0, x8, #1
-        SUB x1, x9, #1
+        ldr x0, [sp, #56]
+        ldr x1, [sp, #64]
+        SUB x0, x0, #1
+        SUB x1, x1, #1
         BL f11_reveal_single_cell
         
         // Arriba (fila-1, col)
-        SUB x0, x8, #1
-        MOV x1, x9
+        ldr x0, [sp, #56]
+        ldr x1, [sp, #64]
+        SUB x0, x0, #1
         BL f11_reveal_single_cell
         
         // Arriba-derecha (fila-1, col+1)
-        SUB x0, x8, #1
-        ADD x1, x9, #1
+        ldr x0, [sp, #56]
+        ldr x1, [sp, #64]
+        SUB x0, x0, #1
+        ADD x1, x1, #1
         BL f11_reveal_single_cell
         
         // Izquierda (fila, col-1)
-        MOV x0, x8
-        SUB x1, x9, #1
+        ldr x0, [sp, #56]
+        ldr x1, [sp, #64]
+        SUB x1, x1, #1
         BL f11_reveal_single_cell
         
         // Derecha (fila, col+1)
-        MOV x0, x8
-        ADD x1, x9, #1
+        ldr x0, [sp, #56]
+        ldr x1, [sp, #64]
+        ADD x1, x1, #1
         BL f11_reveal_single_cell
         
         // Abajo-izquierda (fila+1, col-1)
-        ADD x0, x8, #1
-        SUB x1, x9, #1
+        ldr x0, [sp, #56]
+        ldr x1, [sp, #64]
+        ADD x0, x0, #1
+        SUB x1, x1, #1
         BL f11_reveal_single_cell
         
         // Abajo (fila+1, col)
-        ADD x0, x8, #1
-        MOV x1, x9
+        ldr x0, [sp, #56]
+        ldr x1, [sp, #64]
+        ADD x0, x0, #1
         BL f11_reveal_single_cell
         
         // Abajo-derecha (fila+1, col+1)
-        ADD x0, x8, #1
-        ADD x1, x9, #1
+        ldr x0, [sp, #56]
+        ldr x1, [sp, #64]
+        ADD x0, x0, #1
+        ADD x1, x1, #1
         BL f11_reveal_single_cell
         
 f11_reveal_recursive_end:
