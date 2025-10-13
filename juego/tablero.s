@@ -163,6 +163,9 @@ f11_fin:
 // Función auxiliar para revelar una sola celda
 // Entrada: x0=fila, x1=columna
 f11_reveal_single_cell:
+        stp x29, x30, [sp, -32]!
+        mov x29, sp
+        
         // Verificar límites
         CMP x0, #0
         BLT f11_reveal_end
@@ -193,7 +196,64 @@ f11_reveal_single_cell:
         LDR w6, [x6]
         STRB w6, [x3, #1]
         
+        // Contar minas cercanas para esta celda
+        stp x0, x1, [sp, #16]    // guardar coordenadas
+        stp x10, x11, [sp, #24]  // guardar límites
+        BL f12ContarMinasCercanas
+        ldp x10, x11, [sp, #24]  // restaurar límites
+        ldp x0, x1, [sp, #16]    // restaurar coordenadas
+        
+        // Si no hay minas cercanas (x0 = 0), continuar cascada
+        CMP x0, #0
+        BNE f11_reveal_end       // Si hay minas, detener cascada
+        
+        // Cascada recursiva en las 8 direcciones
+        // Guardar coordenadas actuales
+        MOV x22, x0  // fila actual
+        MOV x23, x1  // columna actual
+        
+        // Arriba-izquierda (-1, -1)
+        SUB x0, x22, #1
+        SUB x1, x23, #1
+        BL f11_reveal_single_cell
+        
+        // Arriba (0, -1)
+        MOV x0, x22
+        SUB x1, x23, #1
+        BL f11_reveal_single_cell
+        
+        // Arriba-derecha (+1, -1)
+        ADD x0, x22, #1
+        SUB x1, x23, #1
+        BL f11_reveal_single_cell
+        
+        // Izquierda (-1, 0)
+        SUB x0, x22, #1
+        MOV x1, x23
+        BL f11_reveal_single_cell
+        
+        // Derecha (+1, 0)
+        ADD x0, x22, #1
+        MOV x1, x23
+        BL f11_reveal_single_cell
+        
+        // Abajo-izquierda (-1, +1)
+        SUB x0, x22, #1
+        ADD x1, x23, #1
+        BL f11_reveal_single_cell
+        
+        // Abajo (0, +1)
+        MOV x0, x22
+        ADD x1, x23, #1
+        BL f11_reveal_single_cell
+        
+        // Abajo-derecha (+1, +1)
+        ADD x0, x22, #1
+        ADD x1, x23, #1
+        BL f11_reveal_single_cell
+        
 f11_reveal_end:
+        ldp x29, x30, [sp], 32
         RET
 
 // -------------------------------------------------
