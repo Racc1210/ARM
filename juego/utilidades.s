@@ -44,6 +44,9 @@ f01AsciiANumero_fin:
 f02NumeroAleatorio:
         stp x29, x30, [sp, -16]!
         mov x29, sp
+        MOV     x1, x0        // guardar rango en x1
+        CMP     x1, #0        // verificar que rango > 0
+        BLE     f02NumeroAleatorio_error
         LDR     x2, =Semilla
         LDR     x3, [x2]
         LDR     x4, =6364136223846793005   
@@ -52,6 +55,12 @@ f02NumeroAleatorio:
         ADD     x3, x3, #1
         STR     x3, [x2]
         LSR     x0, x3, #16   // Más bits significativos
+        UDIV    x5, x0, x1    // x5 = x0 / rango
+        MSUB    x0, x5, x1, x0 // x0 = x0 % rango
+        ldp x29, x30, [sp], 16
+        RET
+f02NumeroAleatorio_error:
+        MOV     x0, #0        // retornar 0 si rango inválido
         ldp x29, x30, [sp], 16
         RET
 

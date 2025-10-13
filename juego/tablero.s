@@ -305,6 +305,8 @@ BufferSimbolo:
 
         .extern FilasSel
         .extern ColumnasSel
+        .extern MinasSel
+        .extern f02NumeroAleatorio
         .extern SimboloVacio, LargoSimboloVacioVal
         .extern SimboloMina, LargoSimboloMinaVal
         .extern SimboloBandera, LargoSimboloBanderaVal
@@ -312,8 +314,6 @@ BufferSimbolo:
         .extern Espacio, LargoEspacioVal
         .extern f01ImprimirCadena
         .extern f06CrearCadenaDinamica, f07ImprimirCadenaNVeces
-                .extern print_decimal
-                .extern print_hex_byte
 
 // -------------------------------------------------
 // f01InicializarTablero
@@ -434,8 +434,10 @@ minas_fin:
 // Rutina auxiliar para imprimir byte en hexadecimal
 // x0 = byte
 print_hex_byte:
-        // Imprime 2 dígitos hex de x0
-        // No usa stack
+        stp x29, x30, [sp, -16]!
+        mov x29, sp
+        // Reservar buffer local para 2 dígitos hex
+        SUB sp, sp, #8
         MOV x1, x0
         LSR x2, x1, #4
         AND x2, x2, #0xF
@@ -444,24 +446,22 @@ print_hex_byte:
         BLE .phb_ok1
         ADD x2, x2, #7
 .phb_ok1:
-        MOV x8, #64
-        MOV x0, #1
-        MOV x1, sp
-        STRB w2, [x1]
-        MOV x2, #1
-        SVC #0
+        STRB w2, [sp]
         AND x2, x1, #0xF
         ADD x2, x2, #'0'
         CMP x2, #'9'
         BLE .phb_ok2
         ADD x2, x2, #7
 .phb_ok2:
+        STRB w2, [sp, #1]
+        // Imprimir los 2 caracteres
         MOV x8, #64
         MOV x0, #1
         MOV x1, sp
-        STRB w2, [x1]
-        MOV x2, #1
+        MOV x2, #2
         SVC #0
+        ADD sp, sp, #8
+        ldp x29, x30, [sp], 16
         RET
 f03ImprimirTablero:
         stp x29, x30, [sp, -16]!
