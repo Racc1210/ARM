@@ -500,13 +500,13 @@ f06revelar_celda:
         
         
         CMP x0, #0
-        BLT f06revealend
+        BLT f06revelar_fin
         CMP x0, x10
-        BGE f06revealend
+        BGE f06revelar_fin
         CMP x1, #0
-        BLT f06revealend
+        BLT f06revelar_fin
         CMP x1, x11
-        BGE f06revealend
+        BGE f06revelar_fin
         
        
         MUL x2, x0, x11
