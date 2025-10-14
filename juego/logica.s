@@ -1,17 +1,17 @@
-/*****Datos administrativos************************
- * Nombre del archivo: logica.s
- * Tipo de archivo: Código fuente ensamblador ARM64
- * Proyecto: Buscaminas ARM64
- * Autor: Roymar Castillo
- * Empresa: ITCR
- *****Descripción**********************************
- * Controlador principal del juego. Gestiona el bucle
- * de juego, procesa acciones del usuario (descubrir
- * celdas, colocar banderas) y controla el flujo de
- * la partida hasta victoria o derrota.
- *****Versión**************************************
- * 01 | 2025-10-13 | Roymar Castillo - Versión final
- **************************************************/
+// ******  Datos administrativos  *******************
+// Nombre del archivo: logica.s
+// Tipo de archivo: Código fuente ensamblador ARM64
+// Proyecto: Buscaminas ARM64
+// Autor: Roymar Castillo
+// Empresa: ITCR
+// ******  Descripción  ******************************
+// Controlador principal del juego. Gestiona el bucle
+// de juego, procesa acciones del usuario (descubrir
+// celdas, colocar banderas) y controla el flujo de
+// la partida hasta victoria o derrota.
+// ******  Versión  **********************************
+// 01 | 2025-10-13 | Roymar Castillo - Versión final
+// ***************************************************
 
         .section .text
         .global f01ConfigurarYJugar
@@ -51,35 +51,35 @@
         .extern LargoMensajeErrorColumnaVal
 
 
-/*****Nombre***************************************
- * f01ConfigurarYJugar:
- *****Descripción**********************************
- * Inicializa una nueva partida: resetea flag de
- * juego terminado, carga configuración (filas,
- * columnas, minas), inicializa tablero y arranca
- * el bucle principal del juego.
- *****Retorno**************************************
- * Ninguno
- *****Entradas*************************************
- * Ninguna (usa variables globales FilasSel,
- * ColumnasSel, MinasSel)
- *****Errores**************************************
- * Ninguno
- **************************************************/
+// ******  Nombre  ***********************************
+// f01ConfigurarYJugar
+// ******  Descripción  ******************************
+// Inicializa una nueva partida: resetea flag de
+// juego terminado, carga configuración (filas,
+// columnas, minas), inicializa tablero y arranca
+// el bucle principal del juego.
+// ******  Retorno  **********************************
+// Ninguno
+// ******  Entradas  *********************************
+// Ninguna (usa variables globales FilasSel,
+// ColumnasSel, MinasSel)
+// ******  Errores  **********************************
+// Ninguno
+// ***************************************************
 f01ConfigurarYJugar:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         
         LDR x0, =JuegoTerminado
         MOV x1, #0
-        STR x1, [x0]             @ Resetear flag de juego terminado
+        STR x1, [x0]             // Resetear flag de juego terminado
         
         LDR x13, =FilasSel
-        LDR x0, [x13]            @ x0 = Filas seleccionadas
+        LDR x0, [x13]            // x0 = Filas seleccionadas
         LDR x14, =ColumnasSel
-        LDR x1, [x14]            @ x1 = Columnas seleccionadas
+        LDR x1, [x14]            // x1 = Columnas seleccionadas
         LDR x15, =MinasSel
-        LDR x2, [x15]            @ x2 = Minas seleccionadas
+        LDR x2, [x15]            // x2 = Minas seleccionadas
         
         BL f01InicializarTablero
         BL f02BucleJuego
@@ -88,29 +88,29 @@ f01ConfigurarYJugar:
         RET
 
 
-/*****Nombre***************************************
- * f02BucleJuego:
- *****Descripción**********************************
- * Bucle principal del juego. Imprime tablero,
- * muestra menú de acciones, procesa selección del
- * usuario y verifica condición de fin de juego.
- * Se ejecuta hasta que JuegoTerminado = 1 o usuario
- * selecciona volver al menú.
- *****Retorno**************************************
- * Ninguno
- *****Entradas*************************************
- * Ninguna
- *****Errores**************************************
- * Error #06: Opción inválida en menú de acciones
- **************************************************/
+// ******  Nombre  ***********************************
+// f02BucleJuego
+// ******  Descripción  ******************************
+// Bucle principal del juego. Imprime tablero,
+// muestra menú de acciones, procesa selección del
+// usuario y verifica condición de fin de juego.
+// Se ejecuta hasta que JuegoTerminado = 1 o usuario
+// selecciona volver al menú.
+// ******  Retorno  **********************************
+// Ninguno
+// ******  Entradas  *********************************
+// Ninguna
+// ******  Errores  **********************************
+// Error #06: Opción inválida en menú de acciones
+// ***************************************************
 f02BucleJuego:
         stp x29, x30, [sp, -16]!
         mov x29, sp
         
         LDR x20, =FilasSel
-        LDR x20, [x20]           @ x20 = Cantidad de filas
+        LDR x20, [x20]           // x20 = Cantidad de filas
         LDR x21, =ColumnasSel
-        LDR x21, [x21]           @ x21 = Cantidad de columnas
+        LDR x21, [x21]           // x21 = Cantidad de columnas
 
 f02bucle_juego:
         LDR x0, =JuegoTerminado
@@ -158,21 +158,21 @@ f02salir:
         RET
 
 
-/*****Nombre***************************************
- * f03AccionDescubrir:
- *****Descripción**********************************
- * Solicita al usuario coordenadas (fila y columna)
- * para descubrir una celda. Valida rangos y llama
- * a f04DescubrirCelda. Verifica si el juego terminó
- * después de la acción.
- *****Retorno**************************************
- * Ninguno
- *****Entradas*************************************
- * Ninguna (lee desde stdin)
- *****Errores**************************************
- * Error #04: Fila fuera de rango
- * Error #05: Columna fuera de rango
- **************************************************/
+// ******  Nombre  ***********************************
+// f03AccionDescubrir
+// ******  Descripción  ******************************
+// Solicita al usuario coordenadas (fila y columna)
+// para descubrir una celda. Valida rangos y llama
+// a f04DescubrirCelda. Verifica si el juego terminó
+// después de la acción.
+// ******  Retorno  **********************************
+// Ninguno
+// ******  Entradas  *********************************
+// Ninguna (lee desde stdin)
+// ******  Errores  **********************************
+// Error #04: Fila fuera de rango
+// Error #05: Columna fuera de rango
+// ***************************************************
 f03AccionDescubrir:
         stp x29, x30, [sp, -16]!
         mov x29, sp
@@ -188,15 +188,15 @@ f03leer_fila:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        MOV x10, x0              @ x10 = Fila ingresada
+        MOV x10, x0              // x10 = Fila ingresada
 
         MOV x0, x10
-        MOV x1, #1               @ x1 = Mínimo (1)
-        MOV x2, x20              @ x2 = Máximo (FilasSel)
+        MOV x1, #1               // x1 = Mínimo (1)
+        MOV x2, x20              // x2 = Máximo (FilasSel)
         BL f04ValidarRango
         CMP x0, #0
         BEQ f03fila_invalida  
-        SUB x10, x10, #1         @ Convertir a índice 0-based
+        SUB x10, x10, #1         // Convertir a índice 0-based
 
 f03leer_columna:
         LDR x0, =JuegoTerminado
@@ -209,18 +209,18 @@ f03leer_columna:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        MOV x11, x0              @ x11 = Columna ingresada
+        MOV x11, x0              // x11 = Columna ingresada
 
         MOV x0, x11
-        MOV x1, #1               @ x1 = Mínimo (1)
-        MOV x2, x21              @ x2 = Máximo (ColumnasSel)
+        MOV x1, #1               // x1 = Mínimo (1)
+        MOV x2, x21              // x2 = Máximo (ColumnasSel)
         BL f04ValidarRango
         CMP x0, #0
         BEQ f03columna_invalida  
-        SUB x11, x11, #1         @ Convertir a índice 0-based
+        SUB x11, x11, #1         // Convertir a índice 0-based
 
-        MOV x0, x10              @ x0 = Fila (0-based)
-        MOV x1, x11              @ x1 = Columna (0-based)
+        MOV x0, x10              // x0 = Fila (0-based)
+        MOV x1, x11              // x1 = Columna (0-based)
         BL f04DescubrirCelda
 
         LDR x0, =JuegoTerminado
@@ -247,7 +247,6 @@ f03columna_invalida:
         LDR x0, =JuegoTerminado
         LDR x1, [x0]
         CMP x1, #1
-        BEQ f03salir_con_limpieza
         
         LDR x1, =MensajeErrorColumna
         LDR x2, =LargoMensajeErrorColumnaVal
@@ -260,20 +259,20 @@ f03salir_con_limpieza:
         B f02salir
 
 
-/*****Nombre***************************************
- * f04AccionBandera:
- *****Descripción**********************************
- * Solicita al usuario coordenadas (fila y columna)
- * para colocar o quitar una bandera. Valida rangos
- * y llama a f05ColocarBandera.
- *****Retorno**************************************
- * Ninguno
- *****Entradas*************************************
- * Ninguna (lee desde stdin)
- *****Errores**************************************
- * Error #04: Fila fuera de rango
- * Error #05: Columna fuera de rango
- **************************************************/
+// ******  Nombre  ***********************************
+// f04AccionBandera
+// ******  Descripción  ******************************
+// Solicita al usuario coordenadas (fila y columna)
+// para colocar o quitar una bandera. Valida rangos
+// y llama a f05ColocarBandera.
+// ******  Retorno  **********************************
+// Ninguno
+// ******  Entradas  *********************************
+// Ninguna (lee desde stdin)
+// ******  Errores  **********************************
+// Error #04: Fila fuera de rango
+// Error #05: Columna fuera de rango
+// ***************************************************
 f04AccionBandera:
         stp x29, x30, [sp, -16]!
         mov x29, sp
@@ -289,15 +288,15 @@ f04leer_fila:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        MOV x10, x0              @ x10 = Fila ingresada
+        MOV x10, x0              // x10 = Fila ingresada
 
         MOV x0, x10
-        MOV x1, #1               @ x1 = Mínimo (1)
-        MOV x2, x20              @ x2 = Máximo (FilasSel)
+        MOV x1, #1               // x1 = Mínimo (1)
+        MOV x2, x20              // x2 = Máximo (FilasSel)
         BL f04ValidarRango
         CMP x0, #0
         BEQ f04fila_invalida
-        SUB x10, x10, #1         @ Convertir a índice 0-based
+        SUB x10, x10, #1         // Convertir a índice 0-based
 
 f04leer_columna:
         LDR x0, =JuegoTerminado
@@ -310,18 +309,18 @@ f04leer_columna:
         LDR x2, [x2]
         BL f01ImprimirCadena
         BL f03LeerNumero
-        MOV x11, x0              @ x11 = Columna ingresada
+        MOV x11, x0              // x11 = Columna ingresada
 
         MOV x0, x11
-        MOV x1, #1               @ x1 = Mínimo (1)
-        MOV x2, x21              @ x2 = Máximo (ColumnasSel)
+        MOV x1, #1               // x1 = Mínimo (1)
+        MOV x2, x21              // x2 = Máximo (ColumnasSel)
         BL f04ValidarRango
         CMP x0, #0
         BEQ f04columna_invalida
-        SUB x11, x11, #1         @ Convertir a índice 0-based
+        SUB x11, x11, #1         // Convertir a índice 0-based
 
-        MOV x0, x10              @ x0 = Fila (0-based)
-        MOV x1, x11              @ x1 = Columna (0-based)
+        MOV x0, x10              // x0 = Fila (0-based)
+        MOV x1, x11              // x1 = Columna (0-based)
         BL f05ColocarBandera
 
         ldp x29, x30, [sp], 16

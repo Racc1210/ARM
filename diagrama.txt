@@ -1,0 +1,12 @@
+main.s ──► logica.s ──► tablero.s
+   │          │             │
+   │          │             ├──► constantes.s
+   │          │             └──► io.s
+   │          │
+   │          ├──► utilidades.s
+   │          └──► constantes.s
+   │
+   ├──► utilidades.s
+   └──► constantes.s
+
+utilidades.s ──► io.s
